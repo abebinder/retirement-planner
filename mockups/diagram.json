@@ -1,0 +1,564 @@
+{
+    "initial": {
+        "diagrams": [
+            {
+                "id": "1739780133151",
+                "items": [
+                    {
+                        "id": "1739849451684",
+                        "appearance": {
+                            "FONT_SIZE": 16,
+                            "BACKGROUND_COLOR": 2434341,
+                            "TEXT": "Current Net Worth"
+                        },
+                        "renderer": "Label",
+                        "transform": {
+                            "x": 140,
+                            "y": 279,
+                            "w": 142,
+                            "h": 30,
+                            "r": 0
+                        },
+                        "type": "Shape"
+                    },
+                    {
+                        "id": "1739849451691",
+                        "appearance": {
+                            "FONT_SIZE": 16,
+                            "BACKGROUND_COLOR": 2434341,
+                            "TEXT": "Withdrawl Number"
+                        },
+                        "renderer": "Label",
+                        "transform": {
+                            "x": 129,
+                            "y": 345,
+                            "w": 146,
+                            "h": 30,
+                            "r": 0
+                        },
+                        "type": "Shape"
+                    },
+                    {
+                        "id": "1739849451698",
+                        "appearance": {
+                            "FONT_SIZE": 16,
+                            "BACKGROUND_COLOR": 2434341,
+                            "TEXT": "How Much Add Per Year"
+                        },
+                        "renderer": "Label",
+                        "transform": {
+                            "x": 129,
+                            "y": 411,
+                            "w": 182,
+                            "h": 30,
+                            "r": 0
+                        },
+                        "type": "Shape"
+                    },
+                    {
+                        "id": "1739849452474",
+                        "appearance": {
+                            "FOREGROUND_COLOR": 16777215,
+                            "FONT_SIZE": 16,
+                            "BACKGROUND_COLOR": 2434341,
+                            "STROKE_COLOR": 13224393,
+                            "STROKE_THICKNESS": 1,
+                            "TEXT_ALIGNMENT": "left",
+                            "TEXT": "TextInput"
+                        },
+                        "renderer": "TextInput",
+                        "transform": {
+                            "x": 300,
+                            "y": 280,
+                            "w": 100,
+                            "h": 30,
+                            "r": 0
+                        },
+                        "type": "Shape"
+                    },
+                    {
+                        "id": "1739849452483",
+                        "appearance": {
+                            "FOREGROUND_COLOR": 16777215,
+                            "FONT_SIZE": 16,
+                            "BACKGROUND_COLOR": 2434341,
+                            "STROKE_COLOR": 13224393,
+                            "STROKE_THICKNESS": 1,
+                            "TEXT_ALIGNMENT": "left",
+                            "TEXT": "TextInput"
+                        },
+                        "renderer": "TextInput",
+                        "transform": {
+                            "x": 298,
+                            "y": 345,
+                            "w": 100,
+                            "h": 30,
+                            "r": 0
+                        },
+                        "type": "Shape"
+                    },
+                    {
+                        "id": "1739849452490",
+                        "appearance": {
+                            "FOREGROUND_COLOR": 16777215,
+                            "FONT_SIZE": 16,
+                            "BACKGROUND_COLOR": 2434341,
+                            "STROKE_COLOR": 13224393,
+                            "STROKE_THICKNESS": 1,
+                            "TEXT_ALIGNMENT": "left",
+                            "TEXT": "TextInput"
+                        },
+                        "renderer": "TextInput",
+                        "transform": {
+                            "x": 296,
+                            "y": 412,
+                            "w": 100,
+                            "h": 30,
+                            "r": 0
+                        },
+                        "type": "Shape"
+                    },
+                    {
+                        "id": "1739849452551",
+                        "appearance": {
+                            "FOREGROUND_COLOR": 15790320,
+                            "FONT_SIZE": 16,
+                            "BACKGROUND_COLOR": 2434341,
+                            "STROKE_COLOR": 13224393,
+                            "STROKE_THICKNESS": 1,
+                            "TEXT_ALIGNMENT": "center",
+                            "TEXT": "Submit"
+                        },
+                        "renderer": "Button",
+                        "transform": {
+                            "x": 447,
+                            "y": 497,
+                            "w": 100,
+                            "h": 30,
+                            "r": 0
+                        },
+                        "type": "Shape"
+                    }
+                ],
+                "rootIds": [
+                    "1739849451684",
+                    "1739849451691",
+                    "1739849451698",
+                    "1739849452474",
+                    "1739849452483",
+                    "1739849452490",
+                    "1739849452551"
+                ]
+            }
+        ],
+        "diagramIds": [
+            "1739780133151"
+        ],
+        "id": "70bed27d-886f-dc5a-e85c-3adea98fb7cf",
+        "size": {
+            "x": 1000,
+            "y": 1000
+        }
+    },
+    "actions": [
+        {
+            "type": "items/transform",
+            "payload": {
+                "diagramId": "1739780133151",
+                "timestamp": 1739849861327,
+                "oldBounds": {
+                    "x": 194,
+                    "y": 345.5,
+                    "w": 312,
+                    "h": 163,
+                    "r": 0
+                },
+                "newBounds": {
+                    "x": 478,
+                    "y": 345.5,
+                    "w": 312,
+                    "h": 163,
+                    "r": 0
+                },
+                "itemIds": [
+                    "1739849451684",
+                    "1739849451691",
+                    "1739849451698",
+                    "1739849452474",
+                    "1739849452483",
+                    "1739849452490"
+                ]
+            }
+        },
+        {
+            "type": "items/addShape",
+            "payload": {
+                "diagramId": "1739780133151",
+                "timestamp": 1739849884833,
+                "id": "1739849452949",
+                "renderer": "Icon",
+                "position": {
+                    "x": 170.4166717529297,
+                    "y": 557.5
+                },
+                "appearance": {
+                    "TEXT": "",
+                    "ICON_FONT_FAMILY": "FontAwesome"
+                }
+            }
+        },
+        {
+            "type": "items/transform",
+            "payload": {
+                "diagramId": "1739780133151",
+                "timestamp": 1739849886649,
+                "oldBounds": {
+                    "x": 190,
+                    "y": 577,
+                    "w": 40,
+                    "h": 40,
+                    "r": 0
+                },
+                "newBounds": {
+                    "x": 491.5,
+                    "y": 733.5,
+                    "w": 643,
+                    "h": 353,
+                    "r": 0
+                },
+                "itemIds": [
+                    "1739849452949"
+                ]
+            }
+        },
+        {
+            "type": "items/addShape",
+            "payload": {
+                "diagramId": "1739780133151",
+                "timestamp": 1739849999128,
+                "id": "1739849453218",
+                "renderer": "Paragraph",
+                "position": {
+                    "x": 58,
+                    "y": 583
+                }
+            }
+        },
+        {
+            "type": "items/appearance",
+            "payload": {
+                "diagramId": "1739780133151",
+                "timestamp": 1739850031317,
+                "appearance": {
+                    "key": "TEXT",
+                    "value": "Y axis is 0% to 100%. Success rate by year based on monte carlo simulations for that year"
+                },
+                "force": false,
+                "itemIds": [
+                    "1739849453218"
+                ]
+            }
+        },
+        {
+            "type": "items/transform",
+            "payload": {
+                "diagramId": "1739780133151",
+                "timestamp": 1739850039360,
+                "oldBounds": {
+                    "x": 158,
+                    "y": 653,
+                    "w": 200,
+                    "h": 140,
+                    "r": 0
+                },
+                "newBounds": {
+                    "x": 139.5,
+                    "y": 653,
+                    "w": 163,
+                    "h": 140,
+                    "r": 0
+                },
+                "itemIds": [
+                    "1739849453218"
+                ]
+            }
+        },
+        {
+            "type": "items/transform",
+            "payload": {
+                "diagramId": "1739780133151",
+                "timestamp": 1739850041866,
+                "oldBounds": {
+                    "x": 139.5,
+                    "y": 653,
+                    "w": 163,
+                    "h": 140,
+                    "r": 0
+                },
+                "newBounds": {
+                    "x": 174.5,
+                    "y": 685,
+                    "w": 163,
+                    "h": 140,
+                    "r": 0
+                },
+                "itemIds": [
+                    "1739849453218"
+                ]
+            }
+        },
+        {
+            "type": "items/transform",
+            "payload": {
+                "diagramId": "1739780133151",
+                "timestamp": 1739850054988,
+                "oldBounds": {
+                    "x": 491.5,
+                    "y": 733.5,
+                    "w": 643,
+                    "h": 353,
+                    "r": 0
+                },
+                "newBounds": {
+                    "x": 508.5,
+                    "y": 711.5,
+                    "w": 643,
+                    "h": 353,
+                    "r": 0
+                },
+                "itemIds": [
+                    "1739849452949"
+                ]
+            }
+        },
+        {
+            "type": "items/addShape",
+            "payload": {
+                "diagramId": "1739780133151",
+                "timestamp": 1739850078952,
+                "id": "1739849453674",
+                "renderer": "Paragraph",
+                "position": {
+                    "x": 358,
+                    "y": 873
+                }
+            }
+        },
+        {
+            "type": "items/appearance",
+            "payload": {
+                "diagramId": "1739780133151",
+                "timestamp": 1739850089212,
+                "appearance": {
+                    "key": "TEXT",
+                    "value": "X axis is year by year"
+                },
+                "force": false,
+                "itemIds": [
+                    "1739849453674"
+                ]
+            }
+        },
+        {
+            "type": "items/appearance",
+            "payload": {
+                "diagramId": "1739780133151",
+                "timestamp": 1739850098313,
+                "appearance": {
+                    "key": "TEXT",
+                    "value": "X axis is time"
+                },
+                "force": false,
+                "itemIds": [
+                    "1739849453674"
+                ]
+            }
+        },
+        {
+            "type": "items/appearance",
+            "payload": {
+                "diagramId": "1739780133151",
+                "timestamp": 1739850103669,
+                "appearance": {
+                    "key": "TEXT",
+                    "value": "X axis is year by year"
+                },
+                "force": false,
+                "itemIds": [
+                    "1739849453674"
+                ]
+            }
+        },
+        {
+            "type": "items/appearance",
+            "payload": {
+                "diagramId": "1739780133151",
+                "timestamp": 1739850388513,
+                "appearance": {
+                    "key": "TEXT",
+                    "value": ""
+                },
+                "force": false,
+                "itemIds": [
+                    "1739849452474"
+                ]
+            }
+        },
+        {
+            "type": "items/appearance",
+            "payload": {
+                "diagramId": "1739780133151",
+                "timestamp": 1739850389831,
+                "appearance": {
+                    "key": "TEXT",
+                    "value": ""
+                },
+                "force": false,
+                "itemIds": [
+                    "1739849452483"
+                ]
+            }
+        },
+        {
+            "type": "items/appearance",
+            "payload": {
+                "diagramId": "1739780133151",
+                "timestamp": 1739850390564,
+                "appearance": {
+                    "key": "TEXT",
+                    "value": ""
+                },
+                "force": false,
+                "itemIds": [
+                    "1739849452490"
+                ]
+            }
+        },
+        {
+            "type": "items/appearance",
+            "payload": {
+                "diagramId": "1739780133151",
+                "timestamp": 1739851589285,
+                "appearance": {
+                    "key": "TEXT",
+                    "value": "Contribution Per Year"
+                },
+                "force": false,
+                "itemIds": [
+                    "1739849451698"
+                ]
+            }
+        },
+        {
+            "type": "items/transform",
+            "payload": {
+                "diagramId": "1739780133151",
+                "timestamp": 1739851590803,
+                "oldBounds": {
+                    "x": 413,
+                    "y": 345,
+                    "w": 146,
+                    "h": 30,
+                    "r": 0
+                },
+                "newBounds": {
+                    "x": 324,
+                    "y": 473,
+                    "w": 146,
+                    "h": 30,
+                    "r": 0
+                },
+                "itemIds": [
+                    "1739849451691"
+                ]
+            }
+        },
+        {
+            "type": "items/transform",
+            "payload": {
+                "diagramId": "1739780133151",
+                "timestamp": 1739851592427,
+                "oldBounds": {
+                    "x": 403,
+                    "y": 411,
+                    "w": 162,
+                    "h": 30,
+                    "r": 0
+                },
+                "newBounds": {
+                    "x": 414,
+                    "y": 345,
+                    "w": 162,
+                    "h": 30,
+                    "r": 0
+                },
+                "itemIds": [
+                    "1739849451698"
+                ]
+            }
+        },
+        {
+            "type": "items/transform",
+            "payload": {
+                "diagramId": "1739780133151",
+                "timestamp": 1739851593820,
+                "oldBounds": {
+                    "x": 324,
+                    "y": 473,
+                    "w": 146,
+                    "h": 30,
+                    "r": 0
+                },
+                "newBounds": {
+                    "x": 406,
+                    "y": 412,
+                    "w": 146,
+                    "h": 30,
+                    "r": 0
+                },
+                "itemIds": [
+                    "1739849451691"
+                ]
+            }
+        },
+        {
+            "type": "items/appearance",
+            "payload": {
+                "diagramId": "1739780133151",
+                "timestamp": 1739851604736,
+                "appearance": {
+                    "key": "TEXT",
+                    "value": "Withdrawl In Retirement Per Year"
+                },
+                "force": false,
+                "itemIds": [
+                    "1739849451691"
+                ]
+            }
+        },
+        {
+            "type": "items/transform",
+            "payload": {
+                "diagramId": "1739780133151",
+                "timestamp": 1739851607212,
+                "oldBounds": {
+                    "x": 455,
+                    "y": 412,
+                    "w": 244,
+                    "h": 30,
+                    "r": 0
+                },
+                "newBounds": {
+                    "x": 400,
+                    "y": 412,
+                    "w": 244,
+                    "h": 30,
+                    "r": 0
+                },
+                "itemIds": [
+                    "1739849451691"
+                ]
+            }
+        }
+    ]
+}
