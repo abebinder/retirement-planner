@@ -1,9 +1,25 @@
-<h1>Welcome to SvelteKit</h1>
-<p>Visit <a href="https://svelte.dev/docs/kit">svelte.dev/docs/kit</a> to read the documentation</p>
+<script lang="ts">
+let currentSavings : number = $state(0)
+let annualContribution : number = $state(0)
+let annualRetirementSpend : number = $state(0)
+
+function calculateYearsToRetirement(currentSavings: number, annualContribution: number, annualRetirementSpend: number): number{
+    //https://www.investopedia.com/terms/f/four-percent-rule.asp
+    let retirement_number:number = annualRetirementSpend * 25;
+    let remaining:number = retirement_number - currentSavings;
+    if (remaining <= 0) {
+       return 0;
+    }
+    return remaining/annualContribution;
+}
+
+</script>
 
 <label for="current-savings">Current Savings:</label>
-<input type="text" id="current-savings" name="current-savings"><br><br>
+<input bind:value={currentSavings} type="text" id="current-savings" name="current-savings"><br><br>
 <label for="annual-contribution">Annual Contribution (while working):</label>
-<input type="text" id="annual-contribution" name="annual-contribution"><br><br>
+<input bind:value={annualContribution} type="text" id="annual-contribution" name="annual-contribution"><br><br>
 <label for="annual-retirement-spend">Annual Retirement Spend:</label>
-<input type="text" id="annual-retirement-spend" name="annual-retirement-spend"><br><br>
+<input bind:value={annualRetirementSpend} type="text" id="annual-retirement-spend" name="annual-retirement-spend"><br><br>
+
+<p> You can retire in {calculateYearsToRetirement(currentSavings, annualContribution, annualRetirementSpend)} years.</p>
