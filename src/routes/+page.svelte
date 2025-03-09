@@ -1,7 +1,7 @@
 <script lang="ts">
-let currentSavings : number = $state(0)
-let annualContribution : number = $state(0)
-let annualRetirementSpend : number = $state(0)
+let currentSavings : number = $state(1000000)
+let annualContribution : number = $state(150000)
+let annualRetirementSpend : number = $state(65000)
 
 function calculateYearsToRetirement(currentSavings: number, annualContribution: number, annualRetirementSpend: number): number{
     let inflationRate:number = 0.03;
@@ -10,7 +10,7 @@ function calculateYearsToRetirement(currentSavings: number, annualContribution: 
     let retirement_number:number = annualRetirementSpend * 25;
     let savings:number = currentSavings;
     let years:number = 0
-    while (savings < retirement_number){
+    while (savings < retirement_number && years<100){
         savings = (savings * (1 + investmentRate)) + annualContribution;
         retirement_number = retirement_number * (1 + inflationRate);
         years++;
