@@ -21,6 +21,11 @@ function calculateYearsToRetirement(currentSavings: number, annualContribution: 
 
 </script>
 
+<svelte:head>
+	<title>Retirement Calculator</title>
+	<meta name="description" content="Use this calculator to figure out when you can retire." />
+</svelte:head>
+
 <style>
     /* Chrome, Safari, Edge, Opera */
 input::-webkit-outer-spin-button,
