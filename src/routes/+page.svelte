@@ -3,20 +3,32 @@ let currentSavings : number = $state(1000000)
 let annualContribution : number = $state(150000)
 let annualRetirementSpend : number = $state(65000)
 
-function calculateYearsToRetirement(currentSavings: number, annualContribution: number, annualRetirementSpend: number): number{
-    let inflationRate:number = 0.03;
-    let investmentRate:number = 0.07;
+interface SimulationResult {
+  savingsByYear: number[];
+  yearsUntilRetirement: number;
+}
+ 
+
+function calculateYearsToRetirement(initialSavings: number, annualContribution: number, annualRetirementSpend: number): SimulationResult{
+    const investmentRate:number = 0.07;
     //https://www.investopedia.com/terms/f/four-percent-rule.asp
-    let retirement_number:number = annualRetirementSpend * 25;
-    let savings:number = currentSavings;
-    let years:number = 0
-    while (savings < retirement_number && years<100){
-        savings = (savings * (1 + investmentRate)) + annualContribution;
-        retirement_number = retirement_number * (1 + inflationRate);
-        years++;
-        console.log(savings,retirement_number, years)
+    const retirement_number:number = annualRetirementSpend * 25;
+    console.log("Retirement number is ", retirement_number)
+    let savingsByYear:number[] =[];
+    let savings = initialSavings
+    let yearsUntilRetirement:number = 0
+    for (let i =0; i<49; i++){
+      savingsByYear.push(savings)
+      if (savings < retirement_number) {
+        yearsUntilRetirement++;
+      }
+      savings = savings * (1 + investmentRate) + annualContribution;
+      console.log(yearsUntilRetirement, savings)
     }
-    return years;
+    return {
+      savingsByYear: savingsByYear,
+      yearsUntilRetirement: yearsUntilRetirement,
+    }
 }
 
 </script>
@@ -47,4 +59,4 @@ input[type=number] {
 <label for="annual-retirement-spend">Annual Retirement Spend:</label>
 <input bind:value={annualRetirementSpend} type="number" id="annual-retirement-spend" name="annual-retirement-spend"><br><br>
 
-<p> You can retire in {calculateYearsToRetirement(currentSavings, annualContribution, annualRetirementSpend)} years.</p>
+<p> You can retire in {calculateYearsToRetirement(currentSavings, annualContribution, annualRetirementSpend).yearsUntilRetirement} years.</p>
