@@ -4,6 +4,13 @@
 	let annualRetirementSpend: number = $state(65000);
 	let simulationResult: SimulationResult = $derived.by(calculateYearsToRetirement);
 
+	// Create our number formatter.
+	const formatter = new Intl.NumberFormat('en-US', {
+		style: 'currency',
+		currency: 'USD',
+		maximumFractionDigits: 0
+	});
+
 	interface SimulationResult {
 		savingsByYear: number[];
 		yearsUntilRetirement: number;
@@ -17,7 +24,7 @@
 		let savingsByYear: number[] = [];
 		let savings = initialSavings;
 		let yearsUntilRetirement: number = 0;
-		for (let i = 0; i < 49; i++) {
+		for (let i = 0; i < 50; i++) {
 			savingsByYear.push(savings);
 			if (savings < retirement_number) {
 				yearsUntilRetirement++;
@@ -45,6 +52,21 @@
 <input bind:value={annualRetirementSpend} type="number" id="annual-retirement-spend" name="annual-retirement-spend" /><br /><br />
 
 <p>You can retire in {simulationResult.yearsUntilRetirement} years.</p>
+
+<table>
+	<tbody>
+		<tr>
+			<th>Year</th>
+			<th>Savings</th>
+		</tr>
+		{#each simulationResult.savingsByYear as savings, year}
+			<tr>
+				<th> {year} </th>
+				<th> {formatter.format(savings)}</th>
+			</tr>
+		{/each}
+	</tbody>
+</table>
 
 <style>
 	/* Chrome, Safari, Edge, Opera */
