@@ -2,6 +2,8 @@
 	let initialSavings: number = $state(1000000);
 	let annualContribution: number = $state(150000);
 	let annualRetirementSpend: number = $state(65000);
+	//https://www.investopedia.com/terms/f/four-percent-rule.asp
+	let retirementNumber: number = $derived(25 * annualRetirementSpend);
 	let simulationResult: SimulationResult = $derived.by(calculateYearsToRetirement);
 
 	// Create our number formatter.
@@ -18,19 +20,15 @@
 
 	function calculateYearsToRetirement(): SimulationResult {
 		const investmentRate: number = 0.07;
-		//https://www.investopedia.com/terms/f/four-percent-rule.asp
-		const retirement_number: number = annualRetirementSpend * 25;
-		console.log('Retirement number is ', retirement_number);
 		let savingsByYear: number[] = [];
 		let savings = initialSavings;
 		let yearsUntilRetirement: number = 0;
 		for (let i = 0; i < 50; i++) {
 			savingsByYear.push(savings);
-			if (savings < retirement_number) {
+			if (savings < retirementNumber) {
 				yearsUntilRetirement++;
 			}
 			savings = savings * (1 + investmentRate) + annualContribution;
-			console.log(yearsUntilRetirement, savings);
 		}
 		return {
 			savingsByYear: savingsByYear,
@@ -50,6 +48,8 @@
 <input bind:value={annualContribution} type="number" id="annual-contribution" name="annual-contribution" /><br /><br />
 <label for="annual-retirement-spend">Annual Retirement Spend:</label>
 <input bind:value={annualRetirementSpend} type="number" id="annual-retirement-spend" name="annual-retirement-spend" /><br /><br />
+
+<p>Retirement number is {formatter.format(retirementNumber)}.</p>
 
 <p>You can retire in {simulationResult.yearsUntilRetirement} years.</p>
 
