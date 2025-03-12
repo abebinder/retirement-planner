@@ -1,10 +1,31 @@
 <script lang="ts">
+	import { Chart } from 'chart.js/auto';
 	let initialSavings: number = $state(1000000);
 	let annualContribution: number = $state(150000);
 	let annualRetirementSpend: number = $state(65000);
 	//https://www.investopedia.com/terms/f/four-percent-rule.asp
 	let retirementNumber: number = $derived(25 * annualRetirementSpend);
 	let simulationResult: SimulationResult = $derived.by(calculateYearsToRetirement);
+	let chartCanvas: HTMLCanvasElement;
+	let savingsByYearChart: Chart;
+
+	$effect(() => {
+		if (savingsByYearChart) {
+			savingsByYearChart.destroy();
+		}
+		savingsByYearChart = new Chart(chartCanvas, {
+			type: 'line',
+			data: {
+				labels: generateRange(simulationResult.savingsByYear.length),
+				datasets: [
+					{
+						label: 'Savings By Year',
+						data: simulationResult.savingsByYear
+					}
+				]
+			}
+		});
+	});
 
 	// Create our number formatter.
 	const formatter = new Intl.NumberFormat('en-US', {
@@ -16,6 +37,14 @@
 	interface SimulationResult {
 		savingsByYear: number[];
 		yearsUntilRetirement: number;
+	}
+
+	function generateRange(length: number): number[] {
+		let range = [];
+		for (let i = 0; i < length; i++) {
+			range.push(i);
+		}
+		return range;
 	}
 
 	function calculateYearsToRetirement(): SimulationResult {
@@ -67,6 +96,8 @@
 		{/each}
 	</tbody>
 </table>
+
+<div><canvas bind:this={chartCanvas} height="400" width="400"></canvas></div>
 
 <style>
 	/* Chrome, Safari, Edge, Opera */
