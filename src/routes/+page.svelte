@@ -1,51 +1,11 @@
 <script lang="ts">
-	import { Chart } from 'chart.js/auto';
-	import annotationPlugin from 'chartjs-plugin-annotation';
-	Chart.register(annotationPlugin);
+	import LineChart from '$lib/LineChart.svelte';
 	let initialSavings: number = $state(1000000);
 	let annualContribution: number = $state(150000);
 	let annualRetirementSpend: number = $state(65000);
 	//https://www.investopedia.com/terms/f/four-percent-rule.asp
 	let retirementNumber: number = $derived(25 * annualRetirementSpend);
 	let simulationResult: SimulationResult = $derived.by(calculateYearsToRetirement);
-	let chartCanvas: HTMLCanvasElement;
-	let savingsByYearChart: Chart;
-
-	$effect(() => {
-		if (savingsByYearChart) {
-			savingsByYearChart.destroy();
-		}
-		savingsByYearChart = new Chart(chartCanvas, {
-			type: 'line',
-			options: {
-				responsive: true,
-				plugins: {
-					annotation: {
-						annotations: {
-							line1: {
-								type: 'line',
-								label: {
-									content: 'Retirement Number:' + formatter.format(retirementNumber),
-									display: true
-								},
-								yMin: retirementNumber,
-								yMax: retirementNumber
-							}
-						}
-					}
-				}
-			},
-			data: {
-				labels: generateRange(simulationResult.savingsByYear.length),
-				datasets: [
-					{
-						label: 'Savings By Year',
-						data: simulationResult.savingsByYear
-					}
-				]
-			}
-		});
-	});
 
 	// Create our number formatter.
 	const formatter = new Intl.NumberFormat('en-US', {
@@ -57,14 +17,6 @@
 	interface SimulationResult {
 		savingsByYear: number[];
 		yearsUntilRetirement: number;
-	}
-
-	function generateRange(length: number): number[] {
-		let range = [];
-		for (let i = 0; i < length; i++) {
-			range.push(i);
-		}
-		return range;
 	}
 
 	function calculateYearsToRetirement(): SimulationResult {
@@ -102,7 +54,12 @@
 
 <p>You can retire in {simulationResult.yearsUntilRetirement} years.</p>
 
-<div class="chart-container"><canvas bind:this={chartCanvas} height="500," width="500"></canvas></div>
+<LineChart
+	title="SavingsByYear"
+	data={simulationResult.savingsByYear}
+	annotationLabelContent={'Retirement Number: ' + formatter.format(retirementNumber)}
+	annotationLabelValue={retirementNumber}
+></LineChart>
 
 <style>
 	/* Chrome, Safari, Edge, Opera */
@@ -110,11 +67,6 @@
 	input::-webkit-inner-spin-button {
 		-webkit-appearance: none;
 		margin: 0;
-	}
-
-	.chart-container {
-		width: 500px;
-		height: 500px;
 	}
 
 	/* Firefox */
