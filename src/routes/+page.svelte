@@ -1,18 +1,12 @@
 <script lang="ts">
 	import LineChart from '$lib/LineChart.svelte';
+	import { currencyFormat } from '$lib/formatter';
 	let initialSavings: number = $state(1000000);
 	let annualContribution: number = $state(150000);
 	let annualRetirementSpend: number = $state(65000);
 	//https://www.investopedia.com/terms/f/four-percent-rule.asp
 	let retirementNumber: number = $derived(25 * annualRetirementSpend);
 	let simulationResult: SimulationResult = $derived.by(calculateYearsToRetirement);
-
-	// Create our number formatter.
-	const formatter = new Intl.NumberFormat('en-US', {
-		style: 'currency',
-		currency: 'USD',
-		maximumFractionDigits: 0
-	});
 
 	interface SimulationResult {
 		savingsByYear: number[];
@@ -50,14 +44,14 @@
 <label for="annual-retirement-spend">Annual Retirement Spend:</label>
 <input bind:value={annualRetirementSpend} type="number" id="annual-retirement-spend" name="annual-retirement-spend" /><br /><br />
 
-<p>Retirement number is {formatter.format(retirementNumber)}.</p>
+<p>Retirement number is {currencyFormat(retirementNumber)}.</p>
 
 <p>You can retire in {simulationResult.yearsUntilRetirement} years.</p>
 
 <LineChart
 	title="SavingsByYear"
 	data={simulationResult.savingsByYear}
-	annotationLabelContent={'Retirement Number: ' + formatter.format(retirementNumber)}
+	annotationLabelContent={'Retirement Number: ' + currencyFormat(retirementNumber)}
 	annotationLabelValue={retirementNumber}
 ></LineChart>
 
