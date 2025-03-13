@@ -1,5 +1,7 @@
 <script lang="ts">
 	import { Chart } from 'chart.js/auto';
+	import annotationPlugin from 'chartjs-plugin-annotation';
+	Chart.register(annotationPlugin);
 	let initialSavings: number = $state(1000000);
 	let annualContribution: number = $state(150000);
 	let annualRetirementSpend: number = $state(65000);
@@ -16,7 +18,22 @@
 		savingsByYearChart = new Chart(chartCanvas, {
 			type: 'line',
 			options: {
-				responsive: true
+				responsive: true,
+				plugins: {
+					annotation: {
+						annotations: {
+							line1: {
+								type: 'line',
+								label: {
+									content: 'Retirement Number:' + formatter.format(retirementNumber),
+									display: true
+								},
+								yMin: retirementNumber,
+								yMax: retirementNumber
+							}
+						}
+					}
+				}
 			},
 			data: {
 				labels: generateRange(simulationResult.savingsByYear.length),
