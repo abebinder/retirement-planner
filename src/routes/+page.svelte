@@ -15,6 +15,9 @@
 		}
 		savingsByYearChart = new Chart(chartCanvas, {
 			type: 'line',
+			options: {
+				responsive: true
+			},
 			data: {
 				labels: generateRange(simulationResult.savingsByYear.length),
 				datasets: [
@@ -52,7 +55,7 @@
 		let savingsByYear: number[] = [];
 		let savings = initialSavings;
 		let yearsUntilRetirement: number = 0;
-		for (let i = 0; i < 50; i++) {
+		for (let i = 0; i < 21; i++) {
 			savingsByYear.push(savings);
 			if (savings < retirementNumber) {
 				yearsUntilRetirement++;
@@ -82,22 +85,7 @@
 
 <p>You can retire in {simulationResult.yearsUntilRetirement} years.</p>
 
-<table>
-	<tbody>
-		<tr>
-			<th>Year</th>
-			<th>Savings</th>
-		</tr>
-		{#each simulationResult.savingsByYear as savings, year}
-			<tr>
-				<th> {year} </th>
-				<th> {formatter.format(savings)}</th>
-			</tr>
-		{/each}
-	</tbody>
-</table>
-
-<div><canvas bind:this={chartCanvas} height="400" width="400"></canvas></div>
+<div class="chart-container"><canvas bind:this={chartCanvas} height="500," width="500"></canvas></div>
 
 <style>
 	/* Chrome, Safari, Edge, Opera */
@@ -105,6 +93,11 @@
 	input::-webkit-inner-spin-button {
 		-webkit-appearance: none;
 		margin: 0;
+	}
+
+	.chart-container {
+		width: 500px;
+		height: 500px;
 	}
 
 	/* Firefox */
