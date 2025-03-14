@@ -24,7 +24,7 @@
 
 <p>Retirement number is {currencyFormat(retirementNumber)}.</p>
 
-{#if yearsUntilRetirement}
+{#if yearsUntilRetirement!=undefined}
 	<p>You can retire in {yearsUntilRetirement} years.</p>
 {:else}
 	<p>You can never retire :(</p>
