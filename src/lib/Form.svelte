@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { type FormValues, defaultFormValues } from './interfaces';
 	let formValues: FormValues = $state(defaultFormValues());
-	let { updateParentValues: updateParentComponent } = $props();
+	let { updateParentComponent } = $props();
 	$effect(() => updateParentComponent(formValues));
 </script>
 

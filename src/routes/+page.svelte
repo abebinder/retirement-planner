@@ -20,11 +20,11 @@
 	<meta name="description" content="Use this calculator to figure out when you can retire." />
 </svelte:head>
 
-<Form updateParentValues={updateFormValues}></Form>
+<Form updateParentComponent={updateFormValues}></Form>
 
 <p>Retirement number is {currencyFormat(retirementNumber)}.</p>
 
-{#if yearsUntilRetirement!=undefined}
+{#if yearsUntilRetirement != undefined}
 	<p>You can retire in {yearsUntilRetirement} years.</p>
 {:else}
 	<p>You can never retire :(</p>
