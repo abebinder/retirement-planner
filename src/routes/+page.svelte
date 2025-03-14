@@ -1,35 +1,13 @@
 <script lang="ts">
 	import LineChart from '$lib/LineChart.svelte';
 	import { currencyFormat } from '$lib/formatter';
+	import { calculateRetirementNumber, calculateSavingsByYear, calculateYearsToRetirement } from '$lib/calculator';
 	let initialSavings: number = $state(1000000);
 	let annualContribution: number = $state(150000);
 	let annualRetirementSpend: number = $state(65000);
-	//https://www.investopedia.com/terms/f/four-percent-rule.asp
-	let retirementNumber: number = $derived(25 * annualRetirementSpend);
-	let simulationResult: SimulationResult = $derived.by(calculateYearsToRetirement);
-
-	interface SimulationResult {
-		savingsByYear: number[];
-		yearsUntilRetirement: number;
-	}
-
-	function calculateYearsToRetirement(): SimulationResult {
-		const investmentRate: number = 0.07;
-		let savingsByYear: number[] = [];
-		let savings = initialSavings;
-		let yearsUntilRetirement: number = 0;
-		for (let i = 0; i < 21; i++) {
-			savingsByYear.push(savings);
-			if (savings < retirementNumber) {
-				yearsUntilRetirement++;
-			}
-			savings = savings * (1 + investmentRate) + annualContribution;
-		}
-		return {
-			savingsByYear: savingsByYear,
-			yearsUntilRetirement: yearsUntilRetirement
-		};
-	}
+	let retirementNumber: number = $derived(calculateRetirementNumber(annualRetirementSpend));
+	let yearsUntilRetirement: number | undefined = $derived(calculateYearsToRetirement(initialSavings, annualContribution, retirementNumber));
+	let savingsByYear: number[] = $derived(calculateSavingsByYear(initialSavings, annualContribution, 20));
 </script>
 
 <svelte:head>
@@ -46,11 +24,11 @@
 
 <p>Retirement number is {currencyFormat(retirementNumber)}.</p>
 
-<p>You can retire in {simulationResult.yearsUntilRetirement} years.</p>
+<p>You can retire in {yearsUntilRetirement} years.</p>
 
 <LineChart
 	title="SavingsByYear"
-	data={simulationResult.savingsByYear}
+	data={savingsByYear}
 	annotationLabelContent={'Retirement Number: ' + currencyFormat(retirementNumber)}
 	annotationLabelValue={retirementNumber}
 ></LineChart>
