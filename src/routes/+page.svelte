@@ -24,7 +24,11 @@
 
 <p>Retirement number is {currencyFormat(retirementNumber)}.</p>
 
-<p>You can retire in {yearsUntilRetirement} years.</p>
+{#if yearsUntilRetirement}
+	<p>You can retire in {yearsUntilRetirement} years.</p>
+{:else}
+	<p>You can never retire :(</p>
+{/if}
 
 <LineChart
 	title="SavingsByYear"
