@@ -22,4 +22,8 @@ Run development server:
 npm run dev
 ```
 
+Run module (eg: calculator.ts):
 
+```bash
+npx tsx src/lib/calculator.ts
+```
