@@ -19,28 +19,45 @@ function gaussianRandom(mean:number, stdev:number) {
     return z * stdev + mean;
 }
 
-export function randomYearlyPercentReturn(): number {
-    return gaussianRandom(mcsci_world_index.mean, mcsci_world_index.standard_deviation);
+export enum InvestmentRateMode {
+    FIXED,
+    RANDOM
+  }
+
+export function getInvestmentRate(mode: InvestmentRateMode): number {
+    let unadjusted_investment_rate:number;
+    if (mode == InvestmentRateMode.FIXED) {
+        unadjusted_investment_rate = mcsci_world_index.mean;
+    }
+    else if(mode==InvestmentRateMode.RANDOM) {
+        unadjusted_investment_rate = gaussianRandom(mcsci_world_index.mean, mcsci_world_index.standard_deviation);
+    }
+    else {
+        throw new Error("Unsupported InvestmentRateMode");
+    }
+    //https://investopedia.com/inflation-rate-by-year-7253832#toc-what-is-the-current-inflation-rate
+    const inflation_rate = .03;
+    return unadjusted_investment_rate - inflation_rate;
 }
 
 export function calculateRetirementNumber(annualRetirementSpend: number) {
-    //https://www.investopedia.com/terms/f/four-percent-rule.asp
+    //https://investopedia.com/terms/f/four-percent-rule.asp
     return annualRetirementSpend * 25;
 }
 
-export function calculateSavingsByYear(initialSavings: number, annualContribution: number, years: number): number[] {
-    const investmentRate: number = 0.07;
-    let savingsByYear: number[] = [];
+export function calculateSavingsByYear(initialSavings: number, annualContribution: number, years: number, mode:InvestmentRateMode): number[] {
+    let savingsByYear: number[] = [initialSavings];
     let savings = initialSavings;
-    for (let i = 0; i < years + 1; i++) {
-        savingsByYear.push(savings);
+    for (let i = 1; i < years + 1; i++) {
+        let investmentRate = getInvestmentRate(mode);
         savings = savings * (1 + investmentRate) + annualContribution;
+        savingsByYear.push(savings);
     }
     return savingsByYear;
 }
 
 export function calculateYearsToRetirement(initialSavings: number, annualContribution: number, retirement_number: number): number | undefined {
-    const savingsByYear: number[] = calculateSavingsByYear(initialSavings, annualContribution, 50);
+    const savingsByYear: number[] = calculateSavingsByYear(initialSavings, annualContribution, 50, InvestmentRateMode.FIXED);
     for (let i = 0; i < savingsByYear.length; i++) {
         if (savingsByYear[i] > retirement_number) {
             return i;
