@@ -1,12 +1,15 @@
 interface PortfolioStats {
     mean:number;
+    inflation_adjusted_mean:number;
     standard_deviation:number;
 }
 
-//https://curvo.eu/backtest/en/market-index/msci-world?currency=usd
-const mcsci_world_index:PortfolioStats = {
-    mean: .0986,
-    standard_deviation: .1496
+//https://www.youtube.com/watch?v=Yl3NxTS_DgY&t=14s
+//https://www.lazyportfolioetf.com/etf/vanguard-total-world-stock-vt/
+const vt_historical_stats:PortfolioStats = {
+    mean: .0784,
+    inflation_adjusted_mean: .0519,
+    standard_deviation: .1572
 }
 
 //https://stackoverflow.com/a/36481059
@@ -25,19 +28,17 @@ export enum InvestmentRateMode {
   }
 
 export function getInvestmentRate(mode: InvestmentRateMode): number {
-    let unadjusted_investment_rate:number;
+    let investment_rate:number;
     if (mode == InvestmentRateMode.FIXED) {
-        unadjusted_investment_rate = mcsci_world_index.mean;
+        investment_rate = vt_historical_stats.inflation_adjusted_mean;
     }
     else if(mode==InvestmentRateMode.RANDOM) {
-        unadjusted_investment_rate = gaussianRandom(mcsci_world_index.mean, mcsci_world_index.standard_deviation);
+        investment_rate = gaussianRandom(vt_historical_stats.inflation_adjusted_mean, vt_historical_stats.standard_deviation);
     }
     else {
         throw new Error("Unsupported InvestmentRateMode");
     }
-    //https://investopedia.com/inflation-rate-by-year-7253832#toc-what-is-the-current-inflation-rate
-    const inflation_rate = .03;
-    return unadjusted_investment_rate - inflation_rate;
+    return investment_rate;
 }
 
 export function calculateRetirementNumber(annualRetirementSpend: number) {
