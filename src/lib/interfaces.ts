@@ -6,9 +6,9 @@ export interface FormValues {
 
 export function defaultFormValues(): FormValues {
     return {
-    initialSavings: 1000000,
-    annualContribution: 150000,
-    annualRetirementSpend: 65000
+        initialSavings: 1000000,
+        annualContribution: 150000,
+        annualRetirementSpend: 65000
     };
 
 }

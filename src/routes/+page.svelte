@@ -9,8 +9,12 @@
 	let yearsUntilRetirement: number | undefined = $derived(
 		calculateYearsToRetirement(formValues.initialSavings, formValues.annualContribution, retirementNumber)
 	);
-	let savingsByYear: number[] = $derived(calculateSavingsByYear(formValues.initialSavings, formValues.annualContribution, 20, InvestmentRateMode.FIXED));
-	let simulatedSavingsByYear: number[]  = $derived(calculateSavingsByYear(formValues.initialSavings, formValues.annualContribution, 20, InvestmentRateMode.RANDOM));
+	let savingsByYear: number[] = $derived(
+		calculateSavingsByYear(formValues.initialSavings, formValues.annualContribution, 20, InvestmentRateMode.FIXED)
+	);
+	let simulatedSavingsByYear: number[] = $derived(
+		calculateSavingsByYear(formValues.initialSavings, formValues.annualContribution, 20, InvestmentRateMode.RANDOM)
+	);
 	function updateFormValues(newFormValues: FormValues) {
 		formValues = newFormValues;
 	}
@@ -34,7 +38,7 @@
 {/if}
 
 <h1>Simulations</h1>
-<h2>Simulation With Fixed Investment Rate </h2>
+<h2>Simulation With Fixed Investment Rate</h2>
 <LineChart
 	title="SavingsByYear"
 	data={savingsByYear}
@@ -42,8 +46,7 @@
 	annotationLabelValue={retirementNumber}
 ></LineChart>
 
-<h2>Simulation With Variable Randomized Investment Rate </h2>
-
+<h2>Simulation With Variable Randomized Investment Rate</h2>
 
 <LineChart
 	title="SavingsByYear"
