@@ -1,27 +1,26 @@
-import annualReturnData from './sp_annual_returns.json'
-
-import {quantileSeq, type MathArray} from 'mathjs'
-
-const spReturnPercentiles: number[] = generateSpReturnPercentiles();
-
-function getRandomInt(max:number): number {
-    return Math.floor(Math.random() * max);
-  }
-
-export function randomYearlyPercentReturn(): number {
-    const randomPercent = spReturnPercentiles.at(getRandomInt(100)) as number;
-    return randomPercent/100;
+interface PortfolioStats {
+    mean:number;
+    standard_deviation:number;
 }
 
-export function generateSpReturnPercentiles(): number[] {
-    let spReturnsByYear:number[] = []
-    for (const e of annualReturnData) {
-        //TODO: Make inflation a seperate modifiable variable for the simulation.
-        const inflationPercent = 3;
-        spReturnsByYear.push(e['return_percent'] - inflationPercent);
-    }
-    let spReturnPercentiles: number[] = quantileSeq(spReturnsByYear, 100) as unknown as number[];;
-    return spReturnPercentiles;
+//https://curvo.eu/backtest/en/market-index/msci-world?currency=usd
+const mcsci_world_index:PortfolioStats = {
+    mean: .0986,
+    standard_deviation: .1496
+}
+
+//https://stackoverflow.com/a/36481059
+// Standard Normal variate using Box-Muller transform.
+function gaussianRandom(mean:number, stdev:number) {
+    const u = 1 - Math.random(); // Converting [0,1) to (0,1]
+    const v = Math.random();
+    const z = Math.sqrt( -2.0 * Math.log( u ) ) * Math.cos( 2.0 * Math.PI * v );
+    // Transform to the desired mean and standard deviation:
+    return z * stdev + mean;
+}
+
+export function randomYearlyPercentReturn(): number {
+    return gaussianRandom(mcsci_world_index.mean, mcsci_world_index.standard_deviation);
 }
 
 export function calculateRetirementNumber(annualRetirementSpend: number) {
