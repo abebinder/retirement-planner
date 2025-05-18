@@ -1,11 +1,20 @@
 <script lang="ts">
 	import LineChart from '$lib/LineChart.svelte';
 	import { currencyFormat } from '$lib/formatter';
-	import { calculateRetirementNumber, calculateSavingsByYear, calculateYearsToRetirement, InvestmentRateMode } from '$lib/calculator';
+	import { calculateRetirementNumber, calculateSavingsByYear, calculateYearsToCoast, calculateYearsToRetirement, InvestmentRateMode } from '$lib/calculator';
 	import Form from '$lib/Form.svelte';
 	import { type FormValues, defaultFormValues } from '$lib/interfaces';
 	let formValues: FormValues = $state(defaultFormValues());
 	let retirementNumber: number = $derived(calculateRetirementNumber(formValues.annualRetirementSpend));
+	let yearsUntilCoast = $derived(
+		calculateYearsToCoast(
+			formValues.initialSavings,
+			formValues.annualContribution,
+			formValues.annualRetirementSpend,
+			formValues.currentAge,
+			formValues.maxRetirementAge
+		)
+	);
 	let yearsUntilRetirement: number | undefined = $derived(
 		calculateYearsToRetirement(formValues.initialSavings, formValues.annualContribution, retirementNumber)
 	);
@@ -35,6 +44,12 @@
 	<p>You can retire in {yearsUntilRetirement} years.</p>
 {:else}
 	<p>You can never retire :(</p>
+{/if}
+
+{#if yearsUntilCoast != undefined}
+	<p>You can coast in {yearsUntilCoast} years.</p>
+{:else}
+	<p>You can never coast :(</p>
 {/if}
 
 <h1>Simulations</h1>

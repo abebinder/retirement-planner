@@ -46,6 +46,25 @@ export function calculateRetirementNumber(annualRetirementSpend: number) {
     return annualRetirementSpend * 25;
 }
 
+export function calculateYearsToCoast(initialSavings: number, annualContribution: number, annualRetirementSpend: number, currentAge: number, maxRetirementAge: number): number | undefined {
+    
+    const retirement_number = calculateRetirementNumber(annualRetirementSpend);
+    const max_years_to_retirement = maxRetirementAge - currentAge;
+    const savingsByYear: number[] = calculateSavingsByYear(initialSavings, annualContribution, max_years_to_retirement, InvestmentRateMode.FIXED);
+    for (let i = 0; i < savingsByYear.length; i++) {
+        if(canCoast(savingsByYear[i], max_years_to_retirement - i, retirement_number)) {
+            return i;
+        }
+    }
+    return undefined;
+    
+}
+
+export function canCoast(savings: number, yearsLeft: number, retirement_number: number): boolean {
+    const savingsByYear = calculateSavingsByYear(savings, 0, yearsLeft, InvestmentRateMode.FIXED);
+    return savingsByYear[savingsByYear.length - 1] >= retirement_number;
+}
+
 export function calculateSavingsByYear(initialSavings: number, annualContribution: number, years: number, mode: InvestmentRateMode): number[] {
     let savingsByYear: number[] = [initialSavings];
     let savings = initialSavings;
