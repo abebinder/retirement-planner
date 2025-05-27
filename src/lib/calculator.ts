@@ -14,12 +14,12 @@ const vt_historical_stats: PortfolioStats = {
 
 //https://stackoverflow.com/a/36481059
 // Standard Normal variate using Box-Muller transform.
-function gaussianRandom(mean: number, stdev: number) {
+function gaussianRandom(options: { mean: number, stdev: number }): number {
     const u = 1 - Math.random(); // Converting [0,1) to (0,1]
     const v = Math.random();
     const z = Math.sqrt(-2.0 * Math.log(u)) * Math.cos(2.0 * Math.PI * v);
     // Transform to the desired mean and standard deviation:
-    return z * stdev + mean;
+    return z * options.stdev + options.mean;
 }
 
 export enum InvestmentRateMode {
@@ -33,7 +33,7 @@ export function getInvestmentRate(mode: InvestmentRateMode): number {
         investment_rate = vt_historical_stats.inflation_adjusted_mean;
     }
     else if (mode == InvestmentRateMode.RANDOM) {
-        investment_rate = gaussianRandom(vt_historical_stats.inflation_adjusted_mean, vt_historical_stats.standard_deviation);
+        investment_rate = gaussianRandom({ mean: vt_historical_stats.inflation_adjusted_mean, stdev: vt_historical_stats.standard_deviation });
     }
     else {
         throw new Error("Unsupported InvestmentRateMode");
@@ -46,23 +46,41 @@ export function calculateRetirementNumber(annualRetirementSpend: number) {
     return annualRetirementSpend * 25;
 }
 
-export function calculateYearsToCoast(initialSavings: number, annualContribution: number, annualRetirementSpend: number, currentAge: number, maxRetirementAge: number): number | undefined {
-    
-    const retirement_number = calculateRetirementNumber(annualRetirementSpend);
-    const max_years_to_retirement = maxRetirementAge - currentAge;
-    const savingsByYear: number[] = calculateSavingsByYear(initialSavings, annualContribution, max_years_to_retirement, InvestmentRateMode.FIXED);
+export function calculateYearsToCoast(options: { initialSavings: number, annualContribution: number, annualRetirementSpend: number, currentAge: number, maxRetirementAge: number }): number | undefined {
+
+    const retirement_number = calculateRetirementNumber(options.annualRetirementSpend);
+    const max_years_to_retirement = options.maxRetirementAge - options.currentAge;
+    const savingsByYear: number[] = calculateSavingsByYear(options.initialSavings, options.annualContribution, max_years_to_retirement, InvestmentRateMode.FIXED);
     for (let i = 0; i < savingsByYear.length; i++) {
-        if(canCoast(savingsByYear[i], max_years_to_retirement - i, retirement_number)) {
+        if (canCoast(savingsByYear[i], max_years_to_retirement - i, retirement_number)) {
             return i;
         }
     }
     return undefined;
-    
+
 }
 
 export function canCoast(savings: number, yearsLeft: number, retirement_number: number): boolean {
     const savingsByYear = calculateSavingsByYear(savings, 0, yearsLeft, InvestmentRateMode.FIXED);
     return savingsByYear[savingsByYear.length - 1] >= retirement_number;
+}
+
+interface YearsCanSurviveResult {
+    years: number;
+    savingsByYear: number[];
+}
+
+export function calculateWithdrawlSavingsByYear(initialSavings: number, annualRetirementSpend: number): number [] {
+let savingsByYear = calculateSavingsByYear(initialSavings, -annualRetirementSpend, 60, InvestmentRateMode.FIXED);
+let nonNegativeSavingsByYear = []
+for (let i = 0; i < savingsByYear.length; i++) {
+    if (savingsByYear[i] < 0) {
+        return nonNegativeSavingsByYear;
+    }
+        nonNegativeSavingsByYear.push(savingsByYear[i]);
+    
+}
+return nonNegativeSavingsByYear;
 }
 
 export function calculateSavingsByYear(initialSavings: number, annualContribution: number, years: number, mode: InvestmentRateMode): number[] {

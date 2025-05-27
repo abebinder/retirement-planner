@@ -1,13 +1,18 @@
 <script lang="ts">
 	import { Chart } from 'chart.js/auto';
-	import annotationPlugin from 'chartjs-plugin-annotation';
+	import type Annotation from 'chartjs-plugin-annotation';
+	import annotationPlugin, { type AnnotationPluginOptions } from 'chartjs-plugin-annotation';
 	Chart.register(annotationPlugin);
+
+	interface AnnotationLabel {
+		content: string;
+		value: number;
+	}
 
 	interface LineChartProps {
 		title: string;
 		data: number[];
-		annotationLabelContent: string;
-		annotationLabelValue: number;
+		annotationLabel?: AnnotationLabel;
 	}
 
 	let props: LineChartProps = $props();
@@ -21,24 +26,29 @@
 		if (chart) {
 			chart.destroy();
 		}
+        let annotation: AnnotationPluginOptions | undefined  = undefined
+
+		if (props.annotationLabel) {
+           annotation = {
+						annotations: {
+							line1: {
+								type: 'line',
+								label: {
+									content: props.annotationLabel.content,
+									display: true
+								},
+								yMin: props.annotationLabel.value,
+								yMax: props.annotationLabel.value
+							}
+						}
+					}
+		}
 		chart = new Chart(chartCanvas, {
 			type: 'line',
 			options: {
 				responsive: true,
 				plugins: {
-					annotation: {
-						annotations: {
-							line1: {
-								type: 'line',
-								label: {
-									content: props.annotationLabelContent,
-									display: true
-								},
-								yMin: props.annotationLabelValue,
-								yMax: props.annotationLabelValue
-							}
-						}
-					}
+					annotation: annotation
 				}
 			},
 			data: {

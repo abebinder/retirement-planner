@@ -1,18 +1,19 @@
 <script lang="ts">
 	import LineChart from '$lib/LineChart.svelte';
 	import { currencyFormat } from '$lib/formatter';
-	import { calculateRetirementNumber, calculateSavingsByYear, calculateYearsToCoast, calculateYearsToRetirement, InvestmentRateMode } from '$lib/calculator';
+	import { calculateRetirementNumber, calculateSavingsByYear, calculateWithdrawlSavingsByYear, calculateYearsToCoast, calculateYearsToRetirement, InvestmentRateMode } from '$lib/calculator';
 	import Form from '$lib/Form.svelte';
 	import { type FormValues, defaultFormValues } from '$lib/interfaces';
 	let formValues: FormValues = $state(defaultFormValues());
 	let retirementNumber: number = $derived(calculateRetirementNumber(formValues.annualRetirementSpend));
 	let yearsUntilCoast = $derived(
-		calculateYearsToCoast(
-			formValues.initialSavings,
-			formValues.annualContribution,
-			formValues.annualRetirementSpend,
-			formValues.currentAge,
-			formValues.maxRetirementAge
+		calculateYearsToCoast( {
+			initialSavings: formValues.initialSavings,
+			annualContribution: formValues.annualContribution,
+			annualRetirementSpend: formValues.annualRetirementSpend,
+			currentAge: formValues.currentAge,
+			maxRetirementAge: formValues.maxRetirementAge
+		}
 		)
 	);
 	let yearsUntilRetirement: number | undefined = $derived(
@@ -23,6 +24,9 @@
 	);
 	let simulatedSavingsByYear: number[] = $derived(
 		calculateSavingsByYear(formValues.initialSavings, formValues.annualContribution, 20, InvestmentRateMode.RANDOM)
+	);
+	let withdrawlSavingsByYear: number[] = $derived(
+		calculateWithdrawlSavingsByYear(formValues.initialSavings, formValues.annualRetirementSpend)
 	);
 	function updateFormValues(newFormValues: FormValues) {
 		formValues = newFormValues;
@@ -52,13 +56,18 @@
 	<p>You can never coast :(</p>
 {/if}
 
+<p> You could survive for {withdrawlSavingsByYear.length} years if you retired now. </p>
+
+
 <h1>Simulations</h1>
 <h2>Simulation With Fixed Investment Rate</h2>
 <LineChart
 	title="SavingsByYear"
 	data={savingsByYear}
-	annotationLabelContent={'Retirement Number: ' + currencyFormat(retirementNumber)}
-	annotationLabelValue={retirementNumber}
+	annotationLabel = {{
+		content: 'Retirement Number: ' + currencyFormat(retirementNumber),
+		value: retirementNumber
+	}}
 ></LineChart>
 
 <h2>Simulation With Variable Randomized Investment Rate</h2>
@@ -66,6 +75,20 @@
 <LineChart
 	title="SavingsByYear"
 	data={simulatedSavingsByYear}
-	annotationLabelContent={'Retirement Number: ' + currencyFormat(retirementNumber)}
-	annotationLabelValue={retirementNumber}
+	annotationLabel={{
+		content: 'Retirement Number: ' + currencyFormat(retirementNumber),
+		value: retirementNumber
+	}}
+></LineChart>
+
+<h2>How Long Could I Survive</h2>
+<p> This shows what would happen if you started withdrawing now. </p>
+<p> You could survive for {withdrawlSavingsByYear.length} years. </p>
+<LineChart
+	title="WithdrawlSavingsByYear"
+	data={withdrawlSavingsByYear}
+	annotationLabel={{
+		content: 'Retirement Number: ' + currencyFormat(retirementNumber),
+		value: retirementNumber
+	}}
 ></LineChart>
