@@ -94,8 +94,7 @@ export function calculateSavingsByYear(initialSavings: number, annualContributio
     return savingsByYear;
 }
 
-export function calculateYearsToRetirement(initialSavings: number, annualContribution: number, retirement_number: number): number | undefined {
-    const savingsByYear: number[] = calculateSavingsByYear(initialSavings, annualContribution, 50, InvestmentRateMode.FIXED);
+export function calculateYearsToRetirement(savingsByYear: number[], retirement_number: number): number | undefined {
     for (let i = 0; i < savingsByYear.length; i++) {
         if (savingsByYear[i] > retirement_number) {
             return i;

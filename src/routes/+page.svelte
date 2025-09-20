@@ -16,11 +16,11 @@
 		}
 		)
 	);
-	let yearsUntilRetirement: number | undefined = $derived(
-		calculateYearsToRetirement(formValues.initialSavings, formValues.annualContribution, retirementNumber)
-	);
 	let savingsByYear: number[] = $derived(
 		calculateSavingsByYear(formValues.initialSavings, formValues.annualContribution, 20, InvestmentRateMode.FIXED)
+	);
+	let yearsUntilRetirement: number | undefined = $derived(
+		calculateYearsToRetirement(savingsByYear, retirementNumber)
 	);
 	let simulatedSavingsByYear: number[] = $derived(
 		calculateSavingsByYear(formValues.initialSavings, formValues.annualContribution, 20, InvestmentRateMode.RANDOM)
