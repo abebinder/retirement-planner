@@ -60,7 +60,9 @@
 
 
 <h1>Simulations</h1>
-<h2>Simulation With Fixed Investment Rate</h2>
+<h2>Growth Simulations</h2>
+<p> These show what would happen if you kept investing indefintely. </p>
+<h3>Growth Simulation With Fixed Investment Rate</h3>
 <LineChart
 	title="SavingsByYear"
 	data={savingsByYear}
@@ -70,7 +72,7 @@
 	}}
 ></LineChart>
 
-<h2>Simulation With Variable Randomized Investment Rate</h2>
+<h3>Growth Simulation With Variable Randomized Investment Rate</h3>
 
 <LineChart
 	title="SavingsByYear"
@@ -81,8 +83,9 @@
 	}}
 ></LineChart>
 
-<h2>How Long Could I Survive</h2>
+<h2>Withdrawl Simulations</h2>
 <p> This shows what would happen if you started withdrawing now. </p>
+<h3>Withdrawl Simulation With Fixed Investment Rate</h3>
 <p> You could survive for {withdrawlSavingsByYear.length} years. </p>
 <LineChart
 	title="WithdrawlSavingsByYear"
