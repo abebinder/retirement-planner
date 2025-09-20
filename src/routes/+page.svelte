@@ -26,7 +26,10 @@
 		calculateSavingsByYear(formValues.initialSavings, formValues.annualContribution, 20, InvestmentRateMode.RANDOM)
 	);
 	let withdrawlSavingsByYear: number[] = $derived(
-		calculateWithdrawlSavingsByYear(formValues.initialSavings, formValues.annualRetirementSpend)
+		calculateWithdrawlSavingsByYear(formValues.initialSavings, formValues.annualRetirementSpend, InvestmentRateMode.FIXED)
+	);
+	let randomizedWithdrawlSavingsByYear: number[] = $derived(
+		calculateWithdrawlSavingsByYear(formValues.initialSavings, formValues.annualRetirementSpend, InvestmentRateMode.RANDOM)
 	);
 	function updateFormValues(newFormValues: FormValues) {
 		formValues = newFormValues;
@@ -62,7 +65,7 @@
 <h1>Simulations</h1>
 <h2>Growth Simulations</h2>
 <p> These show what would happen if you kept working and investing indefintely. </p>
-<h3>Growth Simulation With Fixed Investment Rate</h3>
+<h3>Growth Simulation With Fixed Rate of Return On Investment</h3>
 <p>You can retire in {calculateYearsToRetirement(savingsByYear, retirementNumber)} years.</p>
 <LineChart
 	title="SavingsByYear"
@@ -73,7 +76,7 @@
 	}}
 ></LineChart>
 
-<h3>Growth Simulation With Variable Randomized Investment Rate</h3>
+<h3>Growth Simulation With Randomized Rate of Return On Investment</h3>
 <p>You can retire in {calculateYearsToRetirement(simulatedSavingsByYear, retirementNumber)} years.</p>
 
 <LineChart
@@ -87,11 +90,21 @@
 
 <h2>Withdrawl Simulations</h2>
 <p> This shows what would happen if you stopped working and started withdrawing now. </p>
-<h3>Withdrawl Simulation With Fixed Investment Rate</h3>
+<h3>Withdrawl Simulation With Fixed Rate Of Return On Investment</h3>
 <p> You could survive for {withdrawlSavingsByYear.length} years. </p>
 <LineChart
 	title="WithdrawlSavingsByYear"
 	data={withdrawlSavingsByYear}
+	annotationLabel={{
+		content: 'Retirement Number: ' + currencyFormat(retirementNumber),
+		value: retirementNumber
+	}}
+></LineChart>
+<h3>Withdrawl Simulation With Randomized Rate Of Return On Investment</h3>
+<p> You could survive for {randomizedWithdrawlSavingsByYear.length} years. </p>
+<LineChart
+	title="RandomizedWithdrawlSavingsByYear"
+	data={randomizedWithdrawlSavingsByYear}
 	annotationLabel={{
 		content: 'Retirement Number: ' + currencyFormat(retirementNumber),
 		value: retirementNumber

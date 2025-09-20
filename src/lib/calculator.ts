@@ -70,17 +70,16 @@ interface YearsCanSurviveResult {
     savingsByYear: number[];
 }
 
-export function calculateWithdrawlSavingsByYear(initialSavings: number, annualRetirementSpend: number): number [] {
-let savingsByYear = calculateSavingsByYear(initialSavings, -annualRetirementSpend, 60, InvestmentRateMode.FIXED);
-let nonNegativeSavingsByYear = []
-for (let i = 0; i < savingsByYear.length; i++) {
-    if (savingsByYear[i] < 0) {
-        return nonNegativeSavingsByYear;
-    }
+export function calculateWithdrawlSavingsByYear(initialSavings: number, annualRetirementSpend: number, mode: InvestmentRateMode): number[] {
+    let savingsByYear = calculateSavingsByYear(initialSavings, -annualRetirementSpend, 60, mode);
+    let nonNegativeSavingsByYear = [];
+    for (let i = 0; i < savingsByYear.length; i++) {
+        if (savingsByYear[i] < 0) {
+            return nonNegativeSavingsByYear;
+        }
         nonNegativeSavingsByYear.push(savingsByYear[i]);
-    
-}
-return nonNegativeSavingsByYear;
+    }
+    return nonNegativeSavingsByYear;
 }
 
 export function calculateSavingsByYear(initialSavings: number, annualContribution: number, years: number, mode: InvestmentRateMode): number[] {
