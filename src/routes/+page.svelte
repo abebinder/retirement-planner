@@ -61,8 +61,9 @@
 
 <h1>Simulations</h1>
 <h2>Growth Simulations</h2>
-<p> These show what would happen if you kept investing indefintely. </p>
+<p> These show what would happen if you kept working and investing indefintely. </p>
 <h3>Growth Simulation With Fixed Investment Rate</h3>
+<p>You can retire in {calculateYearsToRetirement(savingsByYear, retirementNumber)} years.</p>
 <LineChart
 	title="SavingsByYear"
 	data={savingsByYear}
@@ -73,6 +74,7 @@
 ></LineChart>
 
 <h3>Growth Simulation With Variable Randomized Investment Rate</h3>
+<p>You can retire in {calculateYearsToRetirement(simulatedSavingsByYear, retirementNumber)} years.</p>
 
 <LineChart
 	title="SavingsByYear"
@@ -84,7 +86,7 @@
 ></LineChart>
 
 <h2>Withdrawl Simulations</h2>
-<p> This shows what would happen if you started withdrawing now. </p>
+<p> This shows what would happen if you stopped working and started withdrawing now. </p>
 <h3>Withdrawl Simulation With Fixed Investment Rate</h3>
 <p> You could survive for {withdrawlSavingsByYear.length} years. </p>
 <LineChart
