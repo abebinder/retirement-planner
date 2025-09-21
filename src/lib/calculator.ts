@@ -27,6 +27,22 @@ export enum InvestmentRateMode {
     RANDOM
 }
 
+function quantile(data: number[], quantile: number): number | undefined {
+    if (data.length === 0) return undefined;
+    const sortedData = [...data].sort((a, b) => a - b);
+    const index = (sortedData.length - 1) * quantile;
+    if (index % 1 === 0) { // Exact index
+    return sortedData[index];
+  } else { // Interpolation needed
+    const lowerIndex = Math.floor(index);
+    const upperIndex = Math.ceil(index);
+    const lowerValue = sortedData[lowerIndex];
+    const upperValue = sortedData[upperIndex];
+    const fraction = index - lowerIndex;
+    return lowerValue + (upperValue - lowerValue) * fraction;
+  }
+}
+
 export function getInvestmentRate(mode: InvestmentRateMode): number {
     let investment_rate: number;
     if (mode == InvestmentRateMode.FIXED) {
@@ -65,13 +81,8 @@ export function canCoast(savings: number, yearsLeft: number, retirement_number: 
     return savingsByYear[savingsByYear.length - 1] >= retirement_number;
 }
 
-interface YearsCanSurviveResult {
-    years: number;
-    savingsByYear: number[];
-}
-
 export function calculateWithdrawlSavingsByYear(initialSavings: number, annualRetirementSpend: number, mode: InvestmentRateMode): number[] {
-    let savingsByYear = calculateSavingsByYear(initialSavings, -annualRetirementSpend, 60, mode);
+    let savingsByYear = calculateSavingsByYear(initialSavings, -annualRetirementSpend, 99, mode);
     let nonNegativeSavingsByYear = [];
     for (let i = 0; i < savingsByYear.length; i++) {
         if (savingsByYear[i] < 0) {
@@ -80,6 +91,43 @@ export function calculateWithdrawlSavingsByYear(initialSavings: number, annualRe
         nonNegativeSavingsByYear.push(savingsByYear[i]);
     }
     return nonNegativeSavingsByYear;
+}
+
+export function runMultipleWithdrawlSimulations(initialSavings: number, annualRetirementSpend: number, simulations: number): number[][] {
+    let allSavingsByYear: number[][] = [];
+    for (let i = 0; i < simulations; i++) {
+        let savingsByYear = calculateWithdrawlSavingsByYear(initialSavings, annualRetirementSpend, InvestmentRateMode.RANDOM);
+        allSavingsByYear.push(savingsByYear);
+    }
+    allSavingsByYear.sort((a, b) => a.length - b.length); // Sort by length descending
+    return allSavingsByYear;
+}
+
+export interface SimulationStats {
+    p0: number;
+    p10: number;
+    p25: number;
+    p50: number;
+    p75: number;
+    p90: number;
+    p100: number;
+}
+
+export function calculateSimulationStatsForWithdrawl(savingsByYearSimulations: number[][]): SimulationStats {
+    let yearsToSurviveInEachSimulation: number[] = [];
+    for (let savingsByYear of savingsByYearSimulations) {
+        yearsToSurviveInEachSimulation.push(savingsByYear.length);
+    }
+    let stats = {
+        p0: quantile(yearsToSurviveInEachSimulation, 0) as number,
+        p10: quantile(yearsToSurviveInEachSimulation, 0.1) as number,
+        p25: quantile(yearsToSurviveInEachSimulation, 0.25) as number,
+        p50: quantile(yearsToSurviveInEachSimulation, 0.5) as number,
+        p75: quantile(yearsToSurviveInEachSimulation, 0.75) as number,
+        p90: quantile(yearsToSurviveInEachSimulation, 0.9) as number,
+        p100: quantile(yearsToSurviveInEachSimulation, 1) as number,
+    }
+    return stats;
 }
 
 export function calculateSavingsByYear(initialSavings: number, annualContribution: number, years: number, mode: InvestmentRateMode): number[] {

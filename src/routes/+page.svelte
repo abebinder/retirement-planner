@@ -1,7 +1,8 @@
 <script lang="ts">
 	import LineChart from '$lib/LineChart.svelte';
 	import { currencyFormat } from '$lib/formatter';
-	import { calculateRetirementNumber, calculateSavingsByYear, calculateWithdrawlSavingsByYear, calculateYearsToCoast, calculateYearsToRetirement, InvestmentRateMode } from '$lib/calculator';
+	import { type SimulationStats } from '$lib/calculator';
+	import { calculateRetirementNumber, calculateSavingsByYear, calculateWithdrawlSavingsByYear, calculateYearsToCoast, calculateYearsToRetirement, InvestmentRateMode, calculateSimulationStatsForWithdrawl, runMultipleWithdrawlSimulations } from '$lib/calculator';
 	import Form from '$lib/Form.svelte';
 	import { type FormValues, defaultFormValues } from '$lib/interfaces';
 	let formValues: FormValues = $state(defaultFormValues());
@@ -28,8 +29,11 @@
 	let withdrawlSavingsByYear: number[] = $derived(
 		calculateWithdrawlSavingsByYear(formValues.initialSavings, formValues.annualRetirementSpend, InvestmentRateMode.FIXED)
 	);
-	let randomizedWithdrawlSavingsByYear: number[] = $derived(
-		calculateWithdrawlSavingsByYear(formValues.initialSavings, formValues.annualRetirementSpend, InvestmentRateMode.RANDOM)
+	let randomizedWithdrawlSimulations: number[][]= $derived(
+		runMultipleWithdrawlSimulations(formValues.initialSavings, formValues.annualRetirementSpend, 20)
+	);
+	let simulationStatsForWithdrawl: SimulationStats = $derived(
+		calculateSimulationStatsForWithdrawl(randomizedWithdrawlSimulations)
 	);
 	function updateFormValues(newFormValues: FormValues) {
 		formValues = newFormValues;
@@ -101,12 +105,17 @@
 	}}
 ></LineChart>
 <h3>Withdrawl Simulation With Randomized Rate Of Return On Investment</h3>
-<p> You could survive for {randomizedWithdrawlSavingsByYear.length} years. </p>
-<LineChart
-	title="RandomizedWithdrawlSavingsByYear"
-	data={randomizedWithdrawlSavingsByYear}
-	annotationLabel={{
-		content: 'Retirement Number: ' + currencyFormat(retirementNumber),
-		value: retirementNumber
-	}}
-></LineChart>
+<p> Here are the stats for how long you could survive if you started withdrawing now (in years) over {randomizedWithdrawlSimulations.length} simulations. </p>
+<pre> {JSON.stringify(simulationStatsForWithdrawl, null, 2)} </pre>
+{#each randomizedWithdrawlSimulations as randomizedWithdrawlSavingsByYear, i}
+	<h4>Simulation {i + 1}</h4>
+	<p> You could survive for {randomizedWithdrawlSavingsByYear.length} years. </p>
+	<LineChart
+		title="RandomizedWithdrawlSavingsByYear"
+		data={randomizedWithdrawlSavingsByYear}
+		annotationLabel={{
+			content: 'Retirement Number: ' + currencyFormat(retirementNumber),
+			value: retirementNumber
+		}}
+	></LineChart>
+{/each}
