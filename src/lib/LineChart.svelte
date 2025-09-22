@@ -26,22 +26,22 @@
 		if (chart) {
 			chart.destroy();
 		}
-        let annotation: AnnotationPluginOptions | undefined  = undefined
+		let annotation: AnnotationPluginOptions | undefined = undefined;
 
 		if (props.annotationLabel) {
-           annotation = {
-						annotations: {
-							line1: {
-								type: 'line',
-								label: {
-									content: props.annotationLabel.content,
-									display: true
-								},
-								yMin: props.annotationLabel.value,
-								yMax: props.annotationLabel.value
-							}
-						}
+			annotation = {
+				annotations: {
+					line1: {
+						type: 'line',
+						label: {
+							content: props.annotationLabel.content,
+							display: true
+						},
+						yMin: props.annotationLabel.value,
+						yMax: props.annotationLabel.value
 					}
+				}
+			};
 		}
 		chart = new Chart(chartCanvas, {
 			type: 'line',

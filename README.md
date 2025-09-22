@@ -10,7 +10,7 @@ Figure out when you can retire.
 
 ### Commands
 
-Install dependencies: 
+Install dependencies:
 
 ```bash
 npm install
