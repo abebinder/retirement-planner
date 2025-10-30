@@ -75,7 +75,9 @@ export function calculateYearsToCoast(options: {
 		options.initialSavings,
 		options.annualContribution,
 		max_years_to_retirement,
-		InvestmentRateMode.FIXED
+		InvestmentRateMode.FIXED,
+		retirement_number,
+		ThresholdComprator.GREATER_THAN
 	);
 	for (let i = 0; i < savingsByYear.length; i++) {
 		if (canCoast(savingsByYear[i], max_years_to_retirement - i, retirement_number)) {
@@ -86,20 +88,12 @@ export function calculateYearsToCoast(options: {
 }
 
 export function canCoast(savings: number, yearsLeft: number, retirement_number: number): boolean {
-	const savingsByYear = calculateSavingsByYear(savings, 0, yearsLeft, InvestmentRateMode.FIXED);
+	const savingsByYear = calculateSavingsByYear(savings, 0, yearsLeft, InvestmentRateMode.FIXED, retirement_number, ThresholdComprator.GREATER_THAN);
 	return savingsByYear[savingsByYear.length - 1] >= retirement_number;
 }
 
 export function calculateWithdrawlSavingsByYear(initialSavings: number, annualRetirementSpend: number, mode: InvestmentRateMode): number[] {
-	let savingsByYear = calculateSavingsByYear(initialSavings, -annualRetirementSpend, 99, mode);
-	let nonNegativeSavingsByYear = [];
-	for (let i = 0; i < savingsByYear.length; i++) {
-		if (savingsByYear[i] < 0) {
-			return nonNegativeSavingsByYear;
-		}
-		nonNegativeSavingsByYear.push(savingsByYear[i]);
-	}
-	return nonNegativeSavingsByYear;
+	return calculateSavingsByYear(initialSavings, -annualRetirementSpend, 99, mode, annualRetirementSpend, ThresholdComprator.LESS_THAN);
 }
 
 export function runMultipleWithdrawlSimulations(initialSavings: number, annualRetirementSpend: number, simulations: number): number[][] {
@@ -125,7 +119,7 @@ export interface SimulationStats {
 export function calculateSimulationStatsForWithdrawl(savingsByYearSimulations: number[][]): SimulationStats {
 	let yearsToSurviveInEachSimulation: number[] = [];
 	for (let savingsByYear of savingsByYearSimulations) {
-		yearsToSurviveInEachSimulation.push(savingsByYear.length);
+		yearsToSurviveInEachSimulation.push(savingsByYear.length - 1);
 	}
 	let stats = {
 		p0: quantile(yearsToSurviveInEachSimulation, 0) as number,
@@ -139,21 +133,43 @@ export function calculateSimulationStatsForWithdrawl(savingsByYearSimulations: n
 	return stats;
 }
 
-export function calculateSavingsByYear(initialSavings: number, annualContribution: number, years: number, mode: InvestmentRateMode): number[] {
+export interface CalculateSavingsByYearResult {
+	thresholdYear: number;
+	savingsByYear: number[];
+}
+
+export enum ThresholdComprator {
+	GREATER_THAN = 0,
+	LESS_THAN = 1
+}
+
+export function didValuePassThreshold(thresholdComparator: ThresholdComprator, value: number, threshold: number): boolean {
+	if (thresholdComparator == ThresholdComprator.GREATER_THAN) {
+		return value >= threshold;
+	} else if (thresholdComparator == ThresholdComprator.LESS_THAN) {
+		return value <= threshold;
+	} else {
+		throw new Error('Thresholdcomparator not supported');
+	}
+}
+
+export function calculateSavingsByYear(
+	initialSavings: number,
+	annualContribution: number,
+	years: number,
+	mode: InvestmentRateMode,
+	threshold: number,
+	thresholdComparator: number
+): number[] {
 	let savingsByYear: number[] = [initialSavings];
 	let savings = initialSavings;
 	for (let i = 1; i < years + 1; i++) {
+		if (didValuePassThreshold(thresholdComparator, savings, threshold)) {
+			return savingsByYear;
+		}
 		let investmentRate = getInvestmentRate(mode);
 		savings = savings * (1 + investmentRate) + annualContribution;
 		savingsByYear.push(savings);
 	}
 	return savingsByYear;
-}
-
-export function calculateYearsToRetirement(savingsByYear: number[], retirement_number: number): number | undefined {
-	for (let i = 0; i < savingsByYear.length; i++) {
-		if (savingsByYear[i] > retirement_number) {
-			return i;
-		}
-	}
 }

@@ -1,19 +1,22 @@
 <script lang="ts">
 	import LineChart from '$lib/LineChart.svelte';
 	import { currencyFormat } from '$lib/formatter';
-	import { type SimulationStats } from '$lib/calculator';
+	import { ThresholdComprator, type SimulationStats } from '$lib/calculator';
 	import {
 		calculateRetirementNumber,
 		calculateSavingsByYear,
 		calculateWithdrawlSavingsByYear,
 		calculateYearsToCoast,
-		calculateYearsToRetirement,
 		InvestmentRateMode,
 		calculateSimulationStatsForWithdrawl,
 		runMultipleWithdrawlSimulations
 	} from '$lib/calculator';
 	import Form from '$lib/Form.svelte';
 	import { type FormValues, defaultFormValues } from '$lib/interfaces';
+
+	const MAX_ITERATIONS: number = 100;
+	const NUM_SIMULATIONS: number = 10;
+
 	let formValues: FormValues = $state(defaultFormValues());
 	let retirementNumber: number = $derived(calculateRetirementNumber(formValues.annualRetirementSpend));
 	let yearsUntilCoast = $derived(
@@ -26,17 +29,30 @@
 		})
 	);
 	let savingsByYear: number[] = $derived(
-		calculateSavingsByYear(formValues.initialSavings, formValues.annualContribution, 20, InvestmentRateMode.FIXED)
+		calculateSavingsByYear(
+			formValues.initialSavings,
+			formValues.annualContribution,
+			MAX_ITERATIONS,
+			InvestmentRateMode.FIXED,
+			retirementNumber,
+			ThresholdComprator.GREATER_THAN
+		)
 	);
-	let yearsUntilRetirement: number | undefined = $derived(calculateYearsToRetirement(savingsByYear, retirementNumber));
 	let simulatedSavingsByYear: number[] = $derived(
-		calculateSavingsByYear(formValues.initialSavings, formValues.annualContribution, 20, InvestmentRateMode.RANDOM)
+		calculateSavingsByYear(
+			formValues.initialSavings,
+			formValues.annualContribution,
+			MAX_ITERATIONS,
+			InvestmentRateMode.RANDOM,
+			retirementNumber,
+			ThresholdComprator.GREATER_THAN
+		)
 	);
 	let withdrawlSavingsByYear: number[] = $derived(
 		calculateWithdrawlSavingsByYear(formValues.initialSavings, formValues.annualRetirementSpend, InvestmentRateMode.FIXED)
 	);
 	let randomizedWithdrawlSimulations: number[][] = $derived(
-		runMultipleWithdrawlSimulations(formValues.initialSavings, formValues.annualRetirementSpend, 20)
+		runMultipleWithdrawlSimulations(formValues.initialSavings, formValues.annualRetirementSpend, NUM_SIMULATIONS)
 	);
 	let simulationStatsForWithdrawl: SimulationStats = $derived(calculateSimulationStatsForWithdrawl(randomizedWithdrawlSimulations));
 	function updateFormValues(newFormValues: FormValues) {
@@ -55,25 +71,17 @@
 <h1>Summary</h1>
 <p>Retirement number is {currencyFormat(retirementNumber)}.</p>
 
-{#if yearsUntilRetirement != undefined}
-	<p>You can retire in {yearsUntilRetirement} years.</p>
-{:else}
-	<p>You can never retire :(</p>
-{/if}
+<p>You can retire in {savingsByYear.length - 1} years.</p>
 
-{#if yearsUntilCoast != undefined}
-	<p>You can coast in {yearsUntilCoast} years.</p>
-{:else}
-	<p>You can never coast :(</p>
-{/if}
+<p>You can coast in {yearsUntilCoast} years.</p>
 
-<p>You could survive for {withdrawlSavingsByYear.length} years if you retired now.</p>
+<p>You could survive for {withdrawlSavingsByYear.length - 1} years if you retired now.</p>
 
 <h1>Simulations</h1>
 <h2>Growth Simulations</h2>
-<p>These show what would happen if you kept working and investing indefintely.</p>
+<p>These show how long it takes to hit your retirement number.</p>
 <h3>Growth Simulation With Fixed Rate of Return On Investment</h3>
-<p>You can retire in {calculateYearsToRetirement(savingsByYear, retirementNumber)} years.</p>
+<p>You can retire in {savingsByYear.length - 1} years.</p>
 <LineChart
 	title="SavingsByYear"
 	data={savingsByYear}
@@ -84,7 +92,7 @@
 ></LineChart>
 
 <h3>Growth Simulation With Randomized Rate of Return On Investment</h3>
-<p>You can retire in {calculateYearsToRetirement(simulatedSavingsByYear, retirementNumber)} years.</p>
+<p>You can retire in {simulatedSavingsByYear.length - 1} years.</p>
 
 <LineChart
 	title="SavingsByYear"
@@ -98,7 +106,7 @@
 <h2>Withdrawl Simulations</h2>
 <p>This shows what would happen if you stopped working and started withdrawing now.</p>
 <h3>Withdrawl Simulation With Fixed Rate Of Return On Investment</h3>
-<p>You could survive for {withdrawlSavingsByYear.length} years.</p>
+<p>You could survive for {withdrawlSavingsByYear.length - 1} years.</p>
 <LineChart
 	title="WithdrawlSavingsByYear"
 	data={withdrawlSavingsByYear}
@@ -114,7 +122,7 @@
 <pre> {JSON.stringify(simulationStatsForWithdrawl, null, 2)} </pre>
 {#each randomizedWithdrawlSimulations as randomizedWithdrawlSavingsByYear, i}
 	<h4>Simulation {i + 1}</h4>
-	<p>You could survive for {randomizedWithdrawlSavingsByYear.length} years.</p>
+	<p>You could survive for {randomizedWithdrawlSavingsByYear.length - 1} years.</p>
 	<LineChart
 		title="RandomizedWithdrawlSavingsByYear"
 		data={randomizedWithdrawlSavingsByYear}
