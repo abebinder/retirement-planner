@@ -92,17 +92,16 @@ export function canCoast(savings: number, yearsLeft: number, retirement_number: 
 	return savingsByYear[savingsByYear.length - 1] >= retirement_number;
 }
 
-export function runMultipleWithdrawlSimulations(initialSavings: number, annualRetirementSpend: number, simulations: number): number[][] {
+export function runMultipleSimulations(
+	initialSavings: number,
+	annualContribution: number,
+	simulations: number,
+	threshold: number,
+	thresholdComprator: ThresholdComprator
+): number[][] {
 	let allSavingsByYear: number[][] = [];
 	for (let i = 0; i < simulations; i++) {
-		let savingsByYear = calculateSavingsByYear(
-			initialSavings,
-			-annualRetirementSpend,
-			100,
-			InvestmentRateMode.RANDOM,
-			annualRetirementSpend,
-			ThresholdComprator.LESS_THAN
-		);
+		let savingsByYear = calculateSavingsByYear(initialSavings, annualContribution, 100, InvestmentRateMode.RANDOM, threshold, thresholdComprator);
 		allSavingsByYear.push(savingsByYear);
 	}
 	allSavingsByYear.sort((a, b) => a.length - b.length); // Sort by length descending

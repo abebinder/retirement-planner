@@ -8,7 +8,7 @@
 		calculateYearsToCoast,
 		InvestmentRateMode,
 		calculateSimulationStatsForWithdrawl,
-		runMultipleWithdrawlSimulations
+		runMultipleSimulations
 	} from '$lib/calculator';
 	import Form from '$lib/Form.svelte';
 	import { type FormValues, defaultFormValues } from '$lib/interfaces';
@@ -58,7 +58,13 @@
 		)
 	);
 	let randomizedWithdrawlSimulations: number[][] = $derived(
-		runMultipleWithdrawlSimulations(formValues.initialSavings, formValues.annualRetirementSpend, NUM_SIMULATIONS)
+		runMultipleSimulations(
+			formValues.initialSavings,
+			-formValues.annualRetirementSpend,
+			NUM_SIMULATIONS,
+			formValues.annualRetirementSpend,
+			ThresholdComprator.LESS_THAN
+		)
 	);
 	let simulationStatsForWithdrawl: SimulationStats = $derived(calculateSimulationStatsForWithdrawl(randomizedWithdrawlSimulations));
 	function updateFormValues(newFormValues: FormValues) {
