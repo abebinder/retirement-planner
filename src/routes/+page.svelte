@@ -7,7 +7,7 @@
 		calculateSavingsByYear,
 		calculateYearsToCoast,
 		InvestmentRateMode,
-		calculateSimulationStatsForWithdrawl,
+		calculateSimulationStats,
 		runMultipleSimulations
 	} from '$lib/calculator';
 	import Form from '$lib/Form.svelte';
@@ -37,16 +37,6 @@
 			ThresholdComprator.GREATER_THAN
 		)
 	);
-	let simulatedSavingsByYear: number[] = $derived(
-		calculateSavingsByYear(
-			formValues.initialSavings,
-			formValues.annualContribution,
-			MAX_ITERATIONS,
-			InvestmentRateMode.RANDOM,
-			retirementNumber,
-			ThresholdComprator.GREATER_THAN
-		)
-	);
 	let withdrawlSavingsByYear: number[] = $derived(
 		calculateSavingsByYear(
 			formValues.initialSavings,
@@ -66,10 +56,20 @@
 			ThresholdComprator.LESS_THAN
 		)
 	);
-	let simulationStatsForWithdrawl: SimulationStats = $derived(calculateSimulationStatsForWithdrawl(randomizedWithdrawlSimulations));
+	let simulationStatsForWithdrawl: SimulationStats = $derived(calculateSimulationStats(randomizedWithdrawlSimulations));
 	function updateFormValues(newFormValues: FormValues) {
 		formValues = newFormValues;
 	}
+	let randomizedGrowthSimulations: number[][] = $derived(
+		runMultipleSimulations(
+			formValues.initialSavings,
+			formValues.annualContribution,
+			NUM_SIMULATIONS,
+			retirementNumber,
+			ThresholdComprator.GREATER_THAN
+		)
+	);
+	let simulationStatsForGrowth: SimulationStats = $derived(calculateSimulationStats(randomizedGrowthSimulations));
 </script>
 
 <svelte:head>
@@ -104,16 +104,22 @@
 ></LineChart>
 
 <h3>Growth Simulation With Randomized Rate of Return On Investment</h3>
-<p>You can retire in {simulatedSavingsByYear.length - 1} years.</p>
-
-<LineChart
-	title="SavingsByYear"
-	data={simulatedSavingsByYear}
-	annotationLabel={{
-		content: 'Retirement Number: ' + currencyFormat(retirementNumber),
-		value: retirementNumber
-	}}
-></LineChart>
+<p>
+	Here are the stats for how long it would take to get to your retirement number over {randomizedGrowthSimulations.length} simulations.
+</p>
+<pre> {JSON.stringify(simulationStatsForGrowth, null, 2)} </pre>
+{#each randomizedGrowthSimulations as randomizedGrowthSavingsByYear, i}
+	<h4>Simulation {i + 1}</h4>
+	<p>It would take you {randomizedGrowthSavingsByYear.length - 1} years to retire.</p>
+	<LineChart
+		title="RandomizedGrowthSavingsByYear"
+		data={randomizedGrowthSavingsByYear}
+		annotationLabel={{
+			content: 'Retirement Number: ' + currencyFormat(retirementNumber),
+			value: retirementNumber
+		}}
+	></LineChart>
+{/each}
 
 <h2>Withdrawl Simulations</h2>
 <p>This shows what would happen if you stopped working and started withdrawing now.</p>

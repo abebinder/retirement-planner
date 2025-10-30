@@ -118,19 +118,19 @@ export interface SimulationStats {
 	p100: number;
 }
 
-export function calculateSimulationStatsForWithdrawl(savingsByYearSimulations: number[][]): SimulationStats {
-	let yearsToSurviveInEachSimulation: number[] = [];
+export function calculateSimulationStats(savingsByYearSimulations: number[][]): SimulationStats {
+	let yearsToThresholdInEachSimulation: number[] = [];
 	for (let savingsByYear of savingsByYearSimulations) {
-		yearsToSurviveInEachSimulation.push(savingsByYear.length - 1);
+		yearsToThresholdInEachSimulation.push(savingsByYear.length - 1);
 	}
 	let stats = {
-		p0: quantile(yearsToSurviveInEachSimulation, 0) as number,
-		p10: quantile(yearsToSurviveInEachSimulation, 0.1) as number,
-		p25: quantile(yearsToSurviveInEachSimulation, 0.25) as number,
-		p50: quantile(yearsToSurviveInEachSimulation, 0.5) as number,
-		p75: quantile(yearsToSurviveInEachSimulation, 0.75) as number,
-		p90: quantile(yearsToSurviveInEachSimulation, 0.9) as number,
-		p100: quantile(yearsToSurviveInEachSimulation, 1) as number
+		p0: quantile(yearsToThresholdInEachSimulation, 0) as number,
+		p10: quantile(yearsToThresholdInEachSimulation, 0.1) as number,
+		p25: quantile(yearsToThresholdInEachSimulation, 0.25) as number,
+		p50: quantile(yearsToThresholdInEachSimulation, 0.5) as number,
+		p75: quantile(yearsToThresholdInEachSimulation, 0.75) as number,
+		p90: quantile(yearsToThresholdInEachSimulation, 0.9) as number,
+		p100: quantile(yearsToThresholdInEachSimulation, 1) as number
 	};
 	return stats;
 }
