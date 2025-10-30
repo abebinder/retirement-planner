@@ -5,7 +5,6 @@
 	import {
 		calculateRetirementNumber,
 		calculateSavingsByYear,
-		calculateWithdrawlSavingsByYear,
 		calculateYearsToCoast,
 		InvestmentRateMode,
 		calculateSimulationStatsForWithdrawl,
@@ -49,7 +48,14 @@
 		)
 	);
 	let withdrawlSavingsByYear: number[] = $derived(
-		calculateWithdrawlSavingsByYear(formValues.initialSavings, formValues.annualRetirementSpend, InvestmentRateMode.FIXED)
+		calculateSavingsByYear(
+			formValues.initialSavings,
+			-formValues.annualRetirementSpend,
+			MAX_ITERATIONS,
+			InvestmentRateMode.FIXED,
+			formValues.annualRetirementSpend,
+			ThresholdComprator.LESS_THAN
+		)
 	);
 	let randomizedWithdrawlSimulations: number[][] = $derived(
 		runMultipleWithdrawlSimulations(formValues.initialSavings, formValues.annualRetirementSpend, NUM_SIMULATIONS)
