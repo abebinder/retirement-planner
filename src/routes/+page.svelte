@@ -111,8 +111,8 @@
 	title="WithdrawlSavingsByYear"
 	data={withdrawlSavingsByYear}
 	annotationLabel={{
-		content: 'Retirement Number: ' + currencyFormat(retirementNumber),
-		value: retirementNumber
+		content: 'Annual Retirement Spend: ' + currencyFormat(formValues.annualRetirementSpend),
+		value: formValues.annualRetirementSpend
 	}}
 ></LineChart>
 <h3>Withdrawl Simulation With Randomized Rate Of Return On Investment</h3>
@@ -127,8 +127,8 @@
 		title="RandomizedWithdrawlSavingsByYear"
 		data={randomizedWithdrawlSavingsByYear}
 		annotationLabel={{
-			content: 'Retirement Number: ' + currencyFormat(retirementNumber),
-			value: retirementNumber
+			content: 'Annual Retirement Spend: ' + currencyFormat(formValues.annualRetirementSpend),
+			value: formValues.annualRetirementSpend
 		}}
 	></LineChart>
 {/each}
