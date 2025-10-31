@@ -1,7 +1,9 @@
 <script lang="ts">
 	import { Chart } from 'chart.js/auto';
 	import type Annotation from 'chartjs-plugin-annotation';
-	import annotationPlugin, { type AnnotationPluginOptions } from 'chartjs-plugin-annotation';
+	import annotationPlugin, {
+		type AnnotationPluginOptions
+	} from 'chartjs-plugin-annotation';
 	Chart.register(annotationPlugin);
 
 	interface AnnotationLabel {
@@ -72,7 +74,9 @@
 	}
 </script>
 
-<div class="chart-container"><canvas bind:this={chartCanvas} height="500," width="500"></canvas></div>
+<div class="chart-container">
+	<canvas bind:this={chartCanvas} height="500," width="500"></canvas>
+</div>
 
 <style>
 	.chart-container {

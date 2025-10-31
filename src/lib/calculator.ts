@@ -50,7 +50,10 @@ export function getInvestmentRate(mode: InvestmentRateMode): number {
 	if (mode == InvestmentRateMode.FIXED) {
 		investment_rate = vt_historical_stats.inflation_adjusted_mean;
 	} else if (mode == InvestmentRateMode.RANDOM) {
-		investment_rate = gaussianRandom({ mean: vt_historical_stats.inflation_adjusted_mean, stdev: vt_historical_stats.standard_deviation });
+		investment_rate = gaussianRandom({
+			mean: vt_historical_stats.inflation_adjusted_mean,
+			stdev: vt_historical_stats.standard_deviation
+		});
 	} else {
 		throw new Error('Unsupported InvestmentRateMode');
 	}
@@ -69,7 +72,9 @@ export function calculateYearsToCoast(options: {
 	currentAge: number;
 	maxRetirementAge: number;
 }): number | undefined {
-	const retirement_number = calculateRetirementNumber(options.annualRetirementSpend);
+	const retirement_number = calculateRetirementNumber(
+		options.annualRetirementSpend
+	);
 	const max_years_to_retirement = options.maxRetirementAge - options.currentAge;
 	const savingsByYear: number[] = calculateSavingsByYear(
 		options.initialSavings,
@@ -80,15 +85,28 @@ export function calculateYearsToCoast(options: {
 		ThresholdComprator.GREATER_THAN
 	);
 	for (let i = 0; i < savingsByYear.length; i++) {
-		if (canCoast(savingsByYear[i], max_years_to_retirement - i, retirement_number)) {
+		if (
+			canCoast(savingsByYear[i], max_years_to_retirement - i, retirement_number)
+		) {
 			return i;
 		}
 	}
 	return undefined;
 }
 
-export function canCoast(savings: number, yearsLeft: number, retirement_number: number): boolean {
-	const savingsByYear = calculateSavingsByYear(savings, 0, yearsLeft, InvestmentRateMode.FIXED, retirement_number, ThresholdComprator.GREATER_THAN);
+export function canCoast(
+	savings: number,
+	yearsLeft: number,
+	retirement_number: number
+): boolean {
+	const savingsByYear = calculateSavingsByYear(
+		savings,
+		0,
+		yearsLeft,
+		InvestmentRateMode.FIXED,
+		retirement_number,
+		ThresholdComprator.GREATER_THAN
+	);
 	return savingsByYear[savingsByYear.length - 1] >= retirement_number;
 }
 
@@ -101,7 +119,14 @@ export function runMultipleSimulations(
 ): number[][] {
 	let allSavingsByYear: number[][] = [];
 	for (let i = 0; i < simulations; i++) {
-		let savingsByYear = calculateSavingsByYear(initialSavings, annualContribution, 100, InvestmentRateMode.RANDOM, threshold, thresholdComprator);
+		let savingsByYear = calculateSavingsByYear(
+			initialSavings,
+			annualContribution,
+			100,
+			InvestmentRateMode.RANDOM,
+			threshold,
+			thresholdComprator
+		);
 		allSavingsByYear.push(savingsByYear);
 	}
 	allSavingsByYear.sort((a, b) => a.length - b.length); // Sort by length descending
@@ -118,7 +143,9 @@ export interface SimulationStats {
 	p100: number;
 }
 
-export function calculateSimulationStats(savingsByYearSimulations: number[][]): SimulationStats {
+export function calculateSimulationStats(
+	savingsByYearSimulations: number[][]
+): SimulationStats {
 	let yearsToThresholdInEachSimulation: number[] = [];
 	for (let savingsByYear of savingsByYearSimulations) {
 		yearsToThresholdInEachSimulation.push(savingsByYear.length - 1);
@@ -145,7 +172,11 @@ export enum ThresholdComprator {
 	LESS_THAN = 1
 }
 
-export function didValuePassThreshold(thresholdComparator: ThresholdComprator, value: number, threshold: number): boolean {
+export function didValuePassThreshold(
+	thresholdComparator: ThresholdComprator,
+	value: number,
+	threshold: number
+): boolean {
 	if (thresholdComparator == ThresholdComprator.GREATER_THAN) {
 		return value >= threshold;
 	} else if (thresholdComparator == ThresholdComprator.LESS_THAN) {
