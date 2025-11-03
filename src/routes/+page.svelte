@@ -121,20 +121,23 @@
 	over {randomizedGrowthSimulations.length} simulations.
 </p>
 <pre> {JSON.stringify(simulationStatsForGrowth, null, 2)} </pre>
-{#each randomizedGrowthSimulations as randomizedGrowthSavingsByYear, i}
-	<h4>Simulation {i + 1}</h4>
-	<p>
-		It would take you {randomizedGrowthSavingsByYear.length - 1} years to retire.
-	</p>
-	<LineChart
-		title="RandomizedGrowthSavingsByYear"
-		data={randomizedGrowthSavingsByYear}
-		annotationLabel={{
-			content: 'Retirement Number: ' + currencyFormat(retirementNumber),
-			value: retirementNumber
-		}}
-	></LineChart>
-{/each}
+<details>
+	<summary>View All Randomized Growth Simulations</summary>
+	{#each randomizedGrowthSimulations as randomizedGrowthSavingsByYear, i}
+		<h4>Simulation {i + 1}</h4>
+		<p>
+			It would take you {randomizedGrowthSavingsByYear.length - 1} years to retire.
+		</p>
+		<LineChart
+			title="RandomizedGrowthSavingsByYear"
+			data={randomizedGrowthSavingsByYear}
+			annotationLabel={{
+				content: 'Retirement Number: ' + currencyFormat(retirementNumber),
+				value: retirementNumber
+			}}
+		></LineChart>
+	{/each}
+</details>
 
 <h2>Withdrawl Simulations</h2>
 <p>
@@ -159,19 +162,22 @@
 	now (in years) over {randomizedWithdrawlSimulations.length} simulations.
 </p>
 <pre> {JSON.stringify(simulationStatsForWithdrawl, null, 2)} </pre>
-{#each randomizedWithdrawlSimulations as randomizedWithdrawlSavingsByYear, i}
-	<h4>Simulation {i + 1}</h4>
-	<p>
-		You could survive for {randomizedWithdrawlSavingsByYear.length - 1} years.
-	</p>
-	<LineChart
-		title="RandomizedWithdrawlSavingsByYear"
-		data={randomizedWithdrawlSavingsByYear}
-		annotationLabel={{
-			content:
-				'Annual Retirement Spend: ' +
-				currencyFormat(formValues.annualRetirementSpend),
-			value: formValues.annualRetirementSpend
-		}}
-	></LineChart>
-{/each}
+<details>
+	<summary>View All Randomized Withdrawl Simulations</summary>
+	{#each randomizedWithdrawlSimulations as randomizedWithdrawlSavingsByYear, i}
+		<h4>Simulation {i + 1}</h4>
+		<p>
+			You could survive for {randomizedWithdrawlSavingsByYear.length - 1} years.
+		</p>
+		<LineChart
+			title="RandomizedWithdrawlSavingsByYear"
+			data={randomizedWithdrawlSavingsByYear}
+			annotationLabel={{
+				content:
+					'Annual Retirement Spend: ' +
+					currencyFormat(formValues.annualRetirementSpend),
+				value: formValues.annualRetirementSpend
+			}}
+		></LineChart>
+	{/each}
+</details>
