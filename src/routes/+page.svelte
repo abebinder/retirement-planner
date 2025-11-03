@@ -14,7 +14,7 @@
 	import { type FormValues, defaultFormValues } from '$lib/interfaces';
 
 	const MAX_ITERATIONS: number = 100;
-	const NUM_SIMULATIONS: number = 10;
+	const NUM_SIMULATIONS: number = 100;
 
 	let formValues: FormValues = $state(defaultFormValues());
 	let retirementNumber: number = $derived(
