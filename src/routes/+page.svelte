@@ -86,92 +86,80 @@
 	/>
 </svelte:head>
 
-<h1>Input</h1>
-<Form updateParentComponent={updateFormValues}></Form>
+<section class="panel">
+	<h1>Input</h1>
+	<Form updateParentComponent={updateFormValues}></Form>
+</section>
 
-<h1>Summary</h1>
-<p>Retirement number is {currencyFormat(retirementNumber)}.</p>
+<section class="panel">
+	<h1>Summary</h1>
+	<p>Retirement number is <strong>{currencyFormat(retirementNumber)}</strong>.</p>
+	<p>You can retire in <strong>{savingsByYear.length - 1} years</strong>.</p>
+	<p>You can coast in <strong>{yearsUntilCoast} years</strong>.</p>
+	<p>
+		You could survive for <strong>{withdrawlSavingsByYear.length - 1} years</strong> if you retired
+		now.
+	</p>
+</section>
 
-<p>You can retire in {savingsByYear.length - 1} years.</p>
-
-<p>You can coast in {yearsUntilCoast} years.</p>
-
-<p>
-	You could survive for {withdrawlSavingsByYear.length - 1} years if you retired
-	now.
-</p>
-
-<h1>Simulations</h1>
-<h2>Growth Simulations</h2>
-<p>These show how long it takes to hit your retirement number.</p>
-<h3>Growth Simulation With Fixed Rate of Return On Investment</h3>
-<p>You can retire in {savingsByYear.length - 1} years.</p>
-<LineChart
-	title="SavingsByYear"
-	data={savingsByYear}
-	annotationLabel={{
-		content: 'Retirement Number: ' + currencyFormat(retirementNumber),
-		value: retirementNumber
-	}}
-></LineChart>
-
-<h3>Growth Simulation With Randomized Rate of Return On Investment</h3>
-<p>
-	Here are the stats for how long it would take to get to your retirement number
-	over {randomizedGrowthSimulations.length} simulations.
-</p>
-<pre> {JSON.stringify(simulationStatsForGrowth, null, 2)} </pre>
-<details>
-	<summary>View All Randomized Growth Simulations</summary>
-	{#each randomizedGrowthSimulations as randomizedGrowthSavingsByYear, i}
-		<h4>Simulation {i + 1}</h4>
-		<p>
-			It would take you {randomizedGrowthSavingsByYear.length - 1} years to retire.
-		</p>
+<section class="panel">
+	<h1>Simulations</h1>
+	<h2>Growth Simulations</h2>
+	<p>These show how long it takes to hit your retirement number.</p>
+	
+	<div class="panel">
+		<h3>Growth Simulation With Fixed Rate of Return On Investment</h3>
+		<p>You can retire in <strong>{savingsByYear.length - 1} years</strong>.</p>
 		<LineChart
-			title="RandomizedGrowthSavingsByYear"
-			data={randomizedGrowthSavingsByYear}
+			title="SavingsByYear"
+			data={savingsByYear}
 			annotationLabel={{
 				content: 'Retirement Number: ' + currencyFormat(retirementNumber),
 				value: retirementNumber
 			}}
 		></LineChart>
-	{/each}
-</details>
+	</div>
 
-<h2>Withdrawl Simulations</h2>
-<p>
-	This shows what would happen if you stopped working and started withdrawing
-	now.
-</p>
-<h3>Withdrawl Simulation With Fixed Rate Of Return On Investment</h3>
-<p>You could survive for {withdrawlSavingsByYear.length - 1} years.</p>
-<LineChart
-	title="WithdrawlSavingsByYear"
-	data={withdrawlSavingsByYear}
-	annotationLabel={{
-		content:
-			'Annual Retirement Spend: ' +
-			currencyFormat(formValues.annualRetirementSpend),
-		value: formValues.annualRetirementSpend
-	}}
-></LineChart>
-<h3>Withdrawl Simulation With Randomized Rate Of Return On Investment</h3>
-<p>
-	Here are the stats for how long you could survive if you started withdrawing
-	now (in years) over {randomizedWithdrawlSimulations.length} simulations.
-</p>
-<pre> {JSON.stringify(simulationStatsForWithdrawl, null, 2)} </pre>
-<details>
-	<summary>View All Randomized Withdrawl Simulations</summary>
-	{#each randomizedWithdrawlSimulations as randomizedWithdrawlSavingsByYear, i}
-		<h4>Simulation {i + 1}</h4>
+	<div class="panel">
+		<h3>Growth Simulation With Randomized Rate of Return On Investment</h3>
 		<p>
-			You could survive for {randomizedWithdrawlSavingsByYear.length - 1} years.
+			Here are the stats for how long it would take to get to your retirement number
+			over {randomizedGrowthSimulations.length} simulations.
 		</p>
+		<pre> {JSON.stringify(simulationStatsForGrowth, null, 2)} </pre>
+		<details>
+			<summary>View All Randomized Growth Simulations</summary>
+			{#each randomizedGrowthSimulations as randomizedGrowthSavingsByYear, i}
+				<div style="margin-top: 1.5rem;">
+					<h4>Simulation {i + 1}</h4>
+					<p>
+						It would take you {randomizedGrowthSavingsByYear.length - 1} years to retire.
+					</p>
+					<LineChart
+						title="RandomizedGrowthSavingsByYear"
+						data={randomizedGrowthSavingsByYear}
+						annotationLabel={{
+							content: 'Retirement Number: ' + currencyFormat(retirementNumber),
+							value: retirementNumber
+						}}
+					></LineChart>
+				</div>
+			{/each}
+		</details>
+	</div>
+
+	<h2>Withdrawl Simulations</h2>
+	<p>
+		This shows what would happen if you stopped working and started withdrawing
+		now.
+	</p>
+	
+	<div class="panel">
+		<h3>Withdrawl Simulation With Fixed Rate Of Return On Investment</h3>
+		<p>You could survive for <strong>{withdrawlSavingsByYear.length - 1} years</strong>.</p>
 		<LineChart
-			title="RandomizedWithdrawlSavingsByYear"
-			data={randomizedWithdrawlSavingsByYear}
+			title="WithdrawlSavingsByYear"
+			data={withdrawlSavingsByYear}
 			annotationLabel={{
 				content:
 					'Annual Retirement Spend: ' +
@@ -179,5 +167,35 @@
 				value: formValues.annualRetirementSpend
 			}}
 		></LineChart>
-	{/each}
-</details>
+	</div>
+	
+	<div class="panel">
+		<h3>Withdrawl Simulation With Randomized Rate Of Return On Investment</h3>
+		<p>
+			Here are the stats for how long you could survive if you started withdrawing
+			now (in years) over {randomizedWithdrawlSimulations.length} simulations.
+		</p>
+		<pre> {JSON.stringify(simulationStatsForWithdrawl, null, 2)} </pre>
+		<details>
+			<summary>View All Randomized Withdrawl Simulations</summary>
+			{#each randomizedWithdrawlSimulations as randomizedWithdrawlSavingsByYear, i}
+				<div style="margin-top: 1.5rem;">
+					<h4>Simulation {i + 1}</h4>
+					<p>
+						You could survive for {randomizedWithdrawlSavingsByYear.length - 1} years.
+					</p>
+					<LineChart
+						title="RandomizedWithdrawlSavingsByYear"
+						data={randomizedWithdrawlSavingsByYear}
+						annotationLabel={{
+							content:
+								'Annual Retirement Spend: ' +
+								currencyFormat(formValues.annualRetirementSpend),
+							value: formValues.annualRetirementSpend
+						}}
+					></LineChart>
+				</div>
+			{/each}
+		</details>
+	</div>
+</section>

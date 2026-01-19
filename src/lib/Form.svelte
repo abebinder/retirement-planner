@@ -3,12 +3,15 @@
 	let { updateParentComponent } = $props();
 	function handleSubmit(event: SubmitEvent) {
 		event.preventDefault(); // Prevent default browser form submission (page reload)
+		const form = event.target as HTMLFormElement;
+		if (!form) return;
+		const formData = new FormData(form);
 		const newFormValues: FormValues = {
-			initialSavings: Number(event.target[0].value),
-			annualContribution: Number(event.target[1].value),
-			annualRetirementSpend: Number(event.target[2].value),
-			currentAge: Number(event.target[3].value),
-			maxRetirementAge: Number(event.target[4].value)
+			initialSavings: Number(formData.get('current-savings') || 0),
+			annualContribution: Number(formData.get('annual-contribution') || 0),
+			annualRetirementSpend: Number(formData.get('annual-retirement-spend') || 0),
+			currentAge: Number(formData.get('current-age') || 0),
+			maxRetirementAge: Number(formData.get('max-retirement-age') || 0)
 		};
 		updateParentComponent(newFormValues);
 	}
@@ -21,48 +24,34 @@
 		type="number"
 		id="current-savings"
 		name="current-savings"
-	/><br /><br />
+	/>
 	<label for="annual-contribution">Annual Contribution (while working):</label>
 	<input
 		value={defaultFormValues().annualContribution}
 		type="number"
 		id="annual-contribution"
 		name="annual-contribution"
-	/><br /><br />
+	/>
 	<label for="annual-retirement-spend">Annual Retirement Spend:</label>
 	<input
 		value={defaultFormValues().annualRetirementSpend}
 		type="number"
 		id="annual-retirement-spend"
 		name="annual-retirement-spend"
-	/><br /><br />
+	/>
 	<label for="current-age">Current Age:</label>
 	<input
 		value={defaultFormValues().currentAge}
 		type="number"
 		id="current-age"
 		name="current-age"
-	/><br /><br />
+	/>
 	<label for="max-retirement-age">Max Retirement Age:</label>
 	<input
 		value={defaultFormValues().maxRetirementAge}
 		type="number"
 		id="max-retirement-age"
 		name="max-retirement-age"
-	/><br /><br />
+	/>
 	<input type="submit" value="Submit" />
 </form>
-
-<style>
-	/* Chrome, Safari, Edge, Opera */
-	input::-webkit-outer-spin-button,
-	input::-webkit-inner-spin-button {
-		-webkit-appearance: none;
-		margin: 0;
-	}
-
-	/* Firefox */
-	input[type='number'] {
-		-moz-appearance: textfield;
-	}
-</style>

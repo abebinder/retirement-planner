@@ -49,8 +49,44 @@
 			type: 'line',
 			options: {
 				responsive: true,
+				maintainAspectRatio: false,
 				plugins: {
-					annotation: annotation
+					annotation: annotation,
+					legend: {
+						display: true,
+						labels: {
+							font: {
+								family: "'Helvetica Neue', Helvetica, Arial, sans-serif"
+							},
+							color: '#2c2c2c'
+						}
+					}
+				},
+				scales: {
+					x: {
+						grid: {
+							color: '#e8e8e8',
+							borderColor: '#d0d0d0'
+						},
+						ticks: {
+							color: '#6b6b6b',
+							font: {
+								family: "'Helvetica Neue', Helvetica, Arial, sans-serif"
+							}
+						}
+					},
+					y: {
+						grid: {
+							color: '#e8e8e8',
+							borderColor: '#d0d0d0'
+						},
+						ticks: {
+							color: '#6b6b6b',
+							font: {
+								family: "'Helvetica Neue', Helvetica, Arial, sans-serif"
+							}
+						}
+					}
 				}
 			},
 			data: {
@@ -58,7 +94,12 @@
 				datasets: [
 					{
 						label: 'Savings By Year',
-						data: props.data
+						data: props.data,
+						borderColor: '#4a90e2',
+						backgroundColor: 'rgba(74, 144, 226, 0.1)',
+						borderWidth: 2,
+						fill: true,
+						tension: 0.1
 					}
 				]
 			}
@@ -75,12 +116,17 @@
 </script>
 
 <div class="chart-container">
-	<canvas bind:this={chartCanvas} height="500," width="500"></canvas>
+	<canvas bind:this={chartCanvas}></canvas>
 </div>
 
 <style>
 	.chart-container {
-		width: 500px;
+		width: 100%;
 		height: 500px;
+		position: relative;
+	}
+	
+	.chart-container canvas {
+		max-width: 100%;
 	}
 </style>
