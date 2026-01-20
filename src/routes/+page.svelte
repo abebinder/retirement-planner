@@ -82,7 +82,7 @@
 			formValues.initialSavings,
 			formValues.annualContribution,
 			formValues.annualRetirementSpend,
-			NUM_SIMULATIONS,
+			1000,
 			formValues.currentAge,
 			formValues.maxRetirementAge
 		)
@@ -121,6 +121,18 @@
 			{#each growthAndWithdrawlResults as result, i}
 				<h4>Age {i + formValues.currentAge}</h4>
 				<p>You have a {result.successRate * 100}% chance of surviving.</p>
+				<details>
+					<summary>View A Few Simulations</summary>
+					{#each result.allSavingsByYear as savingsByYear, j}
+						<div style="margin-top: 1.5rem;">
+							<h5>Simulation {j + 1}</h5>
+							<LineChart
+								title="SavingsByYear"
+								data={savingsByYear}
+							></LineChart>
+						</div>
+					{/each}
+				</details>
 			{/each}
 	</div>
 	<h2>Growth Simulations</h2>

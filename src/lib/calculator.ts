@@ -128,7 +128,7 @@ export function runGrowthCombinedWithWithdrawlSimulation(
 		savingsByYear.push(savings);
 	}
 	for (let i = ageToSwitchToWithdrawl; i < 90; i++) {
-		let investmentRate = getInvestmentRate(InvestmentRateMode.FIXED);
+		let investmentRate = getInvestmentRate(InvestmentRateMode.RANDOM);
 		savings = savings * (1 + investmentRate) - annualWithdawl;
 		if (savings < 0) {
 			return savingsByYear;
@@ -161,10 +161,10 @@ export function runMultipleGrowthCombinedWithWithdrawlSimulations(
 			currentAge,
 			ageToSwitchToWithdrawl
 		);
-		allSavingsByYear.push(savingsByYear);
 		if (savingsByYear.length >= 90 - currentAge) {
 			successCount++;
 		}
+		allSavingsByYear.push(savingsByYear);
 	}
 	allSavingsByYear.sort((a, b) => {
 		if (a.length !== b.length) {
@@ -173,8 +173,15 @@ export function runMultipleGrowthCombinedWithWithdrawlSimulations(
 		return (a[a.length - 1]) - (b[b.length - 1]); // Sort by last element ascending
 	});
 
+	const special_indecies = [0,Math.floor(simulations * .1), Math.floor(simulations*.25), Math.floor(simulations*.5), Math.floor(simulations*.75), Math.floor(simulations*.9), simulations-1]
+	const special_savingsByYear: number[][] = [];
+	for (let i = 0; i < special_indecies.length; i++) {
+		special_savingsByYear.push(allSavingsByYear[special_indecies[i]]);
+	}
+
+
 	return {
-		allSavingsByYear: allSavingsByYear,
+		allSavingsByYear: special_savingsByYear,
 		successRate: successCount / simulations
 	}
 }
@@ -299,5 +306,3 @@ export function calculateSavingsByYear(
 	}
 	return savingsByYear;
 }
-
-console.log(runGrowthCombinedWithWithdrawlSimulation(100000, 10000, 10000, 30, 65));
