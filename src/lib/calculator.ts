@@ -110,6 +110,99 @@ export function canCoast(
 	return savingsByYear[savingsByYear.length - 1] >= retirement_number;
 }
 
+export function runGrowthCombinedWithWithdrawlSimulation(
+	initialSavings: number,
+	annualContribution: number,
+	annualWithdawl: number,
+	currentAge: number,
+	ageToSwitchToWithdrawl: number,
+): number[] {
+	let savingsByYear: number[] = [initialSavings];
+	let savings = initialSavings;
+	for (let i = currentAge; i < ageToSwitchToWithdrawl + 1; i++) {
+		let investmentRate = getInvestmentRate(InvestmentRateMode.RANDOM);
+		savings = savings * (1 + investmentRate) + annualContribution;
+		if (savings < 0) {
+			return savingsByYear;
+		}
+		savingsByYear.push(savings);
+	}
+	for (let i = ageToSwitchToWithdrawl; i < 90; i++) {
+		let investmentRate = getInvestmentRate(InvestmentRateMode.FIXED);
+		savings = savings * (1 + investmentRate) - annualWithdawl;
+		if (savings < 0) {
+			return savingsByYear;
+		}
+		savingsByYear.push(savings);
+	}
+	return savingsByYear;
+}
+
+export interface MultipleGrowthCombinedWithWithdrawlSimulationResult {
+	allSavingsByYear: number[][];
+	successRate: number;
+}
+
+export function runMultipleGrowthCombinedWithWithdrawlSimulations(
+	initialSavings: number,
+	annualContribution: number,
+	annualWithdawl: number,
+	simulations: number,
+	currentAge: number,
+	ageToSwitchToWithdrawl: number,
+): MultipleGrowthCombinedWithWithdrawlSimulationResult {
+	let allSavingsByYear: number[][] = [];
+	let successCount = 0;
+	for (let i = 0; i < simulations; i++) {
+		let savingsByYear = runGrowthCombinedWithWithdrawlSimulation(
+			initialSavings,
+			annualContribution,
+			annualWithdawl,
+			currentAge,
+			ageToSwitchToWithdrawl
+		);
+		allSavingsByYear.push(savingsByYear);
+		if (savingsByYear.length >= 90 - currentAge) {
+			successCount++;
+		}
+	}
+	allSavingsByYear.sort((a, b) => {
+		if (a.length !== b.length) {
+			return a.length - b.length; // Sort by length ascending
+		}
+		return (a[a.length - 1]) - (b[b.length - 1]); // Sort by last element ascending
+	});
+
+	return {
+		allSavingsByYear: allSavingsByYear,
+		successRate: successCount / simulations
+	}
+}
+
+export function runGrowthAndWithdrawlForEachAge(
+	initialSavings: number,
+	annualContribution: number,
+	annualWithdawl: number,
+	simulations: number,
+	currentAge: number,
+	maxRetirementAge: number,
+): MultipleGrowthCombinedWithWithdrawlSimulationResult[] {
+	let allResults: MultipleGrowthCombinedWithWithdrawlSimulationResult[] = [];
+	for (let i = currentAge; i < maxRetirementAge; i++) {
+		let result = runMultipleGrowthCombinedWithWithdrawlSimulations(
+			initialSavings,
+			annualContribution,
+			annualWithdawl,
+			simulations,
+			currentAge,
+			i
+		);
+		allResults.push(result);
+	}
+	return allResults;
+}
+
+
 export function runMultipleSimulations(
 	initialSavings: number,
 	annualContribution: number,
@@ -206,3 +299,5 @@ export function calculateSavingsByYear(
 	}
 	return savingsByYear;
 }
+
+console.log(runGrowthCombinedWithWithdrawlSimulation(100000, 10000, 10000, 30, 65));

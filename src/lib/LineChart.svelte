@@ -65,8 +65,7 @@
 				scales: {
 					x: {
 						grid: {
-							color: '#e8e8e8',
-							borderColor: '#d0d0d0'
+							color: '#e8e8e8'
 						},
 						ticks: {
 							color: '#6b6b6b',
@@ -77,8 +76,7 @@
 					},
 					y: {
 						grid: {
-							color: '#e8e8e8',
-							borderColor: '#d0d0d0'
+							color: '#e8e8e8'
 						},
 						ticks: {
 							color: '#6b6b6b',

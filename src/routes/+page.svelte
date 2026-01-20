@@ -1,14 +1,15 @@
 <script lang="ts">
 	import LineChart from '$lib/LineChart.svelte';
 	import { currencyFormat } from '$lib/formatter';
-	import { ThresholdComprator, type SimulationStats } from '$lib/calculator';
+	import { ThresholdComprator, type SimulationStats, type MultipleGrowthCombinedWithWithdrawlSimulationResult } from '$lib/calculator';
 	import {
 		calculateRetirementNumber,
 		calculateSavingsByYear,
 		calculateYearsToCoast,
 		InvestmentRateMode,
 		calculateSimulationStats,
-		runMultipleSimulations
+		runMultipleSimulations,
+		runGrowthAndWithdrawlForEachAge,
 	} from '$lib/calculator';
 	import Form from '$lib/Form.svelte';
 	import { type FormValues, defaultFormValues } from '$lib/interfaces';
@@ -76,6 +77,16 @@
 	let simulationStatsForGrowth: SimulationStats = $derived(
 		calculateSimulationStats(randomizedGrowthSimulations)
 	);
+	let growthAndWithdrawlResults: MultipleGrowthCombinedWithWithdrawlSimulationResult[] = $derived(
+		runGrowthAndWithdrawlForEachAge(
+			formValues.initialSavings,
+			formValues.annualContribution,
+			formValues.annualRetirementSpend,
+			NUM_SIMULATIONS,
+			formValues.currentAge,
+			formValues.maxRetirementAge
+		)
+);
 </script>
 
 <svelte:head>
@@ -104,6 +115,14 @@
 
 <section class="panel">
 	<h1>Simulations</h1>
+	<h2>Growth and Withdrawl Simulations</h2>
+	<p>These show the percentage chance you could survive at each age.</p>
+	<div class="panel">
+			{#each growthAndWithdrawlResults as result, i}
+				<h4>Age {i + formValues.currentAge}</h4>
+				<p>You have a {result.successRate * 100}% chance of surviving.</p>
+			{/each}
+	</div>
 	<h2>Growth Simulations</h2>
 	<p>These show how long it takes to hit your retirement number.</p>
 	
