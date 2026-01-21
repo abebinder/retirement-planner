@@ -116,11 +116,12 @@ export function runGrowthCombinedWithWithdrawlSimulation(
 	annualWithdawl: number,
 	currentAge: number,
 	ageToSwitchToWithdrawl: number,
+	investmentRateMode: InvestmentRateMode,
 ): number[] {
 	let savingsByYear: number[] = [initialSavings];
 	let savings = initialSavings;
-	for (let i = currentAge; i < ageToSwitchToWithdrawl + 1; i++) {
-		let investmentRate = getInvestmentRate(InvestmentRateMode.RANDOM);
+	for (let i = currentAge; i < ageToSwitchToWithdrawl; i++) {
+		let investmentRate = getInvestmentRate(investmentRateMode);
 		savings = savings * (1 + investmentRate) + annualContribution;
 		if (savings < 0) {
 			return savingsByYear;
@@ -128,7 +129,7 @@ export function runGrowthCombinedWithWithdrawlSimulation(
 		savingsByYear.push(savings);
 	}
 	for (let i = ageToSwitchToWithdrawl; i < 90; i++) {
-		let investmentRate = getInvestmentRate(InvestmentRateMode.RANDOM);
+		let investmentRate = getInvestmentRate(investmentRateMode);
 		savings = savings * (1 + investmentRate) - annualWithdawl;
 		if (savings < 0) {
 			return savingsByYear;
@@ -139,7 +140,12 @@ export function runGrowthCombinedWithWithdrawlSimulation(
 }
 
 export interface MultipleGrowthCombinedWithWithdrawlSimulationResult {
-	allSavingsByYear: number[][];
+	fixed_rate_simulation: number[];
+	p1_simulation: number[];
+	p10_simulation: number[];
+	p50_simulation: number[];
+	p90_simulation: number[];
+	p99_simulation: number[];
 	successRate: number;
 }
 
@@ -147,42 +153,52 @@ export function runMultipleGrowthCombinedWithWithdrawlSimulations(
 	initialSavings: number,
 	annualContribution: number,
 	annualWithdawl: number,
-	simulations: number,
+	num_simulations: number,
 	currentAge: number,
 	ageToSwitchToWithdrawl: number,
 ): MultipleGrowthCombinedWithWithdrawlSimulationResult {
-	let allSavingsByYear: number[][] = [];
+	console.log('currentAge', currentAge);
+	console.log('ageToSwitchToWithdrawl', ageToSwitchToWithdrawl);
+	let fixedRateSimulation = runGrowthCombinedWithWithdrawlSimulation(
+		initialSavings,
+		annualContribution,
+		annualWithdawl,
+		currentAge,
+		ageToSwitchToWithdrawl,
+		InvestmentRateMode.FIXED
+	);
+	let allRandomizedSimulations: number[][] = [];
 	let successCount = 0;
-	for (let i = 0; i < simulations; i++) {
-		let savingsByYear = runGrowthCombinedWithWithdrawlSimulation(
+	for (let i = 0; i < num_simulations; i++) {
+		let simulation = runGrowthCombinedWithWithdrawlSimulation(
 			initialSavings,
 			annualContribution,
 			annualWithdawl,
 			currentAge,
-			ageToSwitchToWithdrawl
+			ageToSwitchToWithdrawl,
+			InvestmentRateMode.RANDOM
 		);
-		if (savingsByYear.length >= 90 - currentAge) {
+		if (simulation.length >= 90 - currentAge) {
 			successCount++;
 		}
-		allSavingsByYear.push(savingsByYear);
+		allRandomizedSimulations.push(simulation);
 	}
-	allSavingsByYear.sort((a, b) => {
+	allRandomizedSimulations.sort((a, b) => {
 		if (a.length !== b.length) {
 			return a.length - b.length; // Sort by length ascending
 		}
 		return (a[a.length - 1]) - (b[b.length - 1]); // Sort by last element ascending
 	});
 
-	const special_indecies = [0,Math.floor(simulations * .1), Math.floor(simulations*.25), Math.floor(simulations*.5), Math.floor(simulations*.75), Math.floor(simulations*.9), simulations-1]
-	const special_savingsByYear: number[][] = [];
-	for (let i = 0; i < special_indecies.length; i++) {
-		special_savingsByYear.push(allSavingsByYear[special_indecies[i]]);
-	}
-
 
 	return {
-		allSavingsByYear: special_savingsByYear,
-		successRate: successCount / simulations
+		fixed_rate_simulation: fixedRateSimulation,
+		p1_simulation: allRandomizedSimulations[Math.floor(num_simulations * .01)],
+		p10_simulation: allRandomizedSimulations[Math.floor(num_simulations * .1)],
+		p50_simulation: allRandomizedSimulations[Math.floor(num_simulations * .5)],
+		p90_simulation: allRandomizedSimulations[Math.floor(num_simulations * .9)],
+		p99_simulation: allRandomizedSimulations[Math.floor(num_simulations * .99)],
+		successRate: successCount / num_simulations
 	}
 }
 

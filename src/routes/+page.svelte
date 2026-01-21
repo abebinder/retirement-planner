@@ -116,22 +116,37 @@
 <section class="panel">
 	<h1>Simulations</h1>
 	<h2>Growth and Withdrawl Simulations</h2>
-	<p>These show the percentage chance you could survive at each age.</p>
+	<p>These show the percentage chance your retirement savings would last to age 90 if you retired at each age.</p>
 	<div class="panel">
 			{#each growthAndWithdrawlResults as result, i}
 				<h4>Age {i + formValues.currentAge}</h4>
-				<p>You have a {result.successRate * 100}% chance of surviving.</p>
+				<p>You have a {result.successRate * 100}% chance of surviving to age 90 if you retired at age {i + formValues.currentAge}.</p>
 				<details>
 					<summary>View A Few Simulations</summary>
-					{#each result.allSavingsByYear as savingsByYear, j}
-						<div style="margin-top: 1.5rem;">
-							<h5>Simulation {j + 1}</h5>
-							<LineChart
-								title="SavingsByYear"
-								data={savingsByYear}
-							></LineChart>
-						</div>
-					{/each}
+					<LineChart
+						title="FixedRateSimulation"
+						data={result.fixed_rate_simulation}
+					></LineChart>
+					<LineChart
+						title="RandomizedSimulation"
+						data={result.p1_simulation}
+					></LineChart>
+					<LineChart
+						title="RandomizedSimulation"
+						data={result.p10_simulation}
+					></LineChart>
+					<LineChart
+						title="RandomizedSimulation"
+						data={result.p50_simulation}
+					></LineChart>
+					<LineChart
+						title="RandomizedSimulation"
+						data={result.p90_simulation}
+					></LineChart>
+					<LineChart
+						title="RandomizedSimulation"
+						data={result.p99_simulation}
+					></LineChart>
 				</details>
 			{/each}
 	</div>
