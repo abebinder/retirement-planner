@@ -7,17 +7,11 @@
 	import { currencyFormat } from './formatter';
 	Chart.register(annotationPlugin);
 
-	interface AnnotationLabel {
-		content: string;
-		value: number;
-	}
-
 	interface LineChartProps {
 		title: string;
 		data: number[];
-		annotationLabel?: AnnotationLabel;
 		currentAge: number;
-		retirementAge?: number;
+		retirementAge: number;
 	}
 
 	let props: LineChartProps = $props();
@@ -31,32 +25,29 @@
 		if (chart) {
 			chart.destroy();
 		}
-		let annotation: AnnotationPluginOptions | undefined = undefined;
-
-		if (props.annotationLabel) {
-			annotation = {
-				annotations: {
-					line1: {
-						type: 'line',
-						label: {
-							content: props.annotationLabel.content,
-							display: true
-						},
-						yMin: props.annotationLabel.value,
-						yMax: props.annotationLabel.value
-					}
-				}
-			};
-		}
 		chart = new Chart(chartCanvas, {
 			type: 'line',
 			options: {
 				responsive: true,
 				maintainAspectRatio: false,
 				plugins: {
-					annotation: annotation,
 					legend: {
-						display: false
+						display: true,
+						position: 'top',
+						labels: {
+							font: {
+								family: "'Helvetica Neue', Helvetica, Arial, sans-serif"
+							},
+							color: '#2c2c2c',
+							usePointStyle: false,
+							boxWidth: 15,
+							boxHeight: 5,
+							padding: 15,
+							filter: function(legendItem: any, chartData: any) {
+								// Only show legend for "Working" and "Retired" datasets
+								return legendItem.text === 'Working (Contributing)' || legendItem.text === 'Retired (Withdrawing)';
+							}
+						}
 					},
 					title: {
 						display: true,
@@ -109,15 +100,12 @@
 				labels: generateAgeLabels(props.data.length, props.currentAge),
 				datasets: [
 					{
-						label: 'Savings By Year',
+						label: 'Savings',
 						data: props.data,
 						borderColor: '#4a90e2',
 						backgroundColor: 'rgba(74, 144, 226, 0.1)',
 						segment: {
 							borderColor: function(ctx) {
-								if (!props.retirementAge) {
-									return '#4a90e2';
-								}
 								// Check the age at the end of the segment (p1)
 								const age = props.currentAge + ctx.p1DataIndex;
 								return age <= props.retirementAge ? '#ba8e23' : '#e24a4a';
@@ -125,7 +113,31 @@
 						},
 						borderWidth: 2,
 						fill: true,
-						tension: 0.1
+						tension: 0.1,
+						hidden: false
+					},
+					// Invisible datasets for legend only
+					{
+						label: 'Working (Contributing)',
+						data: [],
+						borderColor: '#ba8e23',
+						backgroundColor: '#ba8e23',
+						borderWidth: 2,
+						pointRadius: 0,
+						pointHoverRadius: 0,
+						pointHitRadius: 0,
+						order: -1
+					},
+					{
+						label: 'Retired (Withdrawing)',
+						data: [],
+						borderColor: '#e24a4a',
+						backgroundColor: '#e24a4a',
+						borderWidth: 2,
+						pointRadius: 0,
+						pointHoverRadius: 0,
+						pointHitRadius: 0,
+						order: -1
 					}
 				]
 			}
