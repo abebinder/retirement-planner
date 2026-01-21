@@ -1,15 +1,22 @@
 <script lang="ts">
+	import { CurrencyInput } from '@canutin/svelte-currency-input';
 	import { type FormValues, defaultFormValues } from './interfaces';
 	let { updateParentComponent } = $props();
+	
+	// State for currency inputs (stored as strings)
+	let currentSavings = $state(String(defaultFormValues().initialSavings));
+	let annualContribution = $state(String(defaultFormValues().annualContribution));
+	let annualRetirementSpend = $state(String(defaultFormValues().annualRetirementSpend));
+	
 	function handleSubmit(event: SubmitEvent) {
 		event.preventDefault(); // Prevent default browser form submission (page reload)
 		const form = event.target as HTMLFormElement;
 		if (!form) return;
 		const formData = new FormData(form);
 		const newFormValues: FormValues = {
-			initialSavings: Number(formData.get('current-savings') || 0),
-			annualContribution: Number(formData.get('annual-contribution') || 0),
-			annualRetirementSpend: Number(formData.get('annual-retirement-spend') || 0),
+			initialSavings: Number(currentSavings || 0),
+			annualContribution: Number(annualContribution || 0),
+			annualRetirementSpend: Number(annualRetirementSpend || 0),
 			currentAge: Number(formData.get('current-age') || 0),
 			maxRetirementAge: Number(formData.get('max-retirement-age') || 0)
 		};
@@ -19,25 +26,25 @@
 
 <form onsubmit={handleSubmit}>
 	<label for="current-savings">Current Savings:</label>
-	<input
-		value={defaultFormValues().initialSavings}
-		type="number"
+	<CurrencyInput
+		bind:value={currentSavings}
 		id="current-savings"
 		name="current-savings"
+		intlConfig={{ locale: 'en-US', currency: 'USD' }}
 	/>
 	<label for="annual-contribution">Annual Contribution (while working):</label>
-	<input
-		value={defaultFormValues().annualContribution}
-		type="number"
+	<CurrencyInput
+		bind:value={annualContribution}
 		id="annual-contribution"
 		name="annual-contribution"
+		intlConfig={{ locale: 'en-US', currency: 'USD' }}
 	/>
 	<label for="annual-retirement-spend">Annual Retirement Spend:</label>
-	<input
-		value={defaultFormValues().annualRetirementSpend}
-		type="number"
+	<CurrencyInput
+		bind:value={annualRetirementSpend}
 		id="annual-retirement-spend"
 		name="annual-retirement-spend"
+		intlConfig={{ locale: 'en-US', currency: 'USD' }}
 	/>
 	<label for="current-age">Current Age:</label>
 	<input
