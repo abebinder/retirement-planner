@@ -15,6 +15,7 @@
 		title: string;
 		data: number[];
 		annotationLabel?: AnnotationLabel;
+		currentAge: number;
 	}
 
 	let props: LineChartProps = $props();
@@ -68,6 +69,14 @@
 				},
 				scales: {
 					x: {
+						title: {
+							display: true,
+							text: 'Age',
+							font: {
+								family: "'Helvetica Neue', Helvetica, Arial, sans-serif"
+							},
+							color: '#2c2c2c'
+						},
 						grid: {
 							color: '#e8e8e8'
 						},
@@ -92,7 +101,7 @@
 				}
 			},
 			data: {
-				labels: generateRange(props.data.length),
+				labels: generateAgeLabels(props.data.length, props.currentAge),
 				datasets: [
 					{
 						label: 'Savings By Year',
@@ -108,12 +117,12 @@
 		});
 	}
 
-	function generateRange(length: number): number[] {
-		let range = [];
+	function generateAgeLabels(length: number, currentAge: number): number[] {
+		let labels = [];
 		for (let i = 0; i < length; i++) {
-			range.push(i);
+			labels.push(currentAge + i);
 		}
-		return range;
+		return labels;
 	}
 </script>
 

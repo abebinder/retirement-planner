@@ -87,22 +87,27 @@
 					<LineChart
 						title="1st Percentile Simulation (Worst Case Scenario)"
 						data={result.p1_simulation}
+						currentAge={formValues.currentAge}
 					></LineChart>
 					<LineChart
 						title="10th Percentile Simulation (Very Bad Scenario)"
 						data={result.p10_simulation}
+						currentAge={formValues.currentAge}
 					></LineChart>
 					<LineChart
 						title="50th Percentile Simulation (Expected Scenario)"
 						data={result.p50_simulation}
+						currentAge={formValues.currentAge}
 					></LineChart>
 					<LineChart
 						title="90th Percentile Simulation (Very Good Scenario)"
 						data={result.p90_simulation}
+						currentAge={formValues.currentAge}
 					></LineChart>
 					<LineChart
 						title="99th Percentile Simulation (Best Case Scenario)"
 						data={result.p99_simulation}
+						currentAge={formValues.currentAge}
 					></LineChart>
 				</details>
 			{/each}
