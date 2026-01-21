@@ -53,13 +53,7 @@
 				plugins: {
 					annotation: annotation,
 					legend: {
-						display: true,
-						labels: {
-							font: {
-								family: "'Helvetica Neue', Helvetica, Arial, sans-serif"
-							},
-							color: '#2c2c2c'
-						}
+						display: false
 					}
 				},
 				scales: {

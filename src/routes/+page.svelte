@@ -80,7 +80,7 @@
 	<p>1000 simulations with different market conditions are run at each age. 
 		The results show the percentage chance your retirement savings would last til age 90 if you retired at the given age.</p>
 			{#each growthAndWithdrawlResults as result, i}
-				<h4>Age {i + formValues.currentAge}</h4>
+				<h2>Age {i + formValues.currentAge}</h2>
 				<p>You have a {result.successRate * 100}% chance of surviving to age 90 if you retired at age {i + formValues.currentAge}.</p>
 				<details>
 					<summary>View A Few Simulations</summary>
