@@ -85,27 +85,23 @@
 				<details>
 					<summary>View A Few Simulations</summary>
 					<LineChart
-						title="FixedRateSimulation"
-						data={result.fixed_rate_simulation}
-					></LineChart>
-					<LineChart
-						title="RandomizedSimulation"
+						title="1st Percentile Simulation (Worst Case Scenario)"
 						data={result.p1_simulation}
 					></LineChart>
 					<LineChart
-						title="RandomizedSimulation"
+						title="10th Percentile Simulation (Very Bad Scenario)"
 						data={result.p10_simulation}
 					></LineChart>
 					<LineChart
-						title="RandomizedSimulation"
+						title="50th Percentile Simulation (Expected Scenario)"
 						data={result.p50_simulation}
 					></LineChart>
 					<LineChart
-						title="RandomizedSimulation"
+						title="90th Percentile Simulation (Very Good Scenario)"
 						data={result.p90_simulation}
 					></LineChart>
 					<LineChart
-						title="RandomizedSimulation"
+						title="99th Percentile Simulation (Best Case Scenario)"
 						data={result.p99_simulation}
 					></LineChart>
 				</details>

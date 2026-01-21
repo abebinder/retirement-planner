@@ -54,6 +54,16 @@
 					annotation: annotation,
 					legend: {
 						display: false
+					},
+					title: {
+						display: true,
+						text: props.title,
+						font: {
+							family: "'Helvetica Neue', Helvetica, Arial, sans-serif",
+							size: 16
+						},
+						color: '#2c2c2c',
+						padding: 20
 					}
 				},
 				scales: {
