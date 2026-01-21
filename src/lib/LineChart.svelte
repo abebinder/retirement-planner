@@ -25,6 +25,13 @@
 		if (chart) {
 			chart.destroy();
 		}
+		
+		// Split data at retirement age for different fill colors
+		const retirementIndex = props.retirementAge - props.currentAge;
+		// Create arrays with null padding to align with labels
+		const workingData = [...props.data.slice(0, retirementIndex + 1), ...new Array(props.data.length - retirementIndex - 1).fill(null)];
+		const retiredData = [...new Array(retirementIndex).fill(null), ...props.data.slice(retirementIndex)];
+		
 		chart = new Chart(chartCanvas, {
 			type: 'line',
 			options: {
@@ -101,20 +108,25 @@
 				datasets: [
 					{
 						label: 'Savings',
-						data: props.data,
-						borderColor: '#4a90e2',
-						backgroundColor: 'rgba(74, 144, 226, 0.1)',
-						segment: {
-							borderColor: function(ctx) {
-								// Check the age at the end of the segment (p1)
-								const age = props.currentAge + ctx.p1DataIndex;
-								return age <= props.retirementAge ? '#ba8e23' : '#e24a4a';
-							}
-						},
+						data: workingData,
+						borderColor: '#ba8e23',
+						backgroundColor: 'rgba(186, 142, 35, 0.2)',
 						borderWidth: 2,
 						fill: true,
 						tension: 0.1,
-						hidden: false
+						hidden: false,
+						order: 1
+					},
+					{
+						label: 'Savings',
+						data: retiredData,
+						borderColor: '#e24a4a',
+						backgroundColor: 'rgba(226, 74, 74, 0.2)',
+						borderWidth: 2,
+						fill: true,
+						tension: 0.1,
+						hidden: false,
+						order: 1
 					},
 					// Invisible datasets for legend only
 					{
