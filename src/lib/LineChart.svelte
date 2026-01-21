@@ -4,6 +4,7 @@
 	import annotationPlugin, {
 		type AnnotationPluginOptions
 	} from 'chartjs-plugin-annotation';
+	import { currencyFormat } from './formatter';
 	Chart.register(annotationPlugin);
 
 	interface AnnotationLabel {
@@ -95,6 +96,9 @@
 							color: '#6b6b6b',
 							font: {
 								family: "'Helvetica Neue', Helvetica, Arial, sans-serif"
+							},
+							callback: function (value) {
+								return currencyFormat(value as number);
 							}
 						}
 					}
