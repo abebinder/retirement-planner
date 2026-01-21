@@ -104,7 +104,6 @@ summary {
 	color: var(--text-primary);
 	padding: var(--spacing-sm);
 	margin: calc(-1 * var(--spacing-md));
-	margin-bottom: var(--spacing-md);
 	user-select: none;
 }
 
