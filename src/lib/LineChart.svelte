@@ -109,8 +109,8 @@
 					{
 						label: 'Savings',
 						data: workingData,
-						borderColor: '#ba8e23',
-						backgroundColor: 'rgba(186, 142, 35, 0.2)',
+						borderColor: '#4a90e2',
+						backgroundColor: 'rgba(74, 144, 226, 0.2)',
 						borderWidth: 2,
 						fill: true,
 						tension: 0.1,
@@ -132,8 +132,8 @@
 					{
 						label: 'Working (Contributing)',
 						data: [],
-						borderColor: '#ba8e23',
-						backgroundColor: '#ba8e23',
+						borderColor: '#4a90e2',
+						backgroundColor: '#4a90e2',
 						borderWidth: 2,
 						pointRadius: 0,
 						pointHoverRadius: 0,
