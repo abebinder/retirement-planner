@@ -38,6 +38,17 @@
 				responsive: true,
 				maintainAspectRatio: false,
 				plugins: {
+					tooltip: {
+						callbacks: {
+							label: function(context: any) {
+								return currencyFormat(context.parsed.y);
+							},
+							title: function(context: any) {
+								return 'Age ' + context[0].label;
+							}
+						},
+						displayColors: false
+					},
 					legend: {
 						display: true,
 						position: 'top',
