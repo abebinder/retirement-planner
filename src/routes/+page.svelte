@@ -85,8 +85,8 @@
 				<details>
 					<summary>View A Few Simulations</summary>
 					<LineChart
-						title="1st Percentile Simulation (Worst Case Scenario)"
-						data={result.p1_simulation}
+						title="0th Percentile Simulation (Worst Case Scenario)"
+						data={result.p0_simulation}
 						currentAge={formValues.currentAge}
 						retirementAge={i + formValues.currentAge}
 					></LineChart>
@@ -97,7 +97,7 @@
 						retirementAge={i + formValues.currentAge}
 					></LineChart>
 					<LineChart
-						title="50th Percentile Simulation (Expected Scenario)"
+						title="50th Percentile Simulation (Median Scenario)"
 						data={result.p50_simulation}
 						currentAge={formValues.currentAge}
 						retirementAge={i + formValues.currentAge}
@@ -109,8 +109,8 @@
 						retirementAge={i + formValues.currentAge}
 					></LineChart>
 					<LineChart
-						title="99th Percentile Simulation (Best Case Scenario)"
-						data={result.p99_simulation}
+						title="100th Percentile Simulation (Best Case Scenario)"
+						data={result.p100_simulation}
 						currentAge={formValues.currentAge}
 						retirementAge={i + formValues.currentAge}
 					></LineChart>

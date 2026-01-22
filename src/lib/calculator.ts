@@ -141,11 +141,11 @@ export function runGrowthCombinedWithWithdrawlSimulation(
 
 export interface MultipleGrowthCombinedWithWithdrawlSimulationResult {
 	fixed_rate_simulation: number[];
-	p1_simulation: number[];
+	p0_simulation: number[];
 	p10_simulation: number[];
 	p50_simulation: number[];
 	p90_simulation: number[];
-	p99_simulation: number[];
+	p100_simulation: number[];
 	successRate: number;
 }
 
@@ -193,11 +193,11 @@ export function runMultipleGrowthCombinedWithWithdrawlSimulations(
 
 	return {
 		fixed_rate_simulation: fixedRateSimulation,
-		p1_simulation: allRandomizedSimulations[Math.floor(num_simulations * .01)],
+		p0_simulation: allRandomizedSimulations[0],
 		p10_simulation: allRandomizedSimulations[Math.floor(num_simulations * .1)],
 		p50_simulation: allRandomizedSimulations[Math.floor(num_simulations * .5)],
 		p90_simulation: allRandomizedSimulations[Math.floor(num_simulations * .9)],
-		p99_simulation: allRandomizedSimulations[Math.floor(num_simulations * .99)],
+		p100_simulation: allRandomizedSimulations[allRandomizedSimulations.length - 1],
 		successRate: successCount / num_simulations
 	}
 }
