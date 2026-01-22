@@ -61,10 +61,6 @@
 							boxWidth: 15,
 							boxHeight: 5,
 							padding: 15,
-							filter: function(legendItem: any, chartData: any) {
-								// Only show legend for "Working" and "Retired" datasets
-								return legendItem.text === 'Working (Contributing)' || legendItem.text === 'Retired (Withdrawing)';
-							}
 						}
 					},
 					title: {
@@ -118,7 +114,7 @@
 				labels: generateAgeLabels(props.data.length, props.currentAge),
 				datasets: [
 					{
-						label: 'Savings',
+						label: 'Working (Contributing)',
 						data: workingData,
 						borderColor: '#4a90e2',
 						backgroundColor: 'rgba(74, 144, 226, 0.2)',
@@ -129,7 +125,7 @@
 						order: 1
 					},
 					{
-						label: 'Savings',
+						label: 'Retired (Withdrawing)',
 						data: retiredData,
 						borderColor: '#e24a4a',
 						backgroundColor: 'rgba(226, 74, 74, 0.2)',
@@ -138,29 +134,6 @@
 						tension: 0.1,
 						hidden: false,
 						order: 1
-					},
-					// Invisible datasets for legend only
-					{
-						label: 'Working (Contributing)',
-						data: [],
-						borderColor: '#4a90e2',
-						backgroundColor: '#4a90e2',
-						borderWidth: 2,
-						pointRadius: 0,
-						pointHoverRadius: 0,
-						pointHitRadius: 0,
-						order: -1
-					},
-					{
-						label: 'Retired (Withdrawing)',
-						data: [],
-						borderColor: '#e24a4a',
-						backgroundColor: '#e24a4a',
-						borderWidth: 2,
-						pointRadius: 0,
-						pointHoverRadius: 0,
-						pointHitRadius: 0,
-						order: -1
 					}
 				]
 			}
