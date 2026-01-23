@@ -1,13 +1,15 @@
 <script lang="ts">
 	import LineChart from '$lib/LineChart.svelte';
-	import {
-		type RunMultipleSimulationsResult
-	} from '$lib/calculator';
+	import { type RunMultipleSimulationsResult } from '$lib/calculator';
 	import {
 		runMultipleSimulationsForEachAge,
 		calculateRetirementAge
 	} from '$lib/calculator';
-	import { LIFE_EXPECTANCY, NUM_SIMULATIONS, RETIREMENT_AGE_CONFIDENCE } from '$lib/constants';
+	import {
+		LIFE_EXPECTANCY,
+		NUM_SIMULATIONS,
+		RETIREMENT_AGE_CONFIDENCE
+	} from '$lib/constants';
 	import Form from '$lib/Form.svelte';
 	import { type FormValues, defaultFormValues } from '$lib/interfaces';
 
@@ -15,17 +17,16 @@
 	function updateFormValues(newFormValues: FormValues) {
 		formValues = newFormValues;
 	}
-	let growthAndWithdrawlResults: RunMultipleSimulationsResult[] =
-		$derived(
-			runMultipleSimulationsForEachAge(
-				formValues.initialSavings,
-				formValues.annualContribution,
-				formValues.annualRetirementSpend,
-				NUM_SIMULATIONS,
-				formValues.currentAge,
-				formValues.maxRetirementAge
-			)
-		);
+	let growthAndWithdrawlResults: RunMultipleSimulationsResult[] = $derived(
+		runMultipleSimulationsForEachAge(
+			formValues.initialSavings,
+			formValues.annualContribution,
+			formValues.annualRetirementSpend,
+			NUM_SIMULATIONS,
+			formValues.currentAge,
+			formValues.maxRetirementAge
+		)
+	);
 	let confidentRetirementAge = $derived(
 		calculateRetirementAge(
 			growthAndWithdrawlResults,
@@ -51,24 +52,24 @@
 <section class="panel">
 	<h1>Summary</h1>
 	<p>
-		Retirement Age (With {RETIREMENT_AGE_CONFIDENCE * 100}% Confidence of Savings Surviving til Age {LIFE_EXPECTANCY}): <strong
-			>{confidentRetirementAge ?? 'Not achievable'}</strong
-		>.
+		Retirement Age (With {RETIREMENT_AGE_CONFIDENCE * 100}% Confidence of
+		Savings Surviving til Age {LIFE_EXPECTANCY}):
+		<strong>{confidentRetirementAge ?? 'Not achievable'}</strong>.
 	</p>
 </section>
 
 <section class="panel">
 	<h1>Simulations</h1>
 	<p>
-		{NUM_SIMULATIONS} simulations with different market conditions are run at each age. The
-		results show the percentage chance your retirement savings would last til
-		age {LIFE_EXPECTANCY} if you retired at the given age.
+		{NUM_SIMULATIONS} simulations with different market conditions are run at each
+		age. The results show the percentage chance your retirement savings would last
+		til age {LIFE_EXPECTANCY} if you retired at the given age.
 	</p>
 	{#each growthAndWithdrawlResults as result, i}
 		<h2>Age {i + formValues.currentAge}</h2>
 		<p>
-			You have a {result.successRate * 100}% chance of surviving to age {LIFE_EXPECTANCY} if
-			you retired at age {i + formValues.currentAge}.
+			You have a {result.successRate * 100}% chance of surviving to age {LIFE_EXPECTANCY}
+			if you retired at age {i + formValues.currentAge}.
 		</p>
 		<details>
 			<summary>View A Few Simulations</summary>

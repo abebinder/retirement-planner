@@ -21,7 +21,6 @@ function getInvestmentRate(): number {
 	});
 }
 
-
 export function runSimulation(
 	initialSavings: number,
 	annualContribution: number,
@@ -50,12 +49,10 @@ export function runSimulation(
 	return savingsByYear;
 }
 
-
 export interface SampleSimulation {
 	simulationData: number[];
 	simulationTitle: string;
 }
-
 
 export interface RunMultipleSimulationsResult {
 	sampleSimulations: SampleSimulation[];
@@ -71,15 +68,18 @@ function generateSampleSimulations(
 			simulationTitle: '0th Percentile Simulation (Worst Case Scenario)'
 		},
 		{
-			simulationData: sortedSimulations[Math.floor(sortedSimulations.length * 0.1)],
+			simulationData:
+				sortedSimulations[Math.floor(sortedSimulations.length * 0.1)],
 			simulationTitle: '10th Percentile Simulation (Very Bad Scenario)'
 		},
 		{
-			simulationData: sortedSimulations[Math.floor(sortedSimulations.length * 0.5)],
+			simulationData:
+				sortedSimulations[Math.floor(sortedSimulations.length * 0.5)],
 			simulationTitle: '50th Percentile Simulation (Median Scenario)'
 		},
 		{
-			simulationData: sortedSimulations[Math.floor(sortedSimulations.length * 0.9)],
+			simulationData:
+				sortedSimulations[Math.floor(sortedSimulations.length * 0.9)],
 			simulationTitle: '90th Percentile Simulation (Very Good Scenario)'
 		},
 		{
@@ -162,4 +162,3 @@ export function calculateRetirementAge(
 	}
 	return null;
 }
-
