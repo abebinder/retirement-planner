@@ -5,7 +5,8 @@
 	} from '$lib/calculator';
 	import {
 		runMultipleSimulationsForEachAge,
-		calculateRetirementAge
+		calculateRetirementAge,
+		LIFE_EXPECTANCY
 	} from '$lib/calculator';
 	import Form from '$lib/Form.svelte';
 	import { type FormValues, defaultFormValues } from '$lib/interfaces';
@@ -50,7 +51,7 @@
 <section class="panel">
 	<h1>Summary</h1>
 	<p>
-		Retirement Age (With 95% Confidence of Savings Surviving til Age 90): <strong
+		Retirement Age (With 95% Confidence of Savings Surviving til Age {LIFE_EXPECTANCY}): <strong
 			>{earliestRetirementAge95Confidence ?? 'Not achievable'}</strong
 		>.
 	</p>
@@ -61,12 +62,12 @@
 	<p>
 		1000 simulations with different market conditions are run at each age. The
 		results show the percentage chance your retirement savings would last til
-		age 90 if you retired at the given age.
+		age {LIFE_EXPECTANCY} if you retired at the given age.
 	</p>
 	{#each growthAndWithdrawlResults as result, i}
 		<h2>Age {i + formValues.currentAge}</h2>
 		<p>
-			You have a {result.successRate * 100}% chance of surviving to age 90 if
+			You have a {result.successRate * 100}% chance of surviving to age {LIFE_EXPECTANCY} if
 			you retired at age {i + formValues.currentAge}.
 		</p>
 		<details>

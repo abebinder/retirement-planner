@@ -3,6 +3,8 @@
 const VT_INFLATION_ADJUSTED_MEAN = 0.0519;
 const VT_STANDARD_DEVIATION = 0.1572;
 
+export const LIFE_EXPECTANCY = 90;
+
 //https://stackoverflow.com/a/36481059
 // Standard Normal variate using Box-Muller transform.
 function gaussianRandom(options: { mean: number; stdev: number }): number {
@@ -38,7 +40,7 @@ export function runSimulation(
 		}
 		savingsByYear.push(savings);
 	}
-	for (let i = ageToSwitchToWithdrawl; i < 90; i++) {
+	for (let i = ageToSwitchToWithdrawl; i < LIFE_EXPECTANCY; i++) {
 		let investmentRate = getInvestmentRate();
 		savings = savings * (1 + investmentRate) - annualWithdawl;
 		if (savings < 0) {
@@ -106,7 +108,7 @@ export function runMultipleSimulations(
 			currentAge,
 			ageToSwitchToWithdrawl
 		);
-		if (simulation.length >= 90 - currentAge) {
+		if (simulation.length >= LIFE_EXPECTANCY - currentAge) {
 			successCount++;
 		}
 		simulations.push(simulation);
