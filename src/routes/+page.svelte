@@ -36,10 +36,10 @@
 </script>
 
 <svelte:head>
-	<title>Retirement Calculator</title>
+	<title>Fi Simulator</title>
 	<meta
 		name="description"
-		content="Use this calculator to figure out when you can retire."
+		content="Use this simulator to figure out when you can retire."
 	/>
 </svelte:head>
 
