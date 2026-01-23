@@ -85,6 +85,33 @@ export interface RunMultipleSimulationsResult {
 	successRate: number;
 }
 
+function generateSampleSimulations(
+	sortedSimulations: number[][]
+): SampleSimulation[] {
+	return [
+		{
+			simulationData: sortedSimulations[0],
+			simulationTitle: '0th Percentile Simulation (Worst Case Scenario)'
+		},
+		{
+			simulationData: sortedSimulations[Math.floor(sortedSimulations.length * 0.1)],
+			simulationTitle: '10th Percentile Simulation (Very Bad Scenario)'
+		},
+		{
+			simulationData: sortedSimulations[Math.floor(sortedSimulations.length * 0.5)],
+			simulationTitle: '50th Percentile Simulation (Median Scenario)'
+		},
+		{
+			simulationData: sortedSimulations[Math.floor(sortedSimulations.length * 0.9)],
+			simulationTitle: '90th Percentile Simulation (Very Good Scenario)'
+		},
+		{
+			simulationData: sortedSimulations[sortedSimulations.length - 1],
+			simulationTitle: '100th Percentile Simulation (Best Case Scenario)'
+		}
+	];
+}
+
 export function runMultipleSimulations(
 	initialSavings: number,
 	annualContribution: number,
@@ -116,28 +143,7 @@ export function runMultipleSimulations(
 		return a[a.length - 1] - b[b.length - 1]; // Sort by last element ascending
 	});
 
-	const simulations: SampleSimulation[] = [
-		{
-			simulationData: allRandomizedSimulations[0],
-			simulationTitle: '0th Percentile Simulation (Worst Case Scenario)'
-		},
-		{
-			simulationData: allRandomizedSimulations[Math.floor(num_simulations * 0.1)],
-			simulationTitle: '10th Percentile Simulation (Very Bad Scenario)'
-		},
-		{
-			simulationData: allRandomizedSimulations[Math.floor(num_simulations * 0.5)],
-			simulationTitle: '50th Percentile Simulation (Median Scenario)'
-		},
-		{
-			simulationData: allRandomizedSimulations[Math.floor(num_simulations * 0.9)],
-			simulationTitle: '90th Percentile Simulation (Very Good Scenario)'
-		},
-		{
-			simulationData: allRandomizedSimulations[allRandomizedSimulations.length - 1],
-			simulationTitle: '100th Percentile Simulation (Best Case Scenario)'
-		}
-	];
+	const simulations = generateSampleSimulations(allRandomizedSimulations);
 
 	return {
 		simulations: simulations,
