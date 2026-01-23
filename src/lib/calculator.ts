@@ -225,6 +225,19 @@ export function runGrowthAndWithdrawlForEachAge(
 	return allResults;
 }
 
+export function calculateRetirementAge(
+	results: MultipleGrowthCombinedWithWithdrawlSimulationResult[],
+	currentAge: number,
+	confidenceThreshold: number
+): number | null {
+	for (let i = 0; i < results.length; i++) {
+		if (results[i].successRate >= confidenceThreshold) {
+			return currentAge + i;
+		}
+	}
+	return null;
+}
+
 
 export function runMultipleSimulations(
 	initialSavings: number,

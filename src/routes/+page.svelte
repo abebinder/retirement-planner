@@ -10,6 +10,7 @@
 		calculateSimulationStats,
 		runMultipleSimulations,
 		runGrowthAndWithdrawlForEachAge,
+		calculateRetirementAge,
 	} from '$lib/calculator';
 	import Form from '$lib/Form.svelte';
 	import { type FormValues, defaultFormValues } from '$lib/interfaces';
@@ -52,7 +53,10 @@
 			formValues.currentAge,
 			formValues.maxRetirementAge
 		)
-);
+	);
+	let earliestRetirementAge95Confidence = $derived(
+		calculateRetirementAge(growthAndWithdrawlResults, formValues.currentAge, 0.95)
+	);
 </script>
 
 <svelte:head>
@@ -73,6 +77,7 @@
 	<p>Retirement number is <strong>{currencyFormat(retirementNumber)}</strong>.</p>
 	<p>You can retire in <strong>{savingsByYear.length - 1} years</strong>.</p>
 	<p>You can coast in <strong>{yearsUntilCoast} years</strong>.</p>
+	<p>Retirement Age (95% Confidence of Savings Surviving to Age 90): <strong>{earliestRetirementAge95Confidence ?? 'Not achievable'}</strong>.</p>
 </section>
 
 <section class="panel">
