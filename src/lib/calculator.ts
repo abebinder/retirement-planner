@@ -1,16 +1,7 @@
-interface PortfolioStats {
-	mean: number;
-	inflation_adjusted_mean: number;
-	standard_deviation: number;
-}
-
 //https://www.youtube.com/watch?v=Yl3NxTS_DgY&t=14s
 //https://www.lazyportfolioetf.com/etf/vanguard-total-world-stock-vt/
-const vt_historical_stats: PortfolioStats = {
-	mean: 0.0784,
-	inflation_adjusted_mean: 0.0519,
-	standard_deviation: 0.1572
-};
+const VT_INFLATION_ADJUSTED_MEAN = 0.0519;
+const VT_STANDARD_DEVIATION = 0.1572;
 
 //https://stackoverflow.com/a/36481059
 // Standard Normal variate using Box-Muller transform.
@@ -24,8 +15,8 @@ function gaussianRandom(options: { mean: number; stdev: number }): number {
 
 function getInvestmentRate(): number {
 	return gaussianRandom({
-		mean: vt_historical_stats.inflation_adjusted_mean,
-		stdev: vt_historical_stats.standard_deviation
+		mean: VT_INFLATION_ADJUSTED_MEAN,
+		stdev: VT_STANDARD_DEVIATION
 	});
 }
 
