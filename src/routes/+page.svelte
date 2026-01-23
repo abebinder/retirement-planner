@@ -7,7 +7,7 @@
 		runMultipleSimulationsForEachAge,
 		calculateRetirementAge
 	} from '$lib/calculator';
-	import { LIFE_EXPECTANCY } from '$lib/constants';
+	import { LIFE_EXPECTANCY, NUM_SIMULATIONS, RETIREMENT_AGE_CONFIDENCE } from '$lib/constants';
 	import Form from '$lib/Form.svelte';
 	import { type FormValues, defaultFormValues } from '$lib/interfaces';
 
@@ -21,16 +21,16 @@
 				formValues.initialSavings,
 				formValues.annualContribution,
 				formValues.annualRetirementSpend,
-				1000,
+				NUM_SIMULATIONS,
 				formValues.currentAge,
 				formValues.maxRetirementAge
 			)
 		);
-	let earliestRetirementAge95Confidence = $derived(
+	let confidentRetirementAge = $derived(
 		calculateRetirementAge(
 			growthAndWithdrawlResults,
 			formValues.currentAge,
-			0.95
+			RETIREMENT_AGE_CONFIDENCE
 		)
 	);
 </script>
@@ -51,8 +51,8 @@
 <section class="panel">
 	<h1>Summary</h1>
 	<p>
-		Retirement Age (With 95% Confidence of Savings Surviving til Age {LIFE_EXPECTANCY}): <strong
-			>{earliestRetirementAge95Confidence ?? 'Not achievable'}</strong
+		Retirement Age (With {RETIREMENT_AGE_CONFIDENCE * 100}% Confidence of Savings Surviving til Age {LIFE_EXPECTANCY}): <strong
+			>{confidentRetirementAge ?? 'Not achievable'}</strong
 		>.
 	</p>
 </section>
@@ -60,7 +60,7 @@
 <section class="panel">
 	<h1>Simulations</h1>
 	<p>
-		1000 simulations with different market conditions are run at each age. The
+		{NUM_SIMULATIONS} simulations with different market conditions are run at each age. The
 		results show the percentage chance your retirement savings would last til
 		age {LIFE_EXPECTANCY} if you retired at the given age.
 	</p>
