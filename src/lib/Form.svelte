@@ -8,6 +8,15 @@
 	}
 
 	export function defaultFormValues(): FormValues {
+		if (browser) {
+			console.log('Checking for stored values');
+			const storedValues = localStorage.getItem('form-values');
+			if (storedValues) {
+				console.log('Found stored values', storedValues);
+				return JSON.parse(storedValues) as FormValues;
+			}
+		}
+		console.log('No stored values found, using default values');
 		return {
 			initialSavings: 100000,
 			annualContribution: 50000,
@@ -19,6 +28,8 @@
 </script>
 
 <script lang="ts">
+	import { browser } from '$app/environment';
+
 	import { CurrencyInput } from '@canutin/svelte-currency-input';
 
 	let { updateParentComponent } = $props();
@@ -45,6 +56,9 @@
 			maxRetirementAge: Number(formData.get('max-retirement-age') || 0)
 		};
 		updateParentComponent(newFormValues);
+		if (localStorage) {
+			localStorage.setItem('form-values', JSON.stringify(newFormValues));
+		}
 	}
 </script>
 
