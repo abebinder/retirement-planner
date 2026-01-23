@@ -1,6 +1,26 @@
+<script module lang="ts">
+	export interface FormValues {
+		initialSavings: number;
+		annualContribution: number;
+		annualRetirementSpend: number;
+		currentAge: number;
+		maxRetirementAge: number;
+	}
+
+	export function defaultFormValues(): FormValues {
+		return {
+			initialSavings: 1000000,
+			annualContribution: 150000,
+			annualRetirementSpend: 65000,
+			currentAge: 28,
+			maxRetirementAge: 60
+		};
+	}
+</script>
+
 <script lang="ts">
 	import { CurrencyInput } from '@canutin/svelte-currency-input';
-	import { type FormValues, defaultFormValues } from './interfaces';
+
 	let { updateParentComponent } = $props();
 
 	// State for currency inputs (stored as strings)
