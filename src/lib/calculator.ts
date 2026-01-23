@@ -44,7 +44,7 @@ export function getInvestmentRate(mode: InvestmentRateMode): number {
 }
 
 
-export function runGrowthCombinedWithWithdrawlSimulation(
+export function runSimulation(
 	initialSavings: number,
 	annualContribution: number,
 	annualWithdawl: number,
@@ -73,7 +73,7 @@ export function runGrowthCombinedWithWithdrawlSimulation(
 	return savingsByYear;
 }
 
-export interface MultipleGrowthCombinedWithWithdrawlSimulationResult {
+export interface RunMultipleSimulationsResult {
 	fixed_rate_simulation: number[];
 	p0_simulation: number[];
 	p10_simulation: number[];
@@ -83,17 +83,15 @@ export interface MultipleGrowthCombinedWithWithdrawlSimulationResult {
 	successRate: number;
 }
 
-export function runMultipleGrowthCombinedWithWithdrawlSimulations(
+export function runMultipleSimulations(
 	initialSavings: number,
 	annualContribution: number,
 	annualWithdawl: number,
 	num_simulations: number,
 	currentAge: number,
 	ageToSwitchToWithdrawl: number
-): MultipleGrowthCombinedWithWithdrawlSimulationResult {
-	console.log('currentAge', currentAge);
-	console.log('ageToSwitchToWithdrawl', ageToSwitchToWithdrawl);
-	let fixedRateSimulation = runGrowthCombinedWithWithdrawlSimulation(
+): RunMultipleSimulationsResult {
+	let fixedRateSimulation = runSimulation(
 		initialSavings,
 		annualContribution,
 		annualWithdawl,
@@ -104,7 +102,7 @@ export function runMultipleGrowthCombinedWithWithdrawlSimulations(
 	let allRandomizedSimulations: number[][] = [];
 	let successCount = 0;
 	for (let i = 0; i < num_simulations; i++) {
-		let simulation = runGrowthCombinedWithWithdrawlSimulation(
+		let simulation = runSimulation(
 			initialSavings,
 			annualContribution,
 			annualWithdawl,
@@ -136,17 +134,17 @@ export function runMultipleGrowthCombinedWithWithdrawlSimulations(
 	};
 }
 
-export function runGrowthAndWithdrawlForEachAge(
+export function runMultipleSimulationsForEachAge(
 	initialSavings: number,
 	annualContribution: number,
 	annualWithdawl: number,
 	simulations: number,
 	currentAge: number,
 	maxRetirementAge: number
-): MultipleGrowthCombinedWithWithdrawlSimulationResult[] {
-	let allResults: MultipleGrowthCombinedWithWithdrawlSimulationResult[] = [];
+): RunMultipleSimulationsResult[] {
+	let allResults: RunMultipleSimulationsResult[] = [];
 	for (let i = currentAge; i < maxRetirementAge; i++) {
-		let result = runMultipleGrowthCombinedWithWithdrawlSimulations(
+		let result = runMultipleSimulations(
 			initialSavings,
 			annualContribution,
 			annualWithdawl,
@@ -160,7 +158,7 @@ export function runGrowthAndWithdrawlForEachAge(
 }
 
 export function calculateRetirementAge(
-	results: MultipleGrowthCombinedWithWithdrawlSimulationResult[],
+	results: RunMultipleSimulationsResult[],
 	currentAge: number,
 	confidenceThreshold: number
 ): number | null {

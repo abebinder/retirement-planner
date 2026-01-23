@@ -1,10 +1,10 @@
 <script lang="ts">
 	import LineChart from '$lib/LineChart.svelte';
 	import {
-		type MultipleGrowthCombinedWithWithdrawlSimulationResult
+		type RunMultipleSimulationsResult
 	} from '$lib/calculator';
 	import {
-		runGrowthAndWithdrawlForEachAge,
+		runMultipleSimulationsForEachAge,
 		calculateRetirementAge
 	} from '$lib/calculator';
 	import Form from '$lib/Form.svelte';
@@ -14,9 +14,9 @@
 	function updateFormValues(newFormValues: FormValues) {
 		formValues = newFormValues;
 	}
-	let growthAndWithdrawlResults: MultipleGrowthCombinedWithWithdrawlSimulationResult[] =
+	let growthAndWithdrawlResults: RunMultipleSimulationsResult[] =
 		$derived(
-			runGrowthAndWithdrawlForEachAge(
+			runMultipleSimulationsForEachAge(
 				formValues.initialSavings,
 				formValues.annualContribution,
 				formValues.annualRetirementSpend,
