@@ -1,10 +1,10 @@
 <script lang="ts">
 	import LineChart from '$lib/LineChart.svelte';
-	import { type RunMultipleSimulationsResult } from '$lib/calculator';
+	import { type RunMultipleSimulationsResult } from '$lib/simulator';
 	import {
 		runMultipleSimulationsForEachAge,
 		calculateRetirementAge
-	} from '$lib/calculator';
+	} from '$lib/simulator';
 	import {
 		LIFE_EXPECTANCY,
 		NUM_SIMULATIONS,
