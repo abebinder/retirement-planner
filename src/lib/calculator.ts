@@ -116,7 +116,7 @@ export function runGrowthCombinedWithWithdrawlSimulation(
 	annualWithdawl: number,
 	currentAge: number,
 	ageToSwitchToWithdrawl: number,
-	investmentRateMode: InvestmentRateMode,
+	investmentRateMode: InvestmentRateMode
 ): number[] {
 	let savingsByYear: number[] = [initialSavings];
 	let savings = initialSavings;
@@ -155,7 +155,7 @@ export function runMultipleGrowthCombinedWithWithdrawlSimulations(
 	annualWithdawl: number,
 	num_simulations: number,
 	currentAge: number,
-	ageToSwitchToWithdrawl: number,
+	ageToSwitchToWithdrawl: number
 ): MultipleGrowthCombinedWithWithdrawlSimulationResult {
 	console.log('currentAge', currentAge);
 	console.log('ageToSwitchToWithdrawl', ageToSwitchToWithdrawl);
@@ -187,19 +187,19 @@ export function runMultipleGrowthCombinedWithWithdrawlSimulations(
 		if (a.length !== b.length) {
 			return a.length - b.length; // Sort by length ascending
 		}
-		return (a[a.length - 1]) - (b[b.length - 1]); // Sort by last element ascending
+		return a[a.length - 1] - b[b.length - 1]; // Sort by last element ascending
 	});
-
 
 	return {
 		fixed_rate_simulation: fixedRateSimulation,
 		p0_simulation: allRandomizedSimulations[0],
-		p10_simulation: allRandomizedSimulations[Math.floor(num_simulations * .1)],
-		p50_simulation: allRandomizedSimulations[Math.floor(num_simulations * .5)],
-		p90_simulation: allRandomizedSimulations[Math.floor(num_simulations * .9)],
-		p100_simulation: allRandomizedSimulations[allRandomizedSimulations.length - 1],
+		p10_simulation: allRandomizedSimulations[Math.floor(num_simulations * 0.1)],
+		p50_simulation: allRandomizedSimulations[Math.floor(num_simulations * 0.5)],
+		p90_simulation: allRandomizedSimulations[Math.floor(num_simulations * 0.9)],
+		p100_simulation:
+			allRandomizedSimulations[allRandomizedSimulations.length - 1],
 		successRate: successCount / num_simulations
-	}
+	};
 }
 
 export function runGrowthAndWithdrawlForEachAge(
@@ -208,7 +208,7 @@ export function runGrowthAndWithdrawlForEachAge(
 	annualWithdawl: number,
 	simulations: number,
 	currentAge: number,
-	maxRetirementAge: number,
+	maxRetirementAge: number
 ): MultipleGrowthCombinedWithWithdrawlSimulationResult[] {
 	let allResults: MultipleGrowthCombinedWithWithdrawlSimulationResult[] = [];
 	for (let i = currentAge; i < maxRetirementAge; i++) {
@@ -237,7 +237,6 @@ export function calculateRetirementAge(
 	}
 	return null;
 }
-
 
 export function runMultipleSimulations(
 	initialSavings: number,

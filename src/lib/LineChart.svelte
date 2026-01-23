@@ -25,13 +25,19 @@
 		if (chart) {
 			chart.destroy();
 		}
-		
+
 		// Split data at retirement age for different fill colors
 		const retirementIndex = props.retirementAge - props.currentAge;
 		// Create arrays with null padding to align with labels
-		const workingData = [...props.data.slice(0, retirementIndex + 1), ...new Array(props.data.length - retirementIndex - 1).fill(null)];
-		const retiredData = [...new Array(retirementIndex).fill(null), ...props.data.slice(retirementIndex)];
-		
+		const workingData = [
+			...props.data.slice(0, retirementIndex + 1),
+			...new Array(props.data.length - retirementIndex - 1).fill(null)
+		];
+		const retiredData = [
+			...new Array(retirementIndex).fill(null),
+			...props.data.slice(retirementIndex)
+		];
+
 		chart = new Chart(chartCanvas, {
 			type: 'line',
 			options: {
@@ -40,10 +46,10 @@
 				plugins: {
 					tooltip: {
 						callbacks: {
-							label: function(context: any) {
+							label: function (context: any) {
 								return currencyFormat(context.parsed.y);
 							},
-							title: function(context: any) {
+							title: function (context: any) {
 								return 'Age ' + context[0].label;
 							}
 						},
@@ -60,7 +66,7 @@
 							usePointStyle: false,
 							boxWidth: 15,
 							boxHeight: 5,
-							padding: 15,
+							padding: 15
 						}
 					},
 					title: {
@@ -159,7 +165,7 @@
 		height: 500px;
 		position: relative;
 	}
-	
+
 	.chart-container canvas {
 		max-width: 100%;
 	}

@@ -2,12 +2,16 @@
 	import { CurrencyInput } from '@canutin/svelte-currency-input';
 	import { type FormValues, defaultFormValues } from './interfaces';
 	let { updateParentComponent } = $props();
-	
+
 	// State for currency inputs (stored as strings)
 	let currentSavings = $state(String(defaultFormValues().initialSavings));
-	let annualContribution = $state(String(defaultFormValues().annualContribution));
-	let annualRetirementSpend = $state(String(defaultFormValues().annualRetirementSpend));
-	
+	let annualContribution = $state(
+		String(defaultFormValues().annualContribution)
+	);
+	let annualRetirementSpend = $state(
+		String(defaultFormValues().annualRetirementSpend)
+	);
+
 	function handleSubmit(event: SubmitEvent) {
 		event.preventDefault(); // Prevent default browser form submission (page reload)
 		const form = event.target as HTMLFormElement;
