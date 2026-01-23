@@ -1,9 +1,8 @@
-//https://www.youtube.com/watch?v=Yl3NxTS_DgY&t=14s
-//https://www.lazyportfolioetf.com/etf/vanguard-total-world-stock-vt/
-const VT_INFLATION_ADJUSTED_MEAN = 0.0519;
-const VT_STANDARD_DEVIATION = 0.1572;
-
-export const LIFE_EXPECTANCY = 90;
+import {
+	VT_INFLATION_ADJUSTED_MEAN,
+	VT_STANDARD_DEVIATION,
+	LIFE_EXPECTANCY
+} from './constants';
 
 //https://stackoverflow.com/a/36481059
 // Standard Normal variate using Box-Muller transform.

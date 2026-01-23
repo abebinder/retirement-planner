@@ -5,9 +5,9 @@
 	} from '$lib/calculator';
 	import {
 		runMultipleSimulationsForEachAge,
-		calculateRetirementAge,
-		LIFE_EXPECTANCY
+		calculateRetirementAge
 	} from '$lib/calculator';
+	import { LIFE_EXPECTANCY } from '$lib/constants';
 	import Form from '$lib/Form.svelte';
 	import { type FormValues, defaultFormValues } from '$lib/interfaces';
 
