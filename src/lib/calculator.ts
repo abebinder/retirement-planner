@@ -81,7 +81,7 @@ export interface SampleSimulation {
 
 
 export interface RunMultipleSimulationsResult {
-	simulations: SampleSimulation[];
+	sampleSimulations: SampleSimulation[];
 	successRate: number;
 }
 
@@ -120,7 +120,7 @@ export function runMultipleSimulations(
 	currentAge: number,
 	ageToSwitchToWithdrawl: number
 ): RunMultipleSimulationsResult {
-	let allRandomizedSimulations: number[][] = [];
+	let simulations: number[][] = [];
 	let successCount = 0;
 	for (let i = 0; i < num_simulations; i++) {
 		let simulation = runSimulation(
@@ -134,19 +134,19 @@ export function runMultipleSimulations(
 		if (simulation.length >= 90 - currentAge) {
 			successCount++;
 		}
-		allRandomizedSimulations.push(simulation);
+		simulations.push(simulation);
 	}
-	allRandomizedSimulations.sort((a, b) => {
+	simulations.sort((a, b) => {
 		if (a.length !== b.length) {
 			return a.length - b.length; // Sort by length ascending
 		}
 		return a[a.length - 1] - b[b.length - 1]; // Sort by last element ascending
 	});
 
-	const simulations = generateSampleSimulations(allRandomizedSimulations);
+	const sampleSimulations = generateSampleSimulations(simulations);
 
 	return {
-		simulations: simulations,
+		sampleSimulations: sampleSimulations,
 		successRate: successCount / num_simulations
 	};
 }

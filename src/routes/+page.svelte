@@ -71,7 +71,7 @@
 		</p>
 		<details>
 			<summary>View A Few Simulations</summary>
-			{#each result.simulations as simulation}
+			{#each result.sampleSimulations as simulation}
 				<LineChart
 					title={simulation.simulationTitle}
 					data={simulation.simulationData}
