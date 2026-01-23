@@ -22,25 +22,11 @@ function gaussianRandom(options: { mean: number; stdev: number }): number {
 	return z * options.stdev + options.mean;
 }
 
-export enum InvestmentRateMode {
-	FIXED,
-	RANDOM
-}
-
-
-export function getInvestmentRate(mode: InvestmentRateMode): number {
-	let investment_rate: number;
-	if (mode == InvestmentRateMode.FIXED) {
-		investment_rate = vt_historical_stats.inflation_adjusted_mean;
-	} else if (mode == InvestmentRateMode.RANDOM) {
-		investment_rate = gaussianRandom({
-			mean: vt_historical_stats.inflation_adjusted_mean,
-			stdev: vt_historical_stats.standard_deviation
-		});
-	} else {
-		throw new Error('Unsupported InvestmentRateMode');
-	}
-	return investment_rate;
+function getInvestmentRate(): number {
+	return gaussianRandom({
+		mean: vt_historical_stats.inflation_adjusted_mean,
+		stdev: vt_historical_stats.standard_deviation
+	});
 }
 
 
@@ -49,13 +35,12 @@ export function runSimulation(
 	annualContribution: number,
 	annualWithdawl: number,
 	currentAge: number,
-	ageToSwitchToWithdrawl: number,
-	investmentRateMode: InvestmentRateMode
+	ageToSwitchToWithdrawl: number
 ): number[] {
 	let savingsByYear: number[] = [initialSavings];
 	let savings = initialSavings;
 	for (let i = currentAge; i < ageToSwitchToWithdrawl; i++) {
-		let investmentRate = getInvestmentRate(investmentRateMode);
+		let investmentRate = getInvestmentRate();
 		savings = savings * (1 + investmentRate) + annualContribution;
 		if (savings < 0) {
 			return savingsByYear;
@@ -63,7 +48,7 @@ export function runSimulation(
 		savingsByYear.push(savings);
 	}
 	for (let i = ageToSwitchToWithdrawl; i < 90; i++) {
-		let investmentRate = getInvestmentRate(investmentRateMode);
+		let investmentRate = getInvestmentRate();
 		savings = savings * (1 + investmentRate) - annualWithdawl;
 		if (savings < 0) {
 			return savingsByYear;
@@ -128,8 +113,7 @@ export function runMultipleSimulations(
 			annualContribution,
 			annualWithdawl,
 			currentAge,
-			ageToSwitchToWithdrawl,
-			InvestmentRateMode.RANDOM
+			ageToSwitchToWithdrawl
 		);
 		if (simulation.length >= 90 - currentAge) {
 			successCount++;
