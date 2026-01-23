@@ -1,50 +1,16 @@
 <script lang="ts">
 	import LineChart from '$lib/LineChart.svelte';
-	import { currencyFormat } from '$lib/formatter';
 	import {
-		ThresholdComprator,
-		type SimulationStats,
 		type MultipleGrowthCombinedWithWithdrawlSimulationResult
 	} from '$lib/calculator';
 	import {
-		calculateRetirementNumber,
-		calculateSavingsByYear,
-		calculateYearsToCoast,
-		InvestmentRateMode,
-		calculateSimulationStats,
-		runMultipleSimulations,
 		runGrowthAndWithdrawlForEachAge,
 		calculateRetirementAge
 	} from '$lib/calculator';
 	import Form from '$lib/Form.svelte';
 	import { type FormValues, defaultFormValues } from '$lib/interfaces';
 
-	const MAX_ITERATIONS: number = 100;
-	const NUM_SIMULATIONS: number = 100;
-
 	let formValues: FormValues = $state(defaultFormValues());
-	let retirementNumber: number = $derived(
-		calculateRetirementNumber(formValues.annualRetirementSpend)
-	);
-	let yearsUntilCoast = $derived(
-		calculateYearsToCoast({
-			initialSavings: formValues.initialSavings,
-			annualContribution: formValues.annualContribution,
-			annualRetirementSpend: formValues.annualRetirementSpend,
-			currentAge: formValues.currentAge,
-			maxRetirementAge: formValues.maxRetirementAge
-		})
-	);
-	let savingsByYear: number[] = $derived(
-		calculateSavingsByYear(
-			formValues.initialSavings,
-			formValues.annualContribution,
-			MAX_ITERATIONS,
-			InvestmentRateMode.FIXED,
-			retirementNumber,
-			ThresholdComprator.GREATER_THAN
-		)
-	);
 	function updateFormValues(newFormValues: FormValues) {
 		formValues = newFormValues;
 	}
@@ -84,12 +50,7 @@
 <section class="panel">
 	<h1>Summary</h1>
 	<p>
-		Retirement number is <strong>{currencyFormat(retirementNumber)}</strong>.
-	</p>
-	<p>You can retire in <strong>{savingsByYear.length - 1} years</strong>.</p>
-	<p>You can coast in <strong>{yearsUntilCoast} years</strong>.</p>
-	<p>
-		Retirement Age (95% Confidence of Savings Surviving to Age 90): <strong
+		Retirement Age (With 95% Confidence of Savings Surviving til Age 90): <strong
 			>{earliestRetirementAge95Confidence ?? 'Not achievable'}</strong
 		>.
 	</p>
