@@ -73,13 +73,15 @@ export function runSimulation(
 	return savingsByYear;
 }
 
+
+export interface SampleSimulation {
+	simulationData: number[];
+	simulationTitle: string;
+}
+
+
 export interface RunMultipleSimulationsResult {
-	fixed_rate_simulation: number[];
-	p0_simulation: number[];
-	p10_simulation: number[];
-	p50_simulation: number[];
-	p90_simulation: number[];
-	p100_simulation: number[];
+	simulations: SampleSimulation[];
 	successRate: number;
 }
 
@@ -91,14 +93,6 @@ export function runMultipleSimulations(
 	currentAge: number,
 	ageToSwitchToWithdrawl: number
 ): RunMultipleSimulationsResult {
-	let fixedRateSimulation = runSimulation(
-		initialSavings,
-		annualContribution,
-		annualWithdawl,
-		currentAge,
-		ageToSwitchToWithdrawl,
-		InvestmentRateMode.FIXED
-	);
 	let allRandomizedSimulations: number[][] = [];
 	let successCount = 0;
 	for (let i = 0; i < num_simulations; i++) {
@@ -122,14 +116,31 @@ export function runMultipleSimulations(
 		return a[a.length - 1] - b[b.length - 1]; // Sort by last element ascending
 	});
 
+	const simulations: SampleSimulation[] = [
+		{
+			simulationData: allRandomizedSimulations[0],
+			simulationTitle: '0th Percentile Simulation (Worst Case Scenario)'
+		},
+		{
+			simulationData: allRandomizedSimulations[Math.floor(num_simulations * 0.1)],
+			simulationTitle: '10th Percentile Simulation (Very Bad Scenario)'
+		},
+		{
+			simulationData: allRandomizedSimulations[Math.floor(num_simulations * 0.5)],
+			simulationTitle: '50th Percentile Simulation (Median Scenario)'
+		},
+		{
+			simulationData: allRandomizedSimulations[Math.floor(num_simulations * 0.9)],
+			simulationTitle: '90th Percentile Simulation (Very Good Scenario)'
+		},
+		{
+			simulationData: allRandomizedSimulations[allRandomizedSimulations.length - 1],
+			simulationTitle: '100th Percentile Simulation (Best Case Scenario)'
+		}
+	];
+
 	return {
-		fixed_rate_simulation: fixedRateSimulation,
-		p0_simulation: allRandomizedSimulations[0],
-		p10_simulation: allRandomizedSimulations[Math.floor(num_simulations * 0.1)],
-		p50_simulation: allRandomizedSimulations[Math.floor(num_simulations * 0.5)],
-		p90_simulation: allRandomizedSimulations[Math.floor(num_simulations * 0.9)],
-		p100_simulation:
-			allRandomizedSimulations[allRandomizedSimulations.length - 1],
+		simulations: simulations,
 		successRate: successCount / num_simulations
 	};
 }

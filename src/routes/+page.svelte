@@ -71,36 +71,14 @@
 		</p>
 		<details>
 			<summary>View A Few Simulations</summary>
-			<LineChart
-				title="0th Percentile Simulation (Worst Case Scenario)"
-				data={result.p0_simulation}
-				currentAge={formValues.currentAge}
-				retirementAge={i + formValues.currentAge}
-			></LineChart>
-			<LineChart
-				title="10th Percentile Simulation (Very Bad Scenario)"
-				data={result.p10_simulation}
-				currentAge={formValues.currentAge}
-				retirementAge={i + formValues.currentAge}
-			></LineChart>
-			<LineChart
-				title="50th Percentile Simulation (Median Scenario)"
-				data={result.p50_simulation}
-				currentAge={formValues.currentAge}
-				retirementAge={i + formValues.currentAge}
-			></LineChart>
-			<LineChart
-				title="90th Percentile Simulation (Very Good Scenario)"
-				data={result.p90_simulation}
-				currentAge={formValues.currentAge}
-				retirementAge={i + formValues.currentAge}
-			></LineChart>
-			<LineChart
-				title="100th Percentile Simulation (Best Case Scenario)"
-				data={result.p100_simulation}
-				currentAge={formValues.currentAge}
-				retirementAge={i + formValues.currentAge}
-			></LineChart>
+			{#each result.simulations as simulation}
+				<LineChart
+					title={simulation.simulationTitle}
+					data={simulation.simulationData}
+					currentAge={formValues.currentAge}
+					retirementAge={i + formValues.currentAge}
+				></LineChart>
+			{/each}
 		</details>
 	{/each}
 </section>
