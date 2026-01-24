@@ -9,14 +9,11 @@
 
 	export function defaultFormValues(): FormValues {
 		if (browser) {
-			console.log('Checking for stored values');
 			const storedValues = localStorage.getItem('form-values');
 			if (storedValues) {
-				console.log('Found stored values', storedValues);
 				return JSON.parse(storedValues) as FormValues;
 			}
 		}
-		console.log('No stored values found, using default values');
 		return {
 			initialSavings: 100000,
 			annualContribution: 50000,
@@ -34,7 +31,7 @@
 
 	let { updateParentComponent } = $props();
 
-	// State for currency inputs (stored as strings)
+	// State for inputs
 	let currentSavings = $state(String(defaultFormValues().initialSavings));
 	let annualContribution = $state(
 		String(defaultFormValues().annualContribution)
@@ -42,6 +39,8 @@
 	let annualRetirementSpend = $state(
 		String(defaultFormValues().annualRetirementSpend)
 	);
+	let currentAge = $state(String(defaultFormValues().currentAge));
+	let maxRetirementAge = $state(String(defaultFormValues().maxRetirementAge));
 
 	function handleSubmit(event: SubmitEvent) {
 		event.preventDefault(); // Prevent default browser form submission (page reload)
@@ -52,8 +51,8 @@
 			initialSavings: Number(currentSavings || 0),
 			annualContribution: Number(annualContribution || 0),
 			annualRetirementSpend: Number(annualRetirementSpend || 0),
-			currentAge: Number(formData.get('current-age') || 0),
-			maxRetirementAge: Number(formData.get('max-retirement-age') || 0)
+			currentAge: Number(currentAge || 0),
+			maxRetirementAge: Number(maxRetirementAge || 0)
 		};
 		updateParentComponent(newFormValues);
 		if (localStorage) {
@@ -86,14 +85,14 @@
 	/>
 	<label for="current-age">Current Age:</label>
 	<input
-		value={defaultFormValues().currentAge}
+		bind:value={currentAge}
 		type="number"
 		id="current-age"
 		name="current-age"
 	/>
 	<label for="max-retirement-age">Max Retirement Age:</label>
 	<input
-		value={defaultFormValues().maxRetirementAge}
+		bind:value={maxRetirementAge}
 		type="number"
 		id="max-retirement-age"
 		name="max-retirement-age"
