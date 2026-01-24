@@ -36,28 +36,22 @@
 	);
 
 	// Data for confidence by age chart
-	function computeAges(results: RunMultipleSimulationsResult[]): number[] {
+	function computeConfidenceByAge(results: RunMultipleSimulationsResult[]): {
+		ages: number[];
+		successRates: number[];
+	} {
 		const ages: number[] = [];
-		for (let i = 0; i < results.length; i++) {
-			ages.push(formValues.currentAge + i);
-		}
-		return ages;
-	}
-
-	function computeSuccessRates(
-		results: RunMultipleSimulationsResult[]
-	): number[] {
 		const successRates: number[] = [];
 		for (let i = 0; i < results.length; i++) {
+			ages.push(formValues.currentAge + i);
 			successRates.push(results[i].successRate);
 		}
-		return successRates;
+		return { ages, successRates };
 	}
 
-	let confidenceByAge = $derived({
-		ages: computeAges(growthAndWithdrawlResults),
-		successRates: computeSuccessRates(growthAndWithdrawlResults)
-	});
+	let confidenceByAge = $derived(
+		computeConfidenceByAge(growthAndWithdrawlResults)
+	);
 
 	// Dataset for confidence chart
 	function createConfidenceDataset(successRates: number[]) {
