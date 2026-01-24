@@ -10,33 +10,94 @@
 	interface LineChartProps {
 		title: string;
 		data: number[];
-		currentAge: number;
-		retirementAge: number;
+		currentAge?: number;
+		retirementAge?: number;
+		mode?: 'savings' | 'confidence';
+		xLabels?: number[];
+		label?: string;
 	}
 
 	let props: LineChartProps = $props();
+	const mode = props.mode || 'savings';
 
 	let chartCanvas: HTMLCanvasElement;
 	let chart: Chart;
 
 	$effect(drawChart);
 
+	function formatPercentage(value: number): string {
+		return (value * 100).toFixed(1) + '%';
+	}
+
 	function drawChart(): void {
 		if (chart) {
 			chart.destroy();
 		}
 
-		// Split data at retirement age for different fill colors
-		const retirementIndex = props.retirementAge - props.currentAge;
-		// Create arrays with null padding to align with labels
-		const workingData = [
-			...props.data.slice(0, retirementIndex + 1),
-			...new Array(props.data.length - retirementIndex - 1).fill(null)
-		];
-		const retiredData = [
-			...new Array(retirementIndex).fill(null),
-			...props.data.slice(retirementIndex)
-		];
+		let datasets: any[];
+		let labels: number[];
+		let yAxisFormatter: (value: number) => string;
+		let tooltipFormatter: (value: number) => string;
+
+		if (mode === 'confidence') {
+			// Simple confidence chart
+			labels = props.xLabels || props.data.map((_, i) => i);
+			yAxisFormatter = formatPercentage;
+			tooltipFormatter = formatPercentage;
+			datasets = [
+				{
+					label: props.label || 'Confidence',
+					data: props.data,
+					borderColor: '#4a90e2',
+					backgroundColor: 'rgba(74, 144, 226, 0.2)',
+					borderWidth: 2,
+					fill: true,
+					tension: 0.1
+				}
+			];
+		} else {
+			// Savings chart with working/retired split
+			if (!props.currentAge || !props.retirementAge) {
+				console.error('currentAge and retirementAge required for savings mode');
+				return;
+			}
+			const retirementIndex = props.retirementAge - props.currentAge;
+			const workingData = [
+				...props.data.slice(0, retirementIndex + 1),
+				...new Array(props.data.length - retirementIndex - 1).fill(null)
+			];
+			const retiredData = [
+				...new Array(retirementIndex).fill(null),
+				...props.data.slice(retirementIndex)
+			];
+			labels = generateAgeLabels(props.data.length, props.currentAge);
+			yAxisFormatter = currencyFormat;
+			tooltipFormatter = currencyFormat;
+			datasets = [
+				{
+					label: 'Working (Contributing)',
+					data: workingData,
+					borderColor: '#4a90e2',
+					backgroundColor: 'rgba(74, 144, 226, 0.2)',
+					borderWidth: 2,
+					fill: true,
+					tension: 0.1,
+					hidden: false,
+					order: 1
+				},
+				{
+					label: 'Retired (Withdrawing)',
+					data: retiredData,
+					borderColor: '#e24a4a',
+					backgroundColor: 'rgba(226, 74, 74, 0.2)',
+					borderWidth: 2,
+					fill: true,
+					tension: 0.1,
+					hidden: false,
+					order: 1
+				}
+			];
+		}
 
 		chart = new Chart(chartCanvas, {
 			type: 'line',
@@ -47,10 +108,12 @@
 					tooltip: {
 						callbacks: {
 							label: function (context: any) {
-								return currencyFormat(context.parsed.y);
+								return tooltipFormatter(context.parsed.y);
 							},
 							title: function (context: any) {
-								return 'Age ' + context[0].label;
+								return mode === 'confidence'
+									? 'Retirement Age ' + context[0].label
+									: 'Age ' + context[0].label;
 							}
 						},
 						displayColors: false
@@ -110,38 +173,19 @@
 								family: "'Helvetica Neue', Helvetica, Arial, sans-serif"
 							},
 							callback: function (value) {
-								return currencyFormat(value as number);
+								return yAxisFormatter(value as number);
 							}
-						}
+						},
+						...(mode === 'confidence' && {
+							min: 0,
+							max: 1
+						})
 					}
 				}
 			},
 			data: {
-				labels: generateAgeLabels(props.data.length, props.currentAge),
-				datasets: [
-					{
-						label: 'Working (Contributing)',
-						data: workingData,
-						borderColor: '#4a90e2',
-						backgroundColor: 'rgba(74, 144, 226, 0.2)',
-						borderWidth: 2,
-						fill: true,
-						tension: 0.1,
-						hidden: false,
-						order: 1
-					},
-					{
-						label: 'Retired (Withdrawing)',
-						data: retiredData,
-						borderColor: '#e24a4a',
-						backgroundColor: 'rgba(226, 74, 74, 0.2)',
-						borderWidth: 2,
-						fill: true,
-						tension: 0.1,
-						hidden: false,
-						order: 1
-					}
-				]
+				labels: labels,
+				datasets: datasets
 			}
 		});
 	}

@@ -33,6 +33,12 @@
 			RETIREMENT_AGE_CONFIDENCE
 		)
 	);
+
+	// Data for confidence by age chart
+	let confidenceByAge = $derived({
+		ages: growthAndWithdrawlResults.map((_, i) => formValues.currentAge + i),
+		successRates: growthAndWithdrawlResults.map((result) => result.successRate)
+	});
 </script>
 
 <svelte:head>
@@ -55,6 +61,13 @@
 		Savings Surviving til Age {LIFE_EXPECTANCY}):
 		<strong>{confidentRetirementAge ?? 'Not achievable'}</strong>.
 	</p>
+	<LineChart
+		title="Retirement Confidence by Age"
+		data={confidenceByAge.successRates}
+		mode="confidence"
+		xLabels={confidenceByAge.ages}
+		label="Success Rate"
+	></LineChart>
 </section>
 
 <section class="panel">
