@@ -7,7 +7,7 @@
 	Chart.register(annotationPlugin);
 
 	interface DataSet {
-		data: number[];
+		data: (number | null)[];
 		label: string;
 		formatter: (value: number) => string;
 		borderColor?: string;

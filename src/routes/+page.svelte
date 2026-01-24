@@ -50,6 +50,36 @@
 			yMax: 1
 		}
 	]);
+
+	// Precompute working data for all simulations
+	let workingData = $derived(
+		growthAndWithdrawlResults.map((result, i) => {
+			const retirementAge = i + formValues.currentAge;
+			const retirementIndex = retirementAge - formValues.currentAge;
+			return result.sampleSimulations.map((simulation) => {
+				return [
+					...simulation.simulationData.slice(0, retirementIndex + 1),
+					...new Array(
+						simulation.simulationData.length - retirementIndex - 1
+					).fill(null)
+				];
+			});
+		})
+	);
+
+	// Precompute retired data for all simulations
+	let retiredData = $derived(
+		growthAndWithdrawlResults.map((result, i) => {
+			const retirementAge = i + formValues.currentAge;
+			const retirementIndex = retirementAge - formValues.currentAge;
+			return result.sampleSimulations.map((simulation) => {
+				return [
+					...new Array(retirementIndex).fill(null),
+					...simulation.simulationData.slice(retirementIndex)
+				];
+			});
+		})
+	);
 </script>
 
 <svelte:head>
@@ -97,33 +127,21 @@
 		</p>
 		<details>
 			<summary>View A Few Simulations</summary>
-			{#each result.sampleSimulations as simulation}
-				{@const retirementAge = i + formValues.currentAge}
-				{@const retirementIndex = retirementAge - formValues.currentAge}
-				{@const workingData = [
-					...simulation.simulationData.slice(0, retirementIndex + 1),
-					...new Array(
-						simulation.simulationData.length - retirementIndex - 1
-					).fill(null)
-				]}
-				{@const retiredData = [
-					...new Array(retirementIndex).fill(null),
-					...simulation.simulationData.slice(retirementIndex)
-				]}
+			{#each result.sampleSimulations as simulation, j}
 				<LineChart
 					title={simulation.simulationTitle}
 					xLabels={Array.from(
 						{ length: simulation.simulationData.length },
-						(_, j) => formValues.currentAge + j
+						(_, k) => formValues.currentAge + k
 					)}
 					datasets={[
 						{
-							data: workingData,
+							data: workingData[i][j],
 							label: 'Working (Contributing)',
 							formatter: currencyFormat
 						},
 						{
-							data: retiredData,
+							data: retiredData[i][j],
 							label: 'Retired (Withdrawing)',
 							formatter: currencyFormat
 						}
