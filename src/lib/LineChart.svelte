@@ -10,10 +10,10 @@
 	interface LineChartProps {
 		title: string;
 		data: number[];
+		xLabels: number[];
 		currentAge?: number;
 		retirementAge?: number;
 		mode?: 'savings' | 'confidence';
-		xLabels?: number[];
 		label?: string;
 	}
 
@@ -41,7 +41,7 @@
 
 		if (mode === 'confidence') {
 			// Simple confidence chart
-			labels = props.xLabels || props.data.map((_, i) => i);
+			labels = props.xLabels;
 			yAxisFormatter = formatPercentage;
 			tooltipFormatter = formatPercentage;
 			datasets = [
@@ -71,7 +71,7 @@
 				...new Array(retirementIndex).fill(null),
 				...props.data.slice(retirementIndex)
 			];
-			labels = generateAgeLabels(props.data.length, props.currentAge);
+			labels = props.xLabels;
 			yAxisFormatter = currencyFormat;
 			tooltipFormatter = currencyFormat;
 			datasets = [
@@ -199,14 +199,6 @@
 				datasets: datasets
 			}
 		});
-	}
-
-	function generateAgeLabels(length: number, currentAge: number): number[] {
-		let labels = [];
-		for (let i = 0; i < length; i++) {
-			labels.push(currentAge + i);
-		}
-		return labels;
 	}
 </script>
 

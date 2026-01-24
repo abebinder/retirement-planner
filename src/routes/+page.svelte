@@ -89,6 +89,10 @@
 				<LineChart
 					title={simulation.simulationTitle}
 					data={simulation.simulationData}
+					xLabels={Array.from(
+						{ length: simulation.simulationData.length },
+						(_, i) => formValues.currentAge + i
+					)}
 					currentAge={formValues.currentAge}
 					retirementAge={i + formValues.currentAge}
 				></LineChart>
