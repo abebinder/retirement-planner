@@ -6,3 +6,7 @@ export function currencyFormat(value: number): string {
 	});
 	return formatter.format(value);
 }
+
+export function percentageFormat(value: number): string {
+	return (value * 100).toFixed(1) + '%';
+}

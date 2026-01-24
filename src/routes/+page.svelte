@@ -11,6 +11,7 @@
 		RETIREMENT_AGE_CONFIDENCE
 	} from '$lib/constants';
 	import Form, { type FormValues, defaultFormValues } from '$lib/Form.svelte';
+	import { currencyFormat, percentageFormat } from '$lib/formatter';
 
 	let formValues: FormValues = $state(defaultFormValues());
 	function updateFormValues(newFormValues: FormValues) {
@@ -39,6 +40,16 @@
 		ages: growthAndWithdrawlResults.map((_, i) => formValues.currentAge + i),
 		successRates: growthAndWithdrawlResults.map((result) => result.successRate)
 	});
+
+	// Dataset for confidence chart
+	let confidenceDataset = $derived([
+		{
+			data: confidenceByAge.successRates,
+			label: 'Success Rate',
+			formatter: percentageFormat,
+			yMax: 1
+		}
+	]);
 </script>
 
 <svelte:head>
@@ -63,10 +74,11 @@
 	</p>
 	<LineChart
 		title="Retirement Confidence by Age"
-		data={confidenceByAge.successRates}
-		mode="confidence"
 		xLabels={confidenceByAge.ages}
-		label="Success Rate"
+		datasets={confidenceDataset}
+		yMax={1}
+		yMin={0}
+		xAxisLabel="Retirement Age"
 	></LineChart>
 </section>
 
@@ -86,15 +98,37 @@
 		<details>
 			<summary>View A Few Simulations</summary>
 			{#each result.sampleSimulations as simulation}
+				{@const retirementAge = i + formValues.currentAge}
+				{@const retirementIndex = retirementAge - formValues.currentAge}
+				{@const workingData = [
+					...simulation.simulationData.slice(0, retirementIndex + 1),
+					...new Array(
+						simulation.simulationData.length - retirementIndex - 1
+					).fill(null)
+				]}
+				{@const retiredData = [
+					...new Array(retirementIndex).fill(null),
+					...simulation.simulationData.slice(retirementIndex)
+				]}
 				<LineChart
 					title={simulation.simulationTitle}
-					data={simulation.simulationData}
 					xLabels={Array.from(
 						{ length: simulation.simulationData.length },
-						(_, i) => formValues.currentAge + i
+						(_, j) => formValues.currentAge + j
 					)}
-					currentAge={formValues.currentAge}
-					retirementAge={i + formValues.currentAge}
+					datasets={[
+						{
+							data: workingData,
+							label: 'Working (Contributing)',
+							formatter: currencyFormat
+						},
+						{
+							data: retiredData,
+							label: 'Retired (Withdrawing)',
+							formatter: currencyFormat
+						}
+					]}
+					xAxisLabel="Age"
 				></LineChart>
 			{/each}
 		</details>

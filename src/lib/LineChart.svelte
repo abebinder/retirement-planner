@@ -4,29 +4,40 @@
 	import annotationPlugin, {
 		type AnnotationPluginOptions
 	} from 'chartjs-plugin-annotation';
-	import { currencyFormat } from './formatter';
 	Chart.register(annotationPlugin);
+
+	interface DataSet {
+		data: number[];
+		label: string;
+		formatter: (value: number) => string;
+		borderColor?: string;
+		backgroundColor?: string;
+	}
 
 	interface LineChartProps {
 		title: string;
-		data: number[];
 		xLabels: number[];
-		currentAge?: number;
-		retirementAge?: number;
-		mode?: 'savings' | 'confidence';
-		label?: string;
+		datasets: DataSet[];
+		yMax?: number;
+		yMin?: number;
+		xAxisLabel?: string;
 	}
 
 	let props: LineChartProps = $props();
-	const mode = props.mode || 'savings';
 
 	let chartCanvas: HTMLCanvasElement;
 	let chart: Chart;
 
 	$effect(drawChart);
 
-	function formatPercentage(value: number): string {
-		return (value * 100).toFixed(1) + '%';
+	// Color rotation: blue, red, blue, red, etc.
+	const colors = [
+		{ border: '#4a90e2', background: 'rgba(74, 144, 226, 0.2)' },
+		{ border: '#e24a4a', background: 'rgba(226, 74, 74, 0.2)' }
+	];
+
+	function getColor(index: number) {
+		return colors[index % colors.length];
 	}
 
 	function drawChart(): void {
@@ -34,70 +45,49 @@
 			chart.destroy();
 		}
 
-		let datasets: any[];
-		let labels: number[];
-		let yAxisFormatter: (value: number) => string;
-		let tooltipFormatter: (value: number) => string;
+		// Build Chart.js datasets from props.datasets
+		const chartDatasets = props.datasets.map((dataset, index) => {
+			const color = getColor(index);
+			return {
+				label: dataset.label,
+				data: dataset.data,
+				borderColor: dataset.borderColor || color.border,
+				backgroundColor: dataset.backgroundColor || color.background,
+				borderWidth: 2,
+				fill: true,
+				tension: 0.1,
+				hidden: false,
+				order: 1,
+				clip: false as const
+			};
+		});
 
-		if (mode === 'confidence') {
-			// Simple confidence chart
-			labels = props.xLabels;
-			yAxisFormatter = formatPercentage;
-			tooltipFormatter = formatPercentage;
-			datasets = [
-				{
-					label: props.label || 'Confidence',
-					data: props.data,
-					borderColor: '#4a90e2',
-					backgroundColor: 'rgba(74, 144, 226, 0.2)',
-					borderWidth: 2,
-					fill: true,
-					tension: 0.1,
-					clip: false
-				}
-			];
-		} else {
-			// Savings chart with working/retired split
-			if (!props.currentAge || !props.retirementAge) {
-				console.error('currentAge and retirementAge required for savings mode');
-				return;
-			}
-			const retirementIndex = props.retirementAge - props.currentAge;
-			const workingData = [
-				...props.data.slice(0, retirementIndex + 1),
-				...new Array(props.data.length - retirementIndex - 1).fill(null)
-			];
-			const retiredData = [
-				...new Array(retirementIndex).fill(null),
-				...props.data.slice(retirementIndex)
-			];
-			labels = props.xLabels;
-			yAxisFormatter = currencyFormat;
-			tooltipFormatter = currencyFormat;
-			datasets = [
-				{
-					label: 'Working (Contributing)',
-					data: workingData,
-					borderColor: '#4a90e2',
-					backgroundColor: 'rgba(74, 144, 226, 0.2)',
-					borderWidth: 2,
-					fill: true,
-					tension: 0.1,
-					hidden: false,
-					order: 1
+		// Determine Y axis configuration
+		const yAxisConfig: any = {
+			grid: {
+				color: '#e8e8e8'
+			},
+			ticks: {
+				color: '#6b6b6b',
+				font: {
+					family: "'Helvetica Neue', Helvetica, Arial, sans-serif"
 				},
-				{
-					label: 'Retired (Withdrawing)',
-					data: retiredData,
-					borderColor: '#e24a4a',
-					backgroundColor: 'rgba(226, 74, 74, 0.2)',
-					borderWidth: 2,
-					fill: true,
-					tension: 0.1,
-					hidden: false,
-					order: 1
+				callback: function (value: any) {
+					// Use the formatter from the first dataset (all datasets should use the same formatter)
+					if (props.datasets.length > 0) {
+						return props.datasets[0].formatter(value as number);
+					}
+					return value;
 				}
-			];
+			}
+		};
+
+		// Add yMax and yMin if provided
+		if (props.yMax !== undefined) {
+			yAxisConfig.max = props.yMax;
+		}
+		if (props.yMin !== undefined) {
+			yAxisConfig.min = props.yMin;
 		}
 
 		chart = new Chart(chartCanvas, {
@@ -106,20 +96,23 @@
 				responsive: true,
 				maintainAspectRatio: false,
 				layout: {
-					padding:
-						mode === 'confidence'
-							? { top: 10, bottom: 0, left: 0, right: 0 }
-							: undefined
+					padding: { top: 10, bottom: 0, left: 0, right: 0 }
 				},
 				plugins: {
 					tooltip: {
 						callbacks: {
 							label: function (context: any) {
-								return tooltipFormatter(context.parsed.y);
+								// Find the formatter for this dataset
+								if (props.datasets[context.datasetIndex]) {
+									return props.datasets[context.datasetIndex].formatter(
+										context.parsed.y
+									);
+								}
+								return context.parsed.y;
 							},
 							title: function (context: any) {
-								return mode === 'confidence'
-									? 'Retirement Age ' + context[0].label
+								return props.xAxisLabel
+									? props.xAxisLabel + ' ' + context[0].label
 									: 'Age ' + context[0].label;
 							}
 						},
@@ -154,7 +147,7 @@
 					x: {
 						title: {
 							display: true,
-							text: 'Age',
+							text: props.xAxisLabel || 'Age',
 							font: {
 								family: "'Helvetica Neue', Helvetica, Arial, sans-serif"
 							},
@@ -170,33 +163,12 @@
 							}
 						}
 					},
-					y: {
-						grid: {
-							color: '#e8e8e8'
-						},
-						ticks: {
-							color: '#6b6b6b',
-							font: {
-								family: "'Helvetica Neue', Helvetica, Arial, sans-serif"
-							},
-							callback: function (value) {
-								return yAxisFormatter(value as number);
-							},
-							...(mode === 'confidence' && {
-								stepSize: 0.1,
-								max: 1
-							})
-						},
-						...(mode === 'confidence' && {
-							min: 0,
-							max: 1
-						})
-					}
+					y: yAxisConfig
 				}
 			},
 			data: {
-				labels: labels,
-				datasets: datasets
+				labels: props.xLabels,
+				datasets: chartDatasets
 			}
 		});
 	}
