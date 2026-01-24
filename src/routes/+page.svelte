@@ -75,72 +75,42 @@
 		createConfidenceDataset(confidenceByAge.successRates)
 	);
 
-	// Precompute working data for all simulations
+	// Calculate working data for a single simulation
 	function computeWorkingData(
-		results: RunMultipleSimulationsResult[]
-	): (number | null)[][][] {
-		const allWorkingData: (number | null)[][][] = [];
-		for (let i = 0; i < results.length; i++) {
-			const result = results[i];
-			const retirementAge = i + formValues.currentAge;
-			const retirementIndex = retirementAge - formValues.currentAge;
-			const resultWorkingData: (number | null)[][] = [];
-			for (let j = 0; j < result.sampleSimulations.length; j++) {
-				const simulation = result.sampleSimulations[j];
-				const workingData: (number | null)[] = [];
-				// Add data up to retirement index
-				for (let k = 0; k <= retirementIndex; k++) {
-					if (k < simulation.simulationData.length) {
-						workingData.push(simulation.simulationData[k]);
-					}
-				}
-				// Add nulls for the rest
-				const remainingLength =
-					simulation.simulationData.length - retirementIndex - 1;
-				for (let k = 0; k < remainingLength; k++) {
-					workingData.push(null);
-				}
-				resultWorkingData.push(workingData);
+		simulationData: number[],
+		retirementIndex: number
+	): (number | null)[] {
+		const workingData: (number | null)[] = [];
+		// Add data up to retirement index
+		for (let i = 0; i <= retirementIndex; i++) {
+			if (i < simulationData.length) {
+				workingData.push(simulationData[i]);
 			}
-			allWorkingData.push(resultWorkingData);
 		}
-		return allWorkingData;
+		// Add nulls for the rest
+		const remainingLength = simulationData.length - retirementIndex - 1;
+		for (let i = 0; i < remainingLength; i++) {
+			workingData.push(null);
+		}
+		return workingData;
 	}
 
-	// Precompute retired data for all simulations
+	// Calculate retired data for a single simulation
 	function computeRetiredData(
-		results: RunMultipleSimulationsResult[]
-	): (number | null)[][][] {
-		const allRetiredData: (number | null)[][][] = [];
-		for (let i = 0; i < results.length; i++) {
-			const result = results[i];
-			const retirementAge = i + formValues.currentAge;
-			const retirementIndex = retirementAge - formValues.currentAge;
-			const resultRetiredData: (number | null)[][] = [];
-			for (let j = 0; j < result.sampleSimulations.length; j++) {
-				const simulation = result.sampleSimulations[j];
-				const retiredData: (number | null)[] = [];
-				// Add nulls up to retirement index
-				for (let k = 0; k < retirementIndex; k++) {
-					retiredData.push(null);
-				}
-				// Add data from retirement index onwards
-				for (
-					let k = retirementIndex;
-					k < simulation.simulationData.length;
-					k++
-				) {
-					retiredData.push(simulation.simulationData[k]);
-				}
-				resultRetiredData.push(retiredData);
-			}
-			allRetiredData.push(resultRetiredData);
+		simulationData: number[],
+		retirementIndex: number
+	): (number | null)[] {
+		const retiredData: (number | null)[] = [];
+		// Add nulls up to retirement index
+		for (let i = 0; i < retirementIndex; i++) {
+			retiredData.push(null);
 		}
-		return allRetiredData;
+		// Add data from retirement index onwards
+		for (let i = retirementIndex; i < simulationData.length; i++) {
+			retiredData.push(simulationData[i]);
+		}
+		return retiredData;
 	}
-
-	let workingData = $derived(computeWorkingData(growthAndWithdrawlResults));
-	let retiredData = $derived(computeRetiredData(growthAndWithdrawlResults));
 
 	function createAgeLabels(length: number, startAge: number): number[] {
 		const labels: number[] = [];
@@ -203,6 +173,16 @@
 		<details>
 			<summary>View A Few Simulations</summary>
 			{#each result.sampleSimulations as simulation, j}
+				{@const retirementAge = i + formValues.currentAge}
+				{@const retirementIndex = retirementAge - formValues.currentAge}
+				{@const workingData = computeWorkingData(
+					simulation.simulationData,
+					retirementIndex
+				)}
+				{@const retiredData = computeRetiredData(
+					simulation.simulationData,
+					retirementIndex
+				)}
 				<LineChart
 					title={simulation.simulationTitle}
 					xLabels={createAgeLabels(
@@ -211,12 +191,12 @@
 					)}
 					datasets={[
 						{
-							data: workingData[i][j],
+							data: workingData,
 							label: 'Working (Contributing)',
 							formatter: currencyFormat
 						},
 						{
-							data: retiredData[i][j],
+							data: retiredData,
 							label: 'Retired (Withdrawing)',
 							formatter: currencyFormat
 						}
