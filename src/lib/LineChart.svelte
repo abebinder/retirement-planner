@@ -52,7 +52,8 @@
 					backgroundColor: 'rgba(74, 144, 226, 0.2)',
 					borderWidth: 2,
 					fill: true,
-					tension: 0.1
+					tension: 0.1,
+					clip: false
 				}
 			];
 		} else {
@@ -104,6 +105,12 @@
 			options: {
 				responsive: true,
 				maintainAspectRatio: false,
+				layout: {
+					padding:
+						mode === 'confidence'
+							? { top: 10, bottom: 0, left: 0, right: 0 }
+							: undefined
+				},
 				plugins: {
 					tooltip: {
 						callbacks: {
@@ -174,7 +181,11 @@
 							},
 							callback: function (value) {
 								return yAxisFormatter(value as number);
-							}
+							},
+							...(mode === 'confidence' && {
+								stepSize: 0.1,
+								max: 1
+							})
 						},
 						...(mode === 'confidence' && {
 							min: 0,
