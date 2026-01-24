@@ -36,50 +36,119 @@
 	);
 
 	// Data for confidence by age chart
+	function computeAges(results: RunMultipleSimulationsResult[]): number[] {
+		const ages: number[] = [];
+		for (let i = 0; i < results.length; i++) {
+			ages.push(formValues.currentAge + i);
+		}
+		return ages;
+	}
+
+	function computeSuccessRates(
+		results: RunMultipleSimulationsResult[]
+	): number[] {
+		const successRates: number[] = [];
+		for (let i = 0; i < results.length; i++) {
+			successRates.push(results[i].successRate);
+		}
+		return successRates;
+	}
+
 	let confidenceByAge = $derived({
-		ages: growthAndWithdrawlResults.map((_, i) => formValues.currentAge + i),
-		successRates: growthAndWithdrawlResults.map((result) => result.successRate)
+		ages: computeAges(growthAndWithdrawlResults),
+		successRates: computeSuccessRates(growthAndWithdrawlResults)
 	});
 
 	// Dataset for confidence chart
-	let confidenceDataset = $derived([
-		{
-			data: confidenceByAge.successRates,
-			label: 'Success Rate',
-			formatter: percentageFormat,
-			yMax: 1
-		}
-	]);
+	function createConfidenceDataset(successRates: number[]) {
+		return [
+			{
+				data: successRates,
+				label: 'Success Rate',
+				formatter: percentageFormat,
+				yMax: 1
+			}
+		];
+	}
+
+	let confidenceDataset = $derived(
+		createConfidenceDataset(confidenceByAge.successRates)
+	);
 
 	// Precompute working data for all simulations
-	let workingData = $derived(
-		growthAndWithdrawlResults.map((result, i) => {
+	function computeWorkingData(
+		results: RunMultipleSimulationsResult[]
+	): (number | null)[][][] {
+		const allWorkingData: (number | null)[][][] = [];
+		for (let i = 0; i < results.length; i++) {
+			const result = results[i];
 			const retirementAge = i + formValues.currentAge;
 			const retirementIndex = retirementAge - formValues.currentAge;
-			return result.sampleSimulations.map((simulation) => {
-				return [
-					...simulation.simulationData.slice(0, retirementIndex + 1),
-					...new Array(
-						simulation.simulationData.length - retirementIndex - 1
-					).fill(null)
-				];
-			});
-		})
-	);
+			const resultWorkingData: (number | null)[][] = [];
+			for (let j = 0; j < result.sampleSimulations.length; j++) {
+				const simulation = result.sampleSimulations[j];
+				const workingData: (number | null)[] = [];
+				// Add data up to retirement index
+				for (let k = 0; k <= retirementIndex; k++) {
+					if (k < simulation.simulationData.length) {
+						workingData.push(simulation.simulationData[k]);
+					}
+				}
+				// Add nulls for the rest
+				const remainingLength =
+					simulation.simulationData.length - retirementIndex - 1;
+				for (let k = 0; k < remainingLength; k++) {
+					workingData.push(null);
+				}
+				resultWorkingData.push(workingData);
+			}
+			allWorkingData.push(resultWorkingData);
+		}
+		return allWorkingData;
+	}
 
 	// Precompute retired data for all simulations
-	let retiredData = $derived(
-		growthAndWithdrawlResults.map((result, i) => {
+	function computeRetiredData(
+		results: RunMultipleSimulationsResult[]
+	): (number | null)[][][] {
+		const allRetiredData: (number | null)[][][] = [];
+		for (let i = 0; i < results.length; i++) {
+			const result = results[i];
 			const retirementAge = i + formValues.currentAge;
 			const retirementIndex = retirementAge - formValues.currentAge;
-			return result.sampleSimulations.map((simulation) => {
-				return [
-					...new Array(retirementIndex).fill(null),
-					...simulation.simulationData.slice(retirementIndex)
-				];
-			});
-		})
-	);
+			const resultRetiredData: (number | null)[][] = [];
+			for (let j = 0; j < result.sampleSimulations.length; j++) {
+				const simulation = result.sampleSimulations[j];
+				const retiredData: (number | null)[] = [];
+				// Add nulls up to retirement index
+				for (let k = 0; k < retirementIndex; k++) {
+					retiredData.push(null);
+				}
+				// Add data from retirement index onwards
+				for (
+					let k = retirementIndex;
+					k < simulation.simulationData.length;
+					k++
+				) {
+					retiredData.push(simulation.simulationData[k]);
+				}
+				resultRetiredData.push(retiredData);
+			}
+			allRetiredData.push(resultRetiredData);
+		}
+		return allRetiredData;
+	}
+
+	let workingData = $derived(computeWorkingData(growthAndWithdrawlResults));
+	let retiredData = $derived(computeRetiredData(growthAndWithdrawlResults));
+
+	function createAgeLabels(length: number, startAge: number): number[] {
+		const labels: number[] = [];
+		for (let i = 0; i < length; i++) {
+			labels.push(startAge + i);
+		}
+		return labels;
+	}
 </script>
 
 <svelte:head>
@@ -100,7 +169,13 @@
 	<p>
 		Retirement Age (With {RETIREMENT_AGE_CONFIDENCE * 100}% Confidence of
 		Savings Surviving til Age {LIFE_EXPECTANCY}):
-		<strong>{confidentRetirementAge ?? 'Not achievable'}</strong>.
+		<strong>
+			{#if confidentRetirementAge !== null}
+				{confidentRetirementAge}
+			{:else}
+				Not achievable
+			{/if}
+		</strong>.
 	</p>
 	<LineChart
 		title="Retirement Confidence by Age"
@@ -130,9 +205,9 @@
 			{#each result.sampleSimulations as simulation, j}
 				<LineChart
 					title={simulation.simulationTitle}
-					xLabels={Array.from(
-						{ length: simulation.simulationData.length },
-						(_, k) => formValues.currentAge + k
+					xLabels={createAgeLabels(
+						simulation.simulationData.length,
+						formValues.currentAge
 					)}
 					datasets={[
 						{
