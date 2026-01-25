@@ -83,8 +83,6 @@
 		datasets={confidenceDataset}
 		xAxisLabel="Retirement Age"
 		formatter={percentageFormat}
-		yMax={1}
-		yMin={0}
 	></LineChart>
 </section>
 

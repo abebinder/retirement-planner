@@ -14,8 +14,6 @@
 		datasets: DataSet[];
 		xAxisLabel: string;
 		formatter: (value: number) => string;
-		yMax?: number;
-		yMin?: number;
 	}
 
 	let props: LineChartProps = $props();
@@ -70,16 +68,9 @@
 					family: "'Helvetica Neue', Helvetica, Arial, sans-serif"
 				},
 				callback: props.formatter
-			}
+			},
+			min: 0
 		};
-
-		// Add yMax and yMin if provided
-		if (props.yMax !== undefined) {
-			yAxisConfig.max = props.yMax;
-		}
-		if (props.yMin !== undefined) {
-			yAxisConfig.min = props.yMin;
-		}
 
 		chart = new Chart(chartCanvas, {
 			type: 'line',
