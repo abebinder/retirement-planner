@@ -11,7 +11,14 @@
 		RETIREMENT_AGE_CONFIDENCE
 	} from '$lib/constants';
 	import Form, { type FormValues, defaultFormValues } from '$lib/Form.svelte';
-	import { currencyFormat, percentageFormat } from '$lib/formatter';
+	import { currencyFormat } from '$lib/formatter';
+	import {
+		computeConfidenceByAge,
+		createConfidenceDataset,
+		computeWorkingData,
+		computeRetiredData,
+		createAgeLabels
+	} from '$lib/dataTransformer';
 
 	let formValues: FormValues = $state(defaultFormValues());
 	function updateFormValues(newFormValues: FormValues) {
@@ -35,84 +42,13 @@
 		)
 	);
 
-	// Data for confidence by age chart
-	function computeConfidenceByAge(results: RunMultipleSimulationsResult[]): {
-		ages: number[];
-		successRates: number[];
-	} {
-		const ages: number[] = [];
-		const successRates: number[] = [];
-		for (let i = 0; i < results.length; i++) {
-			ages.push(formValues.currentAge + i);
-			successRates.push(results[i].successRate);
-		}
-		return { ages, successRates };
-	}
-
 	let confidenceByAge = $derived(
-		computeConfidenceByAge(growthAndWithdrawlResults)
+		computeConfidenceByAge(growthAndWithdrawlResults, formValues.currentAge)
 	);
-
-	// Dataset for confidence chart
-	function createConfidenceDataset(successRates: number[]) {
-		return [
-			{
-				data: successRates,
-				label: 'Success Rate',
-				formatter: percentageFormat,
-				yMax: 1
-			}
-		];
-	}
 
 	let confidenceDataset = $derived(
 		createConfidenceDataset(confidenceByAge.successRates)
 	);
-
-	// Calculate working data for a single simulation
-	function computeWorkingData(
-		simulationData: number[],
-		retirementIndex: number
-	): (number | null)[] {
-		const workingData: (number | null)[] = [];
-		// Add data up to retirement index
-		for (let i = 0; i <= retirementIndex; i++) {
-			if (i < simulationData.length) {
-				workingData.push(simulationData[i]);
-			}
-		}
-		// Add nulls for the rest
-		const remainingLength = simulationData.length - retirementIndex - 1;
-		for (let i = 0; i < remainingLength; i++) {
-			workingData.push(null);
-		}
-		return workingData;
-	}
-
-	// Calculate retired data for a single simulation
-	function computeRetiredData(
-		simulationData: number[],
-		retirementIndex: number
-	): (number | null)[] {
-		const retiredData: (number | null)[] = [];
-		// Add nulls up to retirement index
-		for (let i = 0; i < retirementIndex; i++) {
-			retiredData.push(null);
-		}
-		// Add data from retirement index onwards
-		for (let i = retirementIndex; i < simulationData.length; i++) {
-			retiredData.push(simulationData[i]);
-		}
-		return retiredData;
-	}
-
-	function createAgeLabels(length: number, startAge: number): number[] {
-		const labels: number[] = [];
-		for (let i = 0; i < length; i++) {
-			labels.push(startAge + i);
-		}
-		return labels;
-	}
 </script>
 
 <svelte:head>
