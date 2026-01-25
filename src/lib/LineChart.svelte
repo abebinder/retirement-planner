@@ -1,17 +1,11 @@
 <script lang="ts">
 	import { Chart } from 'chart.js/auto';
-	import type Annotation from 'chartjs-plugin-annotation';
-	import annotationPlugin, {
-		type AnnotationPluginOptions
-	} from 'chartjs-plugin-annotation';
+	import annotationPlugin from 'chartjs-plugin-annotation';
 	Chart.register(annotationPlugin);
 
 	interface DataSet {
 		data: (number | null)[];
 		label: string;
-		formatter: (value: number) => string;
-		borderColor?: string;
-		backgroundColor?: string;
 	}
 
 	interface LineChartProps {
@@ -19,6 +13,7 @@
 		xLabels: number[];
 		datasets: DataSet[];
 		xAxisLabel: string;
+		formatter: (value: number) => string;
 		yMax?: number;
 		yMin?: number;
 	}
@@ -46,21 +41,23 @@
 		}
 
 		// Build Chart.js datasets from props.datasets
-		const chartDatasets = props.datasets.map((dataset, index) => {
-			const color = getColor(index);
-			return {
+		const chartDatasets: any[] = [];
+		for (let i = 0; i < props.datasets.length; i++) {
+			const dataset = props.datasets[i];
+			const color = getColor(i);
+			chartDatasets.push({
 				label: dataset.label,
 				data: dataset.data,
-				borderColor: dataset.borderColor || color.border,
-				backgroundColor: dataset.backgroundColor || color.background,
+				borderColor: color.border,
+				backgroundColor: color.background,
 				borderWidth: 2,
 				fill: true,
 				tension: 0.1,
 				hidden: false,
 				order: 1,
 				clip: false as const
-			};
-		});
+			});
+		}
 
 		// Determine Y axis configuration
 		const yAxisConfig: any = {
@@ -72,13 +69,7 @@
 				font: {
 					family: "'Helvetica Neue', Helvetica, Arial, sans-serif"
 				},
-				callback: function (value: any) {
-					// Use the formatter from the first dataset (all datasets should use the same formatter)
-					if (props.datasets.length > 0) {
-						return props.datasets[0].formatter(value as number);
-					}
-					return value;
-				}
+				callback: props.formatter
 			}
 		};
 
@@ -102,13 +93,7 @@
 					tooltip: {
 						callbacks: {
 							label: function (context: any) {
-								// Find the formatter for this dataset
-								if (props.datasets[context.datasetIndex]) {
-									return props.datasets[context.datasetIndex].formatter(
-										context.parsed.y
-									);
-								}
-								return context.parsed.y;
+								return props.formatter(context.parsed.y);
 							},
 							title: function (context: any) {
 								return props.xAxisLabel + ' ' + context[0].label;

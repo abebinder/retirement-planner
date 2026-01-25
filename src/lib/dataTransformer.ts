@@ -1,5 +1,4 @@
 import { type RunMultipleSimulationsResult } from './simulator';
-import { percentageFormat } from './formatter';
 
 // Data for confidence by age chart
 export function computeConfidenceByAge(
@@ -23,9 +22,7 @@ export function createConfidenceDataset(successRates: number[]) {
 	return [
 		{
 			data: successRates,
-			label: 'Success Rate',
-			formatter: percentageFormat,
-			yMax: 1
+			label: 'Success Rate'
 		}
 	];
 }

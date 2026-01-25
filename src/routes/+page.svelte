@@ -11,7 +11,7 @@
 		RETIREMENT_AGE_CONFIDENCE
 	} from '$lib/constants';
 	import Form, { type FormValues, defaultFormValues } from '$lib/Form.svelte';
-	import { currencyFormat } from '$lib/formatter';
+	import { currencyFormat, percentageFormat } from '$lib/formatter';
 	import {
 		computeConfidenceByAge,
 		createConfidenceDataset,
@@ -81,9 +81,10 @@
 		title="Retirement Confidence by Age"
 		xLabels={confidenceByAge.ages}
 		datasets={confidenceDataset}
+		xAxisLabel="Retirement Age"
+		formatter={percentageFormat}
 		yMax={1}
 		yMin={0}
-		xAxisLabel="Retirement Age"
 	></LineChart>
 </section>
 
@@ -122,16 +123,15 @@
 					datasets={[
 						{
 							data: workingData,
-							label: 'Working (Contributing)',
-							formatter: currencyFormat
+							label: 'Working (Contributing)'
 						},
 						{
 							data: retiredData,
-							label: 'Retired (Withdrawing)',
-							formatter: currencyFormat
+							label: 'Retired (Withdrawing)'
 						}
 					]}
 					xAxisLabel="Age"
+					formatter={currencyFormat}
 				></LineChart>
 			{/each}
 		</details>
