@@ -3,6 +3,15 @@
 	import annotationPlugin from 'chartjs-plugin-annotation';
 	Chart.register(annotationPlugin);
 
+	// Color constants
+	const COLOR_BLUE = 'rgba(74, 144, 226, 1)';
+	const COLOR_BLUE_ALPHA = 'rgba(74, 144, 226, 0.2)';
+	const COLOR_RED = 'rgba(226, 74, 74, 1)';
+	const COLOR_RED_ALPHA = 'rgba(226, 74, 74, 0.2)';
+	const COLOR_LIGHT_GRAY = 'rgba(232, 232, 232, 1)';
+	const COLOR_MEDIUM_GRAY = 'rgba(107, 107, 107, 1)';
+	const COLOR_DARK_GRAY = 'rgba(44, 44, 44, 1)';
+
 	interface DataSet {
 		data: (number | null)[];
 		label: string;
@@ -25,8 +34,8 @@
 
 	// Color rotation: blue, red, blue, red, etc.
 	const colors = [
-		{ border: '#4a90e2', background: 'rgba(74, 144, 226, 0.2)' },
-		{ border: '#e24a4a', background: 'rgba(226, 74, 74, 0.2)' }
+		{ border: COLOR_BLUE, background: COLOR_BLUE_ALPHA },
+		{ border: COLOR_RED, background: COLOR_RED_ALPHA }
 	];
 
 	function getColor(index: number) {
@@ -53,17 +62,17 @@
 				tension: 0.1,
 				hidden: false,
 				order: 1,
-				clip: false as const
+				clip: false
 			});
 		}
 
 		// Determine Y axis configuration
 		const yAxisConfig: any = {
 			grid: {
-				color: '#e8e8e8'
+				color: COLOR_LIGHT_GRAY
 			},
 			ticks: {
-				color: '#6b6b6b',
+				color: COLOR_MEDIUM_GRAY,
 				font: {
 					family: "'Helvetica Neue', Helvetica, Arial, sans-serif"
 				},
@@ -99,7 +108,7 @@
 							font: {
 								family: "'Helvetica Neue', Helvetica, Arial, sans-serif"
 							},
-							color: '#2c2c2c',
+							color: COLOR_DARK_GRAY,
 							usePointStyle: false,
 							boxWidth: 15,
 							boxHeight: 5,
@@ -113,7 +122,7 @@
 							family: "'Helvetica Neue', Helvetica, Arial, sans-serif",
 							size: 16
 						},
-						color: '#2c2c2c',
+						color: COLOR_DARK_GRAY,
 						padding: 20
 					}
 				},
@@ -125,13 +134,13 @@
 							font: {
 								family: "'Helvetica Neue', Helvetica, Arial, sans-serif"
 							},
-							color: '#2c2c2c'
+							color: COLOR_DARK_GRAY
 						},
 						grid: {
-							color: '#e8e8e8'
+							color: COLOR_LIGHT_GRAY
 						},
 						ticks: {
-							color: '#6b6b6b',
+							color: COLOR_MEDIUM_GRAY,
 							font: {
 								family: "'Helvetica Neue', Helvetica, Arial, sans-serif"
 							}
