@@ -18,9 +18,9 @@
 		title: string;
 		xLabels: number[];
 		datasets: DataSet[];
+		xAxisLabel: string;
 		yMax?: number;
 		yMin?: number;
-		xAxisLabel?: string;
 	}
 
 	let props: LineChartProps = $props();
@@ -111,9 +111,7 @@
 								return context.parsed.y;
 							},
 							title: function (context: any) {
-								return props.xAxisLabel
-									? props.xAxisLabel + ' ' + context[0].label
-									: 'Age ' + context[0].label;
+								return props.xAxisLabel + ' ' + context[0].label;
 							}
 						},
 						displayColors: false
@@ -147,7 +145,7 @@
 					x: {
 						title: {
 							display: true,
-							text: props.xAxisLabel || 'Age',
+							text: props.xAxisLabel,
 							font: {
 								family: "'Helvetica Neue', Helvetica, Arial, sans-serif"
 							},
