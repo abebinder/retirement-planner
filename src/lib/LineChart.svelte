@@ -73,9 +73,6 @@
 			},
 			ticks: {
 				color: COLOR_MEDIUM_GRAY,
-				font: {
-					family: "'Helvetica Neue', Helvetica, Arial, sans-serif"
-				},
 				callback: props.formatter
 			},
 			min: 0
@@ -85,6 +82,9 @@
 			type: 'line',
 			options: {
 				responsive: true,
+				// font: {
+				// 	family: "'Helvetica Neue', Helvetica, Arial, sans-serif"
+				// },
 				maintainAspectRatio: false,
 				layout: {
 					padding: { top: 10, bottom: 0, left: 0, right: 0 }
@@ -105,9 +105,6 @@
 						display: true,
 						position: 'top',
 						labels: {
-							font: {
-								family: "'Helvetica Neue', Helvetica, Arial, sans-serif"
-							},
 							color: COLOR_DARK_GRAY,
 							usePointStyle: false,
 							boxWidth: 15,
@@ -119,7 +116,6 @@
 						display: true,
 						text: props.title,
 						font: {
-							family: "'Helvetica Neue', Helvetica, Arial, sans-serif",
 							size: 16
 						},
 						color: COLOR_DARK_GRAY,
@@ -131,19 +127,13 @@
 						title: {
 							display: true,
 							text: props.xAxisLabel,
-							font: {
-								family: "'Helvetica Neue', Helvetica, Arial, sans-serif"
-							},
 							color: COLOR_DARK_GRAY
 						},
 						grid: {
 							color: COLOR_LIGHT_GRAY
 						},
 						ticks: {
-							color: COLOR_MEDIUM_GRAY,
-							font: {
-								family: "'Helvetica Neue', Helvetica, Arial, sans-serif"
-							}
+							color: COLOR_MEDIUM_GRAY
 						}
 					},
 					y: yAxisConfig
