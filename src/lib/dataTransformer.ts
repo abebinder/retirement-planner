@@ -22,7 +22,7 @@ export function createConfidenceDataset(successRates: number[]) {
 	return [
 		{
 			data: successRates,
-			label: 'Success Rate'
+			label: 'Simulation Success Rate'
 		}
 	];
 }

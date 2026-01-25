@@ -82,9 +82,6 @@
 			type: 'line',
 			options: {
 				responsive: true,
-				// font: {
-				// 	family: "'Helvetica Neue', Helvetica, Arial, sans-serif"
-				// },
 				maintainAspectRatio: false,
 				layout: {
 					padding: { top: 10, bottom: 0, left: 0, right: 0 }

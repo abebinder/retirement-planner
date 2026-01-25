@@ -67,8 +67,8 @@
 <section class="panel">
 	<h1>Summary</h1>
 	<p>
-		Retirement Age (With {RETIREMENT_AGE_CONFIDENCE * 100}% Confidence of
-		Savings Surviving til Age {LIFE_EXPECTANCY}):
+		Retirement Age (With {RETIREMENT_AGE_CONFIDENCE * 100}% Simulations
+		Surviving til Age {LIFE_EXPECTANCY}):
 		<strong>
 			{#if confidentRetirementAge !== null}
 				{confidentRetirementAge}
@@ -78,7 +78,7 @@
 		</strong>.
 	</p>
 	<LineChart
-		title="Retirement Confidence by Age"
+		title="Simulation Success Rate by Retirement Age"
 		xLabels={confidenceByAge.ages}
 		datasets={confidenceDataset}
 		xAxisLabel="Retirement Age"
