@@ -96,7 +96,8 @@
 	{#each growthAndWithdrawlResults as result, i}
 		<h2>Age {i + formValues.currentAge}</h2>
 		<p>
-			You have a {result.successRate * 100}% chance of surviving to age {LIFE_EXPECTANCY}
+			You have a {percentageFormat(result.successRate)} chance of surviving to age
+			{LIFE_EXPECTANCY}
 			if you retired at age {i + formValues.currentAge}.
 		</p>
 		<details>
