@@ -84,12 +84,15 @@
 		id="current-age"
 		name="current-age"
 	/>
-	<label for="max-retirement-age">Max Retirement Age:</label>
-	<input
-		bind:value={maxRetirementAge}
-		type="number"
-		id="max-retirement-age"
-		name="max-retirement-age"
-	/>
+	<details>
+		<summary>Advanced Settings</summary>
+		<label for="max-retirement-age">Max Retirement Age:</label>
+		<input
+			bind:value={maxRetirementAge}
+			type="number"
+			id="max-retirement-age"
+			name="max-retirement-age"
+		/>
+	</details>
 	<input type="submit" value="Submit" />
 </form>
