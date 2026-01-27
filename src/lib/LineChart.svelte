@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { Chart } from 'chart.js/auto';
+	import { Chart, type ChartDataset, type TooltipItem } from 'chart.js/auto';
 	import annotationPlugin from 'chartjs-plugin-annotation';
 
 	// Color constants
@@ -47,7 +47,7 @@
 		}
 
 		// Build Chart.js datasets from props.datasets
-		const chartDatasets: any[] = [];
+		const chartDatasets: ChartDataset<'line', (number | null)[]>[] = [];
 		for (let i = 0; i < props.datasets.length; i++) {
 			const dataset = props.datasets[i];
 			const color = getColor(i);
@@ -68,10 +68,10 @@
 				plugins: {
 					tooltip: {
 						callbacks: {
-							label: function (context: any) {
+							label: function (context: TooltipItem<'line'>) {
 								return props.formatter(context.parsed.y);
 							},
-							title: function (context: any) {
+							title: function (context: TooltipItem<'line'>[]) {
 								return props.xAxisLabel + ' ' + context[0].label;
 							}
 						},
