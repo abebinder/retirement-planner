@@ -7,18 +7,20 @@
 		maxRetirementAge: number;
 	}
 
-	export function defaultFormValues(): FormValues {
+	const DEFAULT_FORM_VALUES: FormValues = {
+		initialSavings: 100000,
+		annualContribution: 50000,
+		annualRetirementSpend: 65000,
+		currentAge: 30,
+		maxRetirementAge: 70
+	};
+
+	export function getFormValues(): FormValues {
 		const storedValues = localStorage.getItem('form-values');
 		if (storedValues) {
 			return JSON.parse(storedValues) as FormValues;
 		}
-		return {
-			initialSavings: 100000,
-			annualContribution: 50000,
-			annualRetirementSpend: 65000,
-			currentAge: 30,
-			maxRetirementAge: 70
-		};
+		return DEFAULT_FORM_VALUES;
 	}
 </script>
 
@@ -28,15 +30,13 @@
 	let { updateParentComponent } = $props();
 
 	// State for inputs
-	let currentSavings = $state(String(defaultFormValues().initialSavings));
-	let annualContribution = $state(
-		String(defaultFormValues().annualContribution)
-	);
+	let currentSavings = $state(String(getFormValues().initialSavings));
+	let annualContribution = $state(String(getFormValues().annualContribution));
 	let annualRetirementSpend = $state(
-		String(defaultFormValues().annualRetirementSpend)
+		String(getFormValues().annualRetirementSpend)
 	);
-	let currentAge = $state(String(defaultFormValues().currentAge));
-	let maxRetirementAge = $state(String(defaultFormValues().maxRetirementAge));
+	let currentAge = $state(String(getFormValues().currentAge));
+	let maxRetirementAge = $state(String(getFormValues().maxRetirementAge));
 
 	function handleSubmit(event: SubmitEvent) {
 		event.preventDefault(); // Prevent default browser form submission (page reload)
@@ -52,6 +52,16 @@
 		};
 		localStorage.setItem('form-values', JSON.stringify(newFormValues));
 		updateParentComponent(newFormValues);
+	}
+
+	function handleReset() {
+		currentSavings = String(DEFAULT_FORM_VALUES.initialSavings);
+		annualContribution = String(DEFAULT_FORM_VALUES.annualContribution);
+		annualRetirementSpend = String(DEFAULT_FORM_VALUES.annualRetirementSpend);
+		currentAge = String(DEFAULT_FORM_VALUES.currentAge);
+		maxRetirementAge = String(DEFAULT_FORM_VALUES.maxRetirementAge);
+		localStorage.removeItem('form-values');
+		updateParentComponent(DEFAULT_FORM_VALUES);
 	}
 </script>
 
@@ -95,4 +105,7 @@
 		/>
 	</details>
 	<input type="submit" value="Submit" />
+	<button type="button" class="reset-button" onclick={handleReset}>
+		Reset
+	</button>
 </form>

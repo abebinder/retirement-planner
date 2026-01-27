@@ -134,6 +134,7 @@ form {
 	padding: var(--spacing-lg);
 	margin: var(--spacing-md) 0;
 	box-shadow: 0 1px 3px var(--shadow-light);
+	position: relative;
 }
 
 label {
@@ -196,6 +197,17 @@ input[type='submit']:active,
 button:active {
 	transform: translateY(0);
 	box-shadow: 0 1px 2px var(--shadow);
+}
+
+.reset-button {
+	position: absolute;
+	bottom: var(--spacing-lg);
+	right: var(--spacing-lg);
+	background-color: #dc3545;
+}
+
+.reset-button:hover {
+	background-color: #c82333;
 }
 
 /* Chrome, Safari, Edge, Opera */

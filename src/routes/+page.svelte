@@ -10,7 +10,7 @@
 		NUM_SIMULATIONS,
 		RETIREMENT_AGE_CONFIDENCE
 	} from '$lib/constants';
-	import Form, { type FormValues, defaultFormValues } from '$lib/Form.svelte';
+	import Form, { type FormValues, getFormValues } from '$lib/Form.svelte';
 	import { currencyFormat, percentageFormat } from '$lib/formatter';
 	import {
 		computeConfidenceByAge,
@@ -20,7 +20,7 @@
 		createAgeLabels
 	} from '$lib/dataTransformer';
 
-	let formValues: FormValues = $state(defaultFormValues());
+	let formValues: FormValues = $state(getFormValues());
 	function updateFormValues(newFormValues: FormValues) {
 		formValues = newFormValues;
 	}
