@@ -136,7 +136,7 @@ export function runMultipleSimulationsForEachAge(
 	maxRetirementAge: number
 ): RunMultipleSimulationsResult[] {
 	let allResults: RunMultipleSimulationsResult[] = [];
-	for (let i = currentAge; i < maxRetirementAge; i++) {
+	for (let i = currentAge; i < maxRetirementAge + 1; i++) {
 		let result = runMultipleSimulations(
 			initialSavings,
 			annualContribution,
