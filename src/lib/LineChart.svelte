@@ -1,16 +1,15 @@
 <script lang="ts">
 	import { Chart } from 'chart.js/auto';
 	import annotationPlugin from 'chartjs-plugin-annotation';
-	Chart.register(annotationPlugin);
 
 	// Color constants
 	const COLOR_BLUE = 'rgba(74, 144, 226, 1)';
 	const COLOR_BLUE_ALPHA = 'rgba(74, 144, 226, 0.2)';
 	const COLOR_RED = 'rgba(226, 74, 74, 1)';
 	const COLOR_RED_ALPHA = 'rgba(226, 74, 74, 0.2)';
-	const COLOR_LIGHT_GRAY = 'rgba(232, 232, 232, 1)';
-	const COLOR_MEDIUM_GRAY = 'rgba(107, 107, 107, 1)';
 	const COLOR_DARK_GRAY = 'rgba(44, 44, 44, 1)';
+
+	Chart.register(annotationPlugin);
 
 	interface DataSet {
 		data: (number | null)[];
@@ -57,35 +56,15 @@
 				data: dataset.data,
 				borderColor: color.border,
 				backgroundColor: color.background,
-				borderWidth: 2,
 				fill: true,
-				tension: 0.1,
-				hidden: false,
-				order: 1,
 				clip: false
 			});
 		}
 
-		// Determine Y axis configuration
-		const yAxisConfig: any = {
-			grid: {
-				color: COLOR_LIGHT_GRAY
-			},
-			ticks: {
-				color: COLOR_MEDIUM_GRAY,
-				callback: props.formatter
-			},
-			min: 0
-		};
-
 		chart = new Chart(chartCanvas, {
 			type: 'line',
 			options: {
-				responsive: true,
 				maintainAspectRatio: false,
-				layout: {
-					padding: { top: 10, bottom: 0, left: 0, right: 0 }
-				},
 				plugins: {
 					tooltip: {
 						callbacks: {
@@ -98,42 +77,29 @@
 						},
 						displayColors: false
 					},
-					legend: {
-						display: true,
-						position: 'top',
-						labels: {
-							color: COLOR_DARK_GRAY,
-							usePointStyle: false,
-							boxWidth: 15,
-							boxHeight: 5,
-							padding: 15
-						}
-					},
 					title: {
 						display: true,
 						text: props.title,
 						font: {
 							size: 16
 						},
-						color: COLOR_DARK_GRAY,
-						padding: 20
+						color: COLOR_DARK_GRAY
 					}
 				},
 				scales: {
 					x: {
 						title: {
-							display: true,
-							text: props.xAxisLabel,
-							color: COLOR_DARK_GRAY
-						},
-						grid: {
-							color: COLOR_LIGHT_GRAY
-						},
-						ticks: {
-							color: COLOR_MEDIUM_GRAY
+							text: props.xAxisLabel
 						}
 					},
-					y: yAxisConfig
+					y: {
+						ticks: {
+							callback: function (tickValue: string | number) {
+								return props.formatter(Number(tickValue));
+							}
+						},
+						min: 0
+					}
 				}
 			},
 			data: {
