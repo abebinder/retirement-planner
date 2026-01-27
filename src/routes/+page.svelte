@@ -5,11 +5,7 @@
 		runMultipleSimulationsForEachAge,
 		calculateRetirementAge
 	} from '$lib/simulator';
-	import {
-		LIFE_EXPECTANCY,
-		NUM_SIMULATIONS,
-		RETIREMENT_AGE_CONFIDENCE
-	} from '$lib/constants';
+	import { NUM_SIMULATIONS, RETIREMENT_AGE_CONFIDENCE } from '$lib/constants';
 	import Form, { type FormValues, getFormValues } from '$lib/Form.svelte';
 	import { currencyFormat, percentageFormat } from '$lib/formatter';
 	import {
@@ -31,7 +27,8 @@
 			formValues.annualRetirementSpend,
 			NUM_SIMULATIONS,
 			formValues.currentAge,
-			formValues.maxRetirementAge
+			formValues.maxRetirementAge,
+			formValues.lifeExpectancy
 		)
 	);
 	let confidentRetirementAge = $derived(
@@ -68,7 +65,7 @@
 	<h1>Summary</h1>
 	<p>
 		Retirement Age (With {RETIREMENT_AGE_CONFIDENCE * 100}% Simulations
-		Surviving til Age {LIFE_EXPECTANCY}):
+		Surviving til Age {formValues.lifeExpectancy}):
 		<strong>
 			{#if confidentRetirementAge !== null}
 				{confidentRetirementAge}
@@ -91,13 +88,13 @@
 	<p>
 		{NUM_SIMULATIONS} simulations with different market conditions are run at each
 		age. The results show the percentage chance your retirement savings would last
-		til age {LIFE_EXPECTANCY} if you retired at the given age.
+		til age {formValues.lifeExpectancy} if you retired at the given age.
 	</p>
 	{#each growthAndWithdrawlResults as result, i}
 		<h2>Age {i + formValues.currentAge}</h2>
 		<p>
 			You have a {percentageFormat(result.successRate)} chance of surviving to age
-			{LIFE_EXPECTANCY}
+			{formValues.lifeExpectancy}
 			if you retired at age {i + formValues.currentAge}.
 		</p>
 		<details>

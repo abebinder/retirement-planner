@@ -5,6 +5,7 @@
 		annualRetirementSpend: number;
 		currentAge: number;
 		maxRetirementAge: number;
+		lifeExpectancy: number;
 	}
 
 	const DEFAULT_FORM_VALUES: FormValues = {
@@ -12,7 +13,8 @@
 		annualContribution: 50000,
 		annualRetirementSpend: 65000,
 		currentAge: 30,
-		maxRetirementAge: 70
+		maxRetirementAge: 70,
+		lifeExpectancy: 90
 	};
 
 	export function getFormValues(): FormValues {
@@ -37,6 +39,7 @@
 	);
 	let currentAge = $state(String(getFormValues().currentAge));
 	let maxRetirementAge = $state(String(getFormValues().maxRetirementAge));
+	let lifeExpectancy = $state(String(getFormValues().lifeExpectancy));
 
 	function handleSubmit(event: SubmitEvent) {
 		event.preventDefault(); // Prevent default browser form submission (page reload)
@@ -48,7 +51,8 @@
 			annualContribution: Number(annualContribution || 0),
 			annualRetirementSpend: Number(annualRetirementSpend || 0),
 			currentAge: Number(currentAge || 0),
-			maxRetirementAge: Number(maxRetirementAge || 0)
+			maxRetirementAge: Number(maxRetirementAge || 0),
+			lifeExpectancy: Number(lifeExpectancy || 0)
 		};
 		localStorage.setItem('form-values', JSON.stringify(newFormValues));
 		updateParentComponent(newFormValues);
@@ -60,6 +64,7 @@
 		annualRetirementSpend = String(DEFAULT_FORM_VALUES.annualRetirementSpend);
 		currentAge = String(DEFAULT_FORM_VALUES.currentAge);
 		maxRetirementAge = String(DEFAULT_FORM_VALUES.maxRetirementAge);
+		lifeExpectancy = String(DEFAULT_FORM_VALUES.lifeExpectancy);
 		localStorage.removeItem('form-values');
 		updateParentComponent(DEFAULT_FORM_VALUES);
 	}
@@ -102,6 +107,13 @@
 			type="number"
 			id="max-retirement-age"
 			name="max-retirement-age"
+		/>
+		<label for="life-expectancy">Life Expectancy:</label>
+		<input
+			bind:value={lifeExpectancy}
+			type="number"
+			id="life-expectancy"
+			name="life-expectancy"
 		/>
 	</details>
 	<input type="submit" value="Submit" />

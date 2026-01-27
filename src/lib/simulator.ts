@@ -1,7 +1,6 @@
 import {
 	VT_INFLATION_ADJUSTED_MEAN,
-	VT_STANDARD_DEVIATION,
-	LIFE_EXPECTANCY
+	VT_STANDARD_DEVIATION
 } from './constants';
 
 //https://stackoverflow.com/a/36481059
@@ -26,7 +25,8 @@ export function runSimulation(
 	annualContribution: number,
 	annualWithdawl: number,
 	currentAge: number,
-	ageToSwitchToWithdrawl: number
+	ageToSwitchToWithdrawl: number,
+	lifeExpectancy: number
 ): number[] {
 	let savingsByYear: number[] = [initialSavings];
 	let savings = initialSavings;
@@ -38,7 +38,7 @@ export function runSimulation(
 		}
 		savingsByYear.push(savings);
 	}
-	for (let i = ageToSwitchToWithdrawl; i < LIFE_EXPECTANCY; i++) {
+	for (let i = ageToSwitchToWithdrawl; i < lifeExpectancy; i++) {
 		let investmentRate = getInvestmentRate();
 		savings = savings * (1 + investmentRate) - annualWithdawl;
 		if (savings < 0) {
@@ -95,7 +95,8 @@ export function runMultipleSimulations(
 	annualWithdawl: number,
 	num_simulations: number,
 	currentAge: number,
-	ageToSwitchToWithdrawl: number
+	ageToSwitchToWithdrawl: number,
+	lifeExpectancy: number
 ): RunMultipleSimulationsResult {
 	let simulations: number[][] = [];
 	let successCount = 0;
@@ -105,9 +106,10 @@ export function runMultipleSimulations(
 			annualContribution,
 			annualWithdawl,
 			currentAge,
-			ageToSwitchToWithdrawl
+			ageToSwitchToWithdrawl,
+			lifeExpectancy
 		);
-		if (simulation.length >= LIFE_EXPECTANCY - currentAge) {
+		if (simulation.length >= lifeExpectancy - currentAge) {
 			successCount++;
 		}
 		simulations.push(simulation);
@@ -133,7 +135,8 @@ export function runMultipleSimulationsForEachAge(
 	annualWithdawl: number,
 	simulations: number,
 	currentAge: number,
-	maxRetirementAge: number
+	maxRetirementAge: number,
+	lifeExpectancy: number
 ): RunMultipleSimulationsResult[] {
 	let allResults: RunMultipleSimulationsResult[] = [];
 	for (let i = currentAge; i < maxRetirementAge + 1; i++) {
@@ -143,7 +146,8 @@ export function runMultipleSimulationsForEachAge(
 			annualWithdawl,
 			simulations,
 			currentAge,
-			i
+			i,
+			lifeExpectancy
 		);
 		allResults.push(result);
 	}
