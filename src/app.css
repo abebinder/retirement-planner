@@ -39,6 +39,7 @@ body {
 body {
 	padding: var(--spacing-md);
 	min-height: 100vh;
+	overflow-x: hidden;
 }
 
 h1,
@@ -250,7 +251,7 @@ section {
 	box-shadow: 0 1px 3px var(--shadow-light);
 }
 
-/* Responsive */
+/* Responsive - tablet and below */
 @media (max-width: 768px) {
 	body {
 		padding: var(--spacing-sm);
@@ -266,5 +267,81 @@ section {
 
 	.container {
 		padding: var(--spacing-sm);
+	}
+
+	.panel {
+		padding: var(--spacing-md);
+	}
+
+	form {
+		padding: var(--spacing-md);
+	}
+
+	/* Put reset button in flow on mobile so it doesn't overlap content */
+	.reset-button {
+		position: static;
+		display: block;
+		width: 100%;
+		margin-top: var(--spacing-sm);
+	}
+
+	.chart-container {
+		padding: var(--spacing-sm);
+	}
+}
+
+/* Responsive - small phones */
+@media (max-width: 480px) {
+	body {
+		padding: var(--spacing-xs);
+	}
+
+	h1 {
+		font-size: 1.25rem;
+	}
+
+	h2 {
+		font-size: 1.1rem;
+	}
+
+	.container {
+		padding: var(--spacing-xs);
+	}
+
+	.panel {
+		padding: var(--spacing-sm);
+	}
+
+	form {
+		padding: var(--spacing-sm);
+	}
+}
+
+/* Prevent horizontal overflow on small screens */
+html {
+	overflow-x: hidden;
+}
+
+/* Allow long words/numbers to wrap instead of overflowing */
+.panel,
+form,
+.chart-container {
+	overflow-wrap: break-word;
+	word-break: break-word;
+}
+
+/* Touch-friendly minimum sizes (44px is common accessibility target) */
+@media (max-width: 768px) {
+	input[type='number'],
+	input[type='text'],
+	input[type='email'],
+	input[type='submit'],
+	button {
+		min-height: 44px;
+	}
+
+	input[type='submit'],
+	button {
+		padding: var(--spacing-md) var(--spacing-lg);
 	}
 }

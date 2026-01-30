@@ -31,6 +31,14 @@
 
 	$effect(drawChart);
 
+	// Redraw chart on resize (e.g. orientation change on mobile) so height matches media queries
+	$effect(() => {
+		if (typeof window === 'undefined') return;
+		const onResize = () => chart?.resize();
+		window.addEventListener('resize', onResize);
+		return () => window.removeEventListener('resize', onResize);
+	});
+
 	// Color rotation: blue, red, blue, red, etc.
 	const colors = [
 		{ border: COLOR_BLUE, background: COLOR_BLUE_ALPHA },
@@ -123,5 +131,17 @@
 
 	.chart-container canvas {
 		max-width: 100%;
+	}
+
+	@media (max-width: 768px) {
+		.chart-container {
+			height: 280px;
+		}
+	}
+
+	@media (max-width: 480px) {
+		.chart-container {
+			height: 240px;
+		}
 	}
 </style>
