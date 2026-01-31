@@ -74,6 +74,9 @@
 			options: {
 				maintainAspectRatio: false,
 				plugins: {
+					legend: {
+						display: props.datasets.length > 1
+					},
 					tooltip: {
 						callbacks: {
 							label: function (context: TooltipItem<'line'>) {
