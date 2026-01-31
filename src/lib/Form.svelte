@@ -6,6 +6,7 @@
 		currentAge: number;
 		maxRetirementAge: number;
 		lifeExpectancy: number;
+		retirementAgeConfidence: number;
 	}
 
 	const DEFAULT_FORM_VALUES: FormValues = {
@@ -14,7 +15,8 @@
 		annualRetirementSpend: 65000,
 		currentAge: 30,
 		maxRetirementAge: 70,
-		lifeExpectancy: 90
+		lifeExpectancy: 90,
+		retirementAgeConfidence: 90
 	};
 
 	export function getFormValues(): FormValues {
@@ -40,19 +42,22 @@
 	let currentAge = $state(String(getFormValues().currentAge));
 	let maxRetirementAge = $state(String(getFormValues().maxRetirementAge));
 	let lifeExpectancy = $state(String(getFormValues().lifeExpectancy));
+	let retirementAgeConfidence = $state(
+		String(getFormValues().retirementAgeConfidence)
+	);
 
 	function handleSubmit(event: SubmitEvent) {
 		event.preventDefault(); // Prevent default browser form submission (page reload)
 		const form = event.target as HTMLFormElement;
 		if (!form) return;
-		const formData = new FormData(form);
 		const newFormValues: FormValues = {
 			initialSavings: Number(currentSavings || 0),
 			annualContribution: Number(annualContribution || 0),
 			annualRetirementSpend: Number(annualRetirementSpend || 0),
 			currentAge: Number(currentAge || 0),
 			maxRetirementAge: Number(maxRetirementAge || 0),
-			lifeExpectancy: Number(lifeExpectancy || 0)
+			lifeExpectancy: Number(lifeExpectancy || 0),
+			retirementAgeConfidence: Number(retirementAgeConfidence || 0)
 		};
 		localStorage.setItem('form-values', JSON.stringify(newFormValues));
 		updateParentComponent(newFormValues);
@@ -65,6 +70,9 @@
 		currentAge = String(DEFAULT_FORM_VALUES.currentAge);
 		maxRetirementAge = String(DEFAULT_FORM_VALUES.maxRetirementAge);
 		lifeExpectancy = String(DEFAULT_FORM_VALUES.lifeExpectancy);
+		retirementAgeConfidence = String(
+			DEFAULT_FORM_VALUES.retirementAgeConfidence
+		);
 		localStorage.removeItem('form-values');
 		updateParentComponent(DEFAULT_FORM_VALUES);
 	}
@@ -114,6 +122,16 @@
 			type="number"
 			id="life-expectancy"
 			name="life-expectancy"
+		/>
+		<label for="retirement-age-confidence">Retirement Age Confidence (%):</label
+		>
+		<input
+			bind:value={retirementAgeConfidence}
+			type="number"
+			id="retirement-age-confidence"
+			name="retirement-age-confidence"
+			min="1"
+			max="100"
 		/>
 	</details>
 	<input type="submit" value="Submit" />

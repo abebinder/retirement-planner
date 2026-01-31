@@ -5,7 +5,7 @@
 		runMultipleSimulationsForEachAge,
 		calculateRetirementAge
 	} from '$lib/simulator';
-	import { NUM_SIMULATIONS, RETIREMENT_AGE_CONFIDENCE } from '$lib/constants';
+	import { NUM_SIMULATIONS } from '$lib/constants';
 	import Form, { type FormValues, getFormValues } from '$lib/Form.svelte';
 	import { currencyFormat, percentageFormat } from '$lib/formatter';
 	import {
@@ -35,7 +35,7 @@
 		calculateRetirementAge(
 			growthAndWithdrawlResults,
 			formValues.currentAge,
-			RETIREMENT_AGE_CONFIDENCE
+			formValues.retirementAgeConfidence / 100
 		)
 	);
 
@@ -64,7 +64,7 @@
 <section class="panel">
 	<h1>Summary</h1>
 	<p>
-		Retirement Age (With {RETIREMENT_AGE_CONFIDENCE * 100}% Simulations
+		Retirement Age (With {formValues.retirementAgeConfidence}% Simulations
 		Surviving til Age {formValues.lifeExpectancy}):
 		<strong>
 			{#if confidentRetirementAge !== null}
