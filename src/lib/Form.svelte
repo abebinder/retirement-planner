@@ -28,7 +28,7 @@
 	export function getFormValues(): FormValues {
 		const storedValues = localStorage.getItem('form-values');
 		if (storedValues) {
-			return JSON.parse(storedValues) as FormValues;
+			return Object.assign(DEFAULT_FORM_VALUES, JSON.parse(storedValues));
 		}
 		return DEFAULT_FORM_VALUES;
 	}
