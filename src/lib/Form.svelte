@@ -3,6 +3,8 @@
 		initialSavings: number;
 		annualContribution: number;
 		annualRetirementSpend: number;
+		annualMeanReturn: number;
+		annualStandardDeviation: number;
 		currentAge: number;
 		maxRetirementAge: number;
 		lifeExpectancy: number;
@@ -13,6 +15,10 @@
 		initialSavings: 100000,
 		annualContribution: 50000,
 		annualRetirementSpend: 65000,
+		//https://www.youtube.com/watch?v=Yl3NxTS_DgY&t=14s
+		//https://www.lazyportfolioetf.com/etf/vanguard-total-world-stock-vt/
+		annualMeanReturn: 5.2,
+		annualStandardDeviation: 15.8,
 		currentAge: 30,
 		maxRetirementAge: 70,
 		lifeExpectancy: 90,
@@ -39,6 +45,10 @@
 	let annualRetirementSpend = $state(
 		String(getFormValues().annualRetirementSpend)
 	);
+	let annualMeanReturn = $state(String(getFormValues().annualMeanReturn));
+	let annualStandardDeviation = $state(
+		String(getFormValues().annualStandardDeviation)
+	);
 	let currentAge = $state(String(getFormValues().currentAge));
 	let maxRetirementAge = $state(String(getFormValues().maxRetirementAge));
 	let lifeExpectancy = $state(String(getFormValues().lifeExpectancy));
@@ -54,6 +64,8 @@
 			initialSavings: Number(currentSavings || 0),
 			annualContribution: Number(annualContribution || 0),
 			annualRetirementSpend: Number(annualRetirementSpend || 0),
+			annualMeanReturn: Number(annualMeanReturn || 0),
+			annualStandardDeviation: Number(annualStandardDeviation || 0),
 			currentAge: Number(currentAge || 0),
 			maxRetirementAge: Number(maxRetirementAge || 0),
 			lifeExpectancy: Number(lifeExpectancy || 0),
@@ -67,6 +79,10 @@
 		currentSavings = String(DEFAULT_FORM_VALUES.initialSavings);
 		annualContribution = String(DEFAULT_FORM_VALUES.annualContribution);
 		annualRetirementSpend = String(DEFAULT_FORM_VALUES.annualRetirementSpend);
+		annualMeanReturn = String(DEFAULT_FORM_VALUES.annualMeanReturn);
+		annualStandardDeviation = String(
+			DEFAULT_FORM_VALUES.annualStandardDeviation
+		);
 		currentAge = String(DEFAULT_FORM_VALUES.currentAge);
 		maxRetirementAge = String(DEFAULT_FORM_VALUES.maxRetirementAge);
 		lifeExpectancy = String(DEFAULT_FORM_VALUES.lifeExpectancy);
@@ -115,6 +131,23 @@
 			type="number"
 			id="max-retirement-age"
 			name="max-retirement-age"
+		/>
+		<label for="annual-mean-return">Annual Mean Return (%):</label>
+		<input
+			bind:value={annualMeanReturn}
+			type="number"
+			id="annual-mean-return"
+			name="annual-mean-return"
+			step="0.01"
+		/>
+		<label for="annual-standard-deviation">Annual Standard Deviation (%):</label
+		>
+		<input
+			bind:value={annualStandardDeviation}
+			type="number"
+			id="annual-standard-deviation"
+			name="annual-standard-deviation"
+			step="0.01"
 		/>
 		<label for="life-expectancy">Life Expectancy:</label>
 		<input

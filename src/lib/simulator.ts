@@ -1,8 +1,3 @@
-import {
-	VT_INFLATION_ADJUSTED_MEAN,
-	VT_STANDARD_DEVIATION
-} from './constants';
-
 //https://stackoverflow.com/a/36481059
 // Standard Normal variate using Box-Muller transform.
 function gaussianRandom(options: { mean: number; stdev: number }): number {
@@ -13,17 +8,16 @@ function gaussianRandom(options: { mean: number; stdev: number }): number {
 	return z * options.stdev + options.mean;
 }
 
-function getInvestmentRate(): number {
-	return gaussianRandom({
-		mean: VT_INFLATION_ADJUSTED_MEAN,
-		stdev: VT_STANDARD_DEVIATION
-	});
+function getInvestmentRate(mean: number, stdev: number): number {
+	return gaussianRandom({ mean, stdev });
 }
 
 export function runSimulation(
 	initialSavings: number,
 	annualContribution: number,
 	annualWithdawl: number,
+	annualMeanReturn: number,
+	annualStandardDeviation: number,
 	currentAge: number,
 	ageToSwitchToWithdrawl: number,
 	lifeExpectancy: number
@@ -31,7 +25,10 @@ export function runSimulation(
 	let savingsByYear: number[] = [initialSavings];
 	let savings = initialSavings;
 	for (let i = currentAge; i < ageToSwitchToWithdrawl; i++) {
-		let investmentRate = getInvestmentRate();
+		let investmentRate = getInvestmentRate(
+			annualMeanReturn,
+			annualStandardDeviation
+		);
 		savings = savings * (1 + investmentRate) + annualContribution;
 		if (savings < 0) {
 			return savingsByYear;
@@ -39,7 +36,10 @@ export function runSimulation(
 		savingsByYear.push(savings);
 	}
 	for (let i = ageToSwitchToWithdrawl; i < lifeExpectancy; i++) {
-		let investmentRate = getInvestmentRate();
+		let investmentRate = getInvestmentRate(
+			annualMeanReturn,
+			annualStandardDeviation
+		);
 		savings = savings * (1 + investmentRate) - annualWithdawl;
 		if (savings < 0) {
 			return savingsByYear;
@@ -93,6 +93,8 @@ export function runMultipleSimulations(
 	initialSavings: number,
 	annualContribution: number,
 	annualWithdawl: number,
+	annualMeanReturn: number,
+	annualStandardDeviation: number,
 	num_simulations: number,
 	currentAge: number,
 	ageToSwitchToWithdrawl: number,
@@ -105,6 +107,8 @@ export function runMultipleSimulations(
 			initialSavings,
 			annualContribution,
 			annualWithdawl,
+			annualMeanReturn,
+			annualStandardDeviation,
 			currentAge,
 			ageToSwitchToWithdrawl,
 			lifeExpectancy
@@ -133,6 +137,8 @@ export function runMultipleSimulationsForEachAge(
 	initialSavings: number,
 	annualContribution: number,
 	annualWithdawl: number,
+	annualMeanReturn: number,
+	annualStandardDeviation: number,
 	simulations: number,
 	currentAge: number,
 	maxRetirementAge: number,
@@ -144,6 +150,8 @@ export function runMultipleSimulationsForEachAge(
 			initialSavings,
 			annualContribution,
 			annualWithdawl,
+			annualMeanReturn,
+			annualStandardDeviation,
 			simulations,
 			currentAge,
 			i,

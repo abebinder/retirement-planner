@@ -25,6 +25,8 @@
 			formValues.initialSavings,
 			formValues.annualContribution,
 			formValues.annualRetirementSpend,
+			formValues.annualMeanReturn / 100,
+			formValues.annualStandardDeviation / 100,
 			NUM_SIMULATIONS,
 			formValues.currentAge,
 			formValues.maxRetirementAge,
